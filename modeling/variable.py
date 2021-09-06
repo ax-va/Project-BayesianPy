@@ -1,7 +1,10 @@
 class Variable:
-    def __init__(self, domain, name):
+    def __init__(self, domain, name=None):
         self._domain = domain
-        self._name = name
+        if name is None:
+            self._name = str(id(self))
+        else:
+            self._name = name
 
     def __str__(self):
         return self._name
