@@ -27,6 +27,7 @@ if __name__ == '__main__':
     )
     values = {x.name: True, y.name: False, z.name: True}
     print(values)
+    print(f1(X=True, Y=False, Z=True))
     # print(f1(X=True, Y='777', Z=True))
-    print(f1(Y=False, Z=True, X=True))
+    # print(f1(Y=False, Z=True, X=True))
     print(f1(**values))
