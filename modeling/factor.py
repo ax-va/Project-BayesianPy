@@ -5,6 +5,8 @@ class Factor:
     def __init__(self, variables, function):
         self._variables = variables
         self._function = function
+        for variable in self._variables:
+            variable.link_factor(self)
 
     def __call__(self, *values):
         return self._function(*values)
