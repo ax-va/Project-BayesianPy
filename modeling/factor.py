@@ -15,7 +15,7 @@ if __name__ == '__main__':
     y = Variable(domain={False, True})
     z = Variable(domain={False, True})
     f1 = Factor(
-        variables=[x, y, z],
+        variables=(x, y, z),
         function=lambda a, b, c: 0.5 if (a or b or c) else 0.1,
     )
     print(f1(True, False, True))
