@@ -42,7 +42,7 @@ class SumProduct:
         self._query = self._variables[self._factorization.variables.index(query)]
 
     def _initialize(self):
-        # Initialise
+        # Initialize the main loop
         for factor in Factorization.get_factor_leaves(self._factors):
             # The factor-leaf has only one variable
             variable, = factor.variables
