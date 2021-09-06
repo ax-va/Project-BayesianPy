@@ -14,7 +14,7 @@ class SumProduct:
         # Copy deeply the variables to encapsulate them inside the algorithm
         self._variables = copy.deepcopy(self._factorization.variables)
         # To cache the messages into the dictionary
-        self._messages = {}
+        self._log_messages = {}
         # Run until the running parameter is False
         self._running = True
         # Propagate the messages from the next factors
@@ -47,7 +47,7 @@ class SumProduct:
             # The factor-leaf has only one variable
             variable, = factor.variables
             # Cache the messages into the dictionary
-            self._messages[(factor, variable)] = {value: math.log(factor(value)) for value in variable.domain}
+            self._log_messages[(factor, variable)] = {value: math.log(factor(value)) for value in variable.domain}
             # Increment the number of incoming factors to the variable
             self._incoming_factors_to_variables[variable] += 1
             # If only one factor is left, message passing is possible from the variable
@@ -60,7 +60,7 @@ class SumProduct:
                 # The variable-leaf has only one factor
                 factor, = variable.factors
                 # Cache the messages into the dictionary
-                self._messages[(variable, factor)] = {value: 0 for value in variable.domain}
+                self._log_messages[(variable, factor)] = {value: 0 for value in variable.domain}
                 # Increment the number of incoming variables to the factor
                 self._incoming_variables_to_factors[factor] += 1
                 # If only one variable is left, message passing is possible from the factor
