@@ -1,0 +1,2 @@
+class Factorization:
+    pass
