@@ -1,4 +1,4 @@
-from bayesian.variable import Variable
+from bayesian.modeling.variable import Variable
 
 
 class Factor:
