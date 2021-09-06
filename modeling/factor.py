@@ -33,17 +33,5 @@ if __name__ == '__main__':
     )
     print(f1(True, False, True))
 
-    x, = (1, )
-    print(x)
-    x += 1
-    print(x)
-    print(f1.variables)
-
-    def f(*args):
-        print(*args)
-
-    f(1)
-    f(1, 2)
-
 
 
