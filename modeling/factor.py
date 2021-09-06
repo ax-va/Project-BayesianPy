@@ -2,17 +2,17 @@ from bayesian.modeling.variable import Variable
 
 
 class Factor:
-    def __init__(self, variables, function, arguments):
+    def __init__(self, variables, function, link):
         self._variables = variables
         self._function = function
-        self._arguments = arguments
+        self._link = link
 
     def __call__(self, **kwargs):
         for variable in self._variables:
             if kwargs[variable.name] not in variable.domain:
                 assert False, f'Value {kwargs[variable.name]} of variable {variable} is not in its domain ' \
                               f'{variable.domain}'
-        arguments = {self._arguments[variable_name]: kwargs[variable_name] for variable_name in kwargs.keys()}
+        arguments = {self._link[variable_name]: kwargs[variable_name] for variable_name in kwargs.keys()}
         return self._function(**arguments)
 
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     f1 = Factor(
         variables={x, y, z},
         function=lambda a, b, c: 0.5 if (a or b or c) else 0.1,
-        arguments={x.name: 'a', y.name: 'b', z.name: 'c'}
+        link={x.name: 'a', y.name: 'b', z.name: 'c'}
     )
     values = {x.name: True, y.name: False, z.name: True}
     print(values)
