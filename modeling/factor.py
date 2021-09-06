@@ -1,7 +1,7 @@
 from bayesian.modeling.variable import Variable
 
 
-class Factor(object):
+class Factor:
     def __init__(self, variables, function, link):
         self._variables = variables
         self._function = function
