@@ -6,15 +6,13 @@ from bayesian.modeling.variable import Variable
 
 
 class SumProduct:
-    def __init__(self, factorization: Factorization, query: Variable):
+    def __init__(self, factorization: Factorization):
         # Save the factorization object that you can change the query and evidence later
         self._factorization = factorization
         # Copy deeply the factors to encapsulate them inside the algorithm
-        self._factors = copy.deepcopy(factorization.factors)
+        self._factors = copy.deepcopy(self._factorization.factors)
         # Copy deeply the variables to encapsulate them inside the algorithm
-        self._variables = copy.deepcopy(factorization.variables)
-        # Single variable 'query' of interest for computing P(query) or P(query|evidence)
-        self._query = self._variables[factorization.variables.index(query)]
+        self._variables = copy.deepcopy(self._factorization.variables)
         # To cache the messages into the dictionary
         self._messages = {}
         # Run until the running parameter is False
@@ -27,6 +25,8 @@ class SumProduct:
         self._incoming_factors_to_variables = {variable: 0 for variable in self._variables}
         # Incoming variables to the factors
         self._incoming_variables_to_factors = {factor: 0 for factor in self._factors}
+        # The query is not yet set
+        self._query = None
 
     def run(self):
         # Startup
@@ -36,6 +36,10 @@ class SumProduct:
         # Main loop
         while self._running:
             pass
+
+    def set_query(self, query: Variable):
+        # Single variable 'query' of interest for computing P(query) or P(query|evidence)
+        self._query = self._variables[self._factorization.variables.index(query)]
 
     def _initialize(self):
         # Initialise
