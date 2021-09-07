@@ -42,7 +42,7 @@ class SumProduct:
                 {value: math.log(factor(value)) for value in factor.variables[0].domain}
             for factor in Factorization.get_factor_leaves(self._factors)
             }
-        # Increment the number of incoming factor-variable messages to the variable
+        # Count the number of incoming factor-variable messages to the variable
         # The message key is a variable
         self._factor_variable_messages_number = Counter(
             map(lambda message_key: message_key[1], self._factor_variable_log_messages.keys())
@@ -57,7 +57,7 @@ class SumProduct:
                 {value: 0 for value in variable.domain}
             for variable in Factorization.get_variable_leaves(self._variables) if variable is not self._query
         }
-        # Increment the number of incoming factor-variable messages to the variable
+        # Count the number of incoming factor-variable messages to the variable
         # The message key is a factor
         self._variable_factor_messages_number = Counter(
             map(lambda message_key: message_key[1], self._variable_factor_log_messages.keys())
