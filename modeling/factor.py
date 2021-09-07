@@ -32,6 +32,3 @@ if __name__ == '__main__':
         name='f1'
     )
     print(f1(True, False, True))
-
-
-

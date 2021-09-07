@@ -1,21 +1,15 @@
-import copy
 import math
-from collections import Counter
 
+from bayesian.algorithms.factored import Factored
 from bayesian.modeling.factorization import Factorization
 from bayesian.modeling.variable import Variable
 
 
-class SumProduct:
+class SumProduct(Factored):
     def __init__(self, factorization: Factorization):
-        # Save the factorization object
-        self._factorization = factorization
-        # Copy deeply the factors to encapsulate them inside the algorithm
-        self._factors = copy.deepcopy(self._factorization.factors)
-        # Copy deeply the variables to encapsulate them inside the algorithm
-        self._variables = copy.deepcopy(self._factorization.variables)
+        Factored.__init__(self, factorization)
         # Query is not yet set
-        self._query = None
+        self._query_variable = None
         # Evidence is not given
         self._evidence = None
 
@@ -24,79 +18,52 @@ class SumProduct:
         # Set the evidence
         # Can you get an immediate response to the query?
         self._initialize()
-        # Main loop
+        # Running the main loop
         while self._running:
-            pass
+            for factor in self._next_factors:
+                pass
+            for variable in self._next_variables:
+                pass
 
     def set_query(self, query: Variable):
         # Single variable 'query' of interest for computing P(query) or P(query|evidence)
-        self._query = self._variables[self._factorization.variables.index(query)]
+        self._query_variable = self._variables[self._factorization.variables.index(query)]
 
     def _initialize(self):
         # Run the algorithm until the running parameter is False
         self._running = True
-        # Cache the messages into the dictionary
-        # The leaf factor has only one variable
-        self._factor_variable_log_messages = {
-            (factor, factor.variables[0]):
-                {value: math.log(factor(value)) for value in factor.variables[0].domain}
-            for factor in Factorization.get_factor_leaves(self._factors)
-            }
-        # Count the number of incoming factor-variable messages to the variable
-        # The message key is a variable
-        self._factor_variable_messages_number = Counter(
-            map(lambda message_key: message_key[1], self._factor_variable_log_messages.keys())
-        )
-        # If only one factor-variable message is left, a message can be propagated from the variable
-        self._next_variables = (variable for variable in self._variables
-                                if len(variable.factors) - 1 == self._factor_variable_messages_number[variable])
-        # Cache the messages into the dictionary
-        # The leaf variable has only one factor
-        self._variable_factor_log_messages = {
-            (variable, variable.factors[0]):
-                {value: 0 for value in variable.domain}
-            for variable in Factorization.get_variable_leaves(self._variables) if variable is not self._query
-        }
-        # Count the number of incoming factor-variable messages to the variable
-        # The message key is a factor
-        self._variable_factor_messages_number = Counter(
-            map(lambda message_key: message_key[1], self._variable_factor_log_messages.keys())
-        )
-        # If only one variable-factor message is left, a message can be propagated from the factor
-        self._next_factors = (factor for factor in self._factors
-                              if len(factor.variables) - 1 == self._variable_factor_messages_number[factor])
-
-        # # To cache the log-messages into the dictionary
-        # self._log_messages = {}
-        # # Propagate the messages from the next factors
-        # self._next_factors = []
-        # # Propagate the messages from the next variables
-        # self._next_variables = []
-        # # Number of defined incoming factor-variable messages to the variable
-        # self._factor_variable_messages_number = {variable: 0 for variable in self._variables}
-        # # Number of defined incoming variable-factor messages to the factor
-        # self._variable_factor_messages_number = {factor: 0 for factor in self._factors}
-        # for factor in Factorization.get_factor_leaves(self._factors):
-        #     # The factor-leaf has only one variable
-        #     variable, = factor.variables
-        #     # Cache the messages into the dictionary
-        #     self._log_messages[(factor, variable)] = {value: math.log(factor(value)) for value in variable.domain}
-        #     # Increment the number of incoming factor-variable messages to the variable
-        #     self._factor_variable_messages_number[variable] += 1
-        #     # If only one factor-variable message is left, message passing is carried out from the variable
-        #     if len(variable.factors) - 1 == self._factor_variable_messages_number[variable]:
-        #         # Propagate a message from this variable to the next factor
-        #         self._next_variables.append(variable)
-        # for variable in Factorization.get_variable_leaves(self._variables):
-        #     # If the variable is the query itself, do not propagate
-        #     if variable is not self._query:
-        #         # The variable-leaf has only one factor
-        #         factor, = variable.factors
-        #         # Cache the messages into the dictionary
-        #         self._log_messages[(variable, factor)] = {value: 0 for value in variable.domain}
-        #         # Increment the number of incoming variable-factor messages to the factor
-        #         self._variable_factor_messages_number[factor] += 1
-        #         # If only one variable-factor message is left, message passing is carried out from the factor
-        #         if len(factor.variables) - 1 == self._variable_factor_messages_number[factor]:
-        #             # Propagate a message from this factor to the next variable
-        #             self._next_factors.append(factor)
+        self._factor_variable_log_messages = {}
+        self._variable_factor_log_messages = {}
+        self._next_factors = []
+        self._next_variables = []
+        for factor in self.factor_leaves:
+            # The leaf factor has only one variable
+            variable = factor.variables[0]
+            # Cache the log-message into the dictionary
+            self._factor_variable_log_messages[(factor, variable)] = \
+                {value: math.log(factor(value)) for value in variable.domain}
+            # Add the passed factor-neighbor to the variable
+            if hasattr(variable, 'passed_neighbors'):
+                variable.passed_neighbors.append(factor)
+            else:
+                variable.passed_neighbors = [factor]
+            # If all messages except one are collected,
+            # then a message can be propagated from the variable
+            if len(variable.passed_neighbors) + 1 == len(variable.factors):
+                self._next_variables.append(variable)
+        for variable in self.variable_leaves:
+            if variable is self._query_variable:
+                continue
+            # The leaf variable has only one factor
+            factor = variable.factors[0]
+            # Cache the log-message into the dictionary
+            self._variable_factor_log_messages[(variable, factor)] = {value: 0 for value in variable.domain}
+            # Add the passed variable-neighbor to the factor
+            if hasattr(factor, 'passed_neighbors'):
+                factor.passed_neighbors.append(variable)
+            else:
+                factor.passed_neighbors = [variable]
+            # If all messages except one are collected,
+            # then a message can be propagated from the factor
+            if len(factor.passed_neighbors) + 1 == len(factor.variables):
+                self._next_factors.append(factor)
