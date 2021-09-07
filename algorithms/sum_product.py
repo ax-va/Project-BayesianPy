@@ -32,10 +32,15 @@ class SumProduct(Factored):
     def _initialize(self):
         # Run the algorithm until the running parameter is False
         self._running = True
+        # Cache the log-messages into the dictionary
         self._factor_variable_log_messages = {}
+        # Cache the log-messages into the dictionary
         self._variable_factor_log_messages = {}
+        # The factors from which the message propagation goes further
         self._next_factors = []
+        # The variables from which the message propagation goes further
         self._next_variables = []
+        # Propagation from factor leaves
         for factor in self.factor_leaves:
             # The leaf factor has only one variable
             variable = factor.variables[0]
@@ -51,6 +56,7 @@ class SumProduct(Factored):
             # then a message can be propagated from the variable
             if len(variable.passed_neighbors) + 1 == len(variable.factors):
                 self._next_variables.append(variable)
+        # Propagation from variable leaves
         for variable in self.variable_leaves:
             if variable is self._query_variable:
                 continue
