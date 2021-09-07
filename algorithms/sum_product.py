@@ -7,24 +7,12 @@ from bayesian.modeling.variable import Variable
 
 class SumProduct:
     def __init__(self, factorization: Factorization):
-        # Save the factorization object that you can change the query and evidence later
+        # Save the factorization object
         self._factorization = factorization
         # Copy deeply the factors to encapsulate them inside the algorithm
         self._factors = copy.deepcopy(self._factorization.factors)
         # Copy deeply the variables to encapsulate them inside the algorithm
         self._variables = copy.deepcopy(self._factorization.variables)
-        # To cache the messages into the dictionary
-        self._log_messages = {}
-        # Run the algorithm until the running parameter is False
-        self._running = True
-        # Propagate the messages from the next factors
-        self._next_factors = []
-        # Propagate the messages from the next variables
-        self._next_variables = []
-        # Number of defined incoming factor-variable messages to the variable
-        self._factor_variable_messages_number = {variable: 0 for variable in self._variables}
-        # Number of defined incoming variable-factor messages to the factor
-        self._variable_factor_messages_number = {factor: 0 for factor in self._factors}
         # Query is not yet set
         self._query = None
         # Evidence is not given
@@ -44,7 +32,18 @@ class SumProduct:
         self._query = self._variables[self._factorization.variables.index(query)]
 
     def _initialize(self):
-        # Initialize the main loop
+        # To cache the log-messages into the dictionary
+        self._log_messages = {}
+        # Run the algorithm until the running parameter is False
+        self._running = True
+        # Propagate the messages from the next factors
+        self._next_factors = []
+        # Propagate the messages from the next variables
+        self._next_variables = []
+        # Number of defined incoming factor-variable messages to the variable
+        self._factor_variable_messages_number = {variable: 0 for variable in self._variables}
+        # Number of defined incoming variable-factor messages to the factor
+        self._variable_factor_messages_number = {factor: 0 for factor in self._factors}
         for factor in Factorization.get_factor_leaves(self._factors):
             # The factor-leaf has only one variable
             variable, = factor.variables
