@@ -26,7 +26,7 @@ class SumProduct(Factored):
                 pass
 
     def set_query(self, query: Variable):
-        # Single variable 'query' of interest for computing P(query) or P(query|evidence)
+        # Variable 'query' of interest for computing P(query) or P(query|evidence)
         self._query_variable = self._variables[self._factorization.variables.index(query)]
 
     def _initialize(self):
