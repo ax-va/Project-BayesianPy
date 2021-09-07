@@ -8,6 +8,10 @@ from bayesian.modeling.variable import Variable
 class SumProduct(Factored):
     def __init__(self, factorization: Factorization):
         Factored.__init__(self, factorization)
+        # Cache the log-messages into the dictionary
+        self._factor_variable_log_messages = {}
+        # Cache the log-messages into the dictionary
+        self._variable_factor_log_messages = {}
         # Query is not yet set
         self._query_variable = None
         # Evidence is not given
@@ -32,10 +36,6 @@ class SumProduct(Factored):
     def _initialize(self):
         # Run the algorithm until the running parameter is False
         self._running = True
-        # Cache the log-messages into the dictionary
-        self._factor_variable_log_messages = {}
-        # Cache the log-messages into the dictionary
-        self._variable_factor_log_messages = {}
         # The factors from which the message propagation goes further
         self._next_factors = []
         # The variables from which the message propagation goes further
