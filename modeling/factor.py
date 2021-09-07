@@ -33,5 +33,11 @@ if __name__ == '__main__':
     )
     print(f1(True, False, True))
 
+    from collections import Counter
+    l1 = [x, x, x, y, y, z, z, z, z]
+    l2 = map(lambda x: x, l1)
+    x = Counter(l2)
+    print(x)
+
 
 
