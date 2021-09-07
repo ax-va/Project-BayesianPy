@@ -36,7 +36,7 @@ class SumProduct:
         # Run the algorithm until the running parameter is False
         self._running = True
         # Cache the messages into the dictionary
-        # The factor has only one variable
+        # The leaf factor has only one variable
         self._factor_variable_log_messages = {
             (factor, factor.variables[0]):
                 {value: math.log(factor(value)) for value in factor.variables[0].domain}
@@ -51,7 +51,7 @@ class SumProduct:
         self._next_variables = (variable for variable in self._variables
                                 if len(variable.factors) - 1 == self._factor_variable_messages_number[variable])
         # Cache the messages into the dictionary
-        # The variable has only one factor
+        # The leaf variable has only one factor
         self._variable_factor_log_messages = {
             (variable, variable.factors[0]):
                 {value: 0 for value in variable.domain}
