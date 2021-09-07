@@ -62,7 +62,7 @@ class SumProduct:
         self._variable_factor_messages_number = Counter(
             map(lambda message_key: message_key[1], self._variable_factor_log_messages.keys())
         )
-        # If only one factor-variable message is left, a message can be propagated from the factor
+        # If only one variable-factor message is left, a message can be propagated from the factor
         self._next_factors = (factor for factor in self._factors
                               if len(factor.variables) - 1 == self._variable_factor_messages_number[factor])
 
