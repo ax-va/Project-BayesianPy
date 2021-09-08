@@ -32,3 +32,6 @@ if __name__ == '__main__':
         name='f1'
     )
     print(f1(True, False, True))
+
+    t = [(1, 2), (3, 4), (5, 6)]
+
