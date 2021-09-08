@@ -13,8 +13,8 @@ class SumProduct(Factored):
 
     Computes a marginal probability distribution P(Q) or a conditional
     probability distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e.
-    random variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e.
-    observed values of random variables.
+    a random variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e.
+    observed values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
     """
     def __init__(self, factorization: Factorization):
         Factored.__init__(self, factorization)
