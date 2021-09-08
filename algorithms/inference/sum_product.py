@@ -9,9 +9,9 @@ class SumProduct(Factored):
     """
     The Sum-Product Algorithm (also referred to as the Belief Propagation Algorithm)
     on factor graph trees for random variables with categorical probability
-    distributions.
+    distributions.  It belongs to Message Passing Algorithms.
 
-    The class computes a marginal probability distribution P(Q) or a conditional
+    Computes a marginal probability distribution P(Q) or a conditional
     probability distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e.
     random variable of interest, and E_1 = e_1, ..., E_k = e_k are an evidence, i.e.
     observed variables.
@@ -46,9 +46,9 @@ class SumProduct(Factored):
     def _initialize(self):
         # Run the algorithm until the running parameter is False
         self._running = True
-        # The factors from which the message propagation goes further
+        # The factors to which the message propagation goes further
         self._next_factors = []
-        # The variables from which the message propagation goes further
+        # The variables to which the message propagation goes further
         self._next_variables = []
         # Propagation from factor leaves
         self._initialize_over_factor_leaves()
@@ -69,7 +69,8 @@ class SumProduct(Factored):
             else:
                 variable.passed_neighbors = [factor]
             # If all messages except one are collected,
-            # then a message can be propagated from the variable
+            # then a message can be propagated from this variable
+            # to the next factor
             if len(variable.passed_neighbors) + 1 == len(variable.factors):
                 self._next_variables.append(variable)
 
@@ -87,6 +88,7 @@ class SumProduct(Factored):
             else:
                 factor.passed_neighbors = [variable]
             # If all messages except one are collected,
-            # then a message can be propagated from the factor
+            # then a message can be propagated from this factor
+            # to the next variable
             if len(factor.passed_neighbors) + 1 == len(factor.variables):
                 self._next_factors.append(factor)
