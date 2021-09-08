@@ -51,9 +51,12 @@ class SumProduct(Factored):
                     to_variable = from_variable
                     # The log-message from this variable to the only one non-passed factor
                     variable_to_factor_message = {
-                        value: math.fsum(message[value] for message in
-                                         (self._factor_to_variable_messages[(from_factor, to_variable)]
-                                          for from_factor in to_variable.passed_neighbors))
+                        value: math.fsum(
+                            message[value] for message in (
+                                self._factor_to_variable_messages[(from_factor, to_variable)]
+                                for from_factor in to_variable.passed_neighbors
+                            )
+                        )
                         for value in to_variable.domain
                     }
                     # The variable-to-factor message to the factor
