@@ -74,7 +74,7 @@ class SumProduct(Factored):
         if not self._factor_to_variable_messages.contains(from_factor, to_variable):
             # Get the incoming messages
             variable_to_factor_messages = (message for message in self._variable_to_factor_messages
-                                           if message.to_node == to_factor)
+                                           if message.to_node is to_factor and message.from_node is not to_variable)
             max_message = max(message(value) for message in variable_to_factor_messages
                               for value in message.from_node.domain)
             ...
@@ -95,7 +95,8 @@ class SumProduct(Factored):
             # Compute the message values
             # Only one non-passed factor
             values = {value: math.fsum(message(value) for message in self._factor_to_variable_messages
-                                       if message.to_node is to_variable) for value in to_variable.domain}
+                                       if message.to_node is to_variable and message.from_node is not to_factor)
+                      for value in to_variable.domain}
             # Cache the message
             self._variable_to_factor_messages.add(Message(from_variable, to_factor, values))
 
