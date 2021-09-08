@@ -11,7 +11,7 @@ class SumProduct(Factored):
     on factor graph trees for random variables with categorical probability
     distributions.
 
-    The algorithm returns a marginal probability distribution P(Q) or a conditional
+    The class computes a marginal probability distribution P(Q) or a conditional
     probability distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e.
     random variable of interest, and E_1 = e_1, ..., E_k = e_k are an evidence, i.e.
     observed variables.
@@ -60,8 +60,9 @@ class SumProduct(Factored):
             # The leaf factor has only one variable
             variable = factor.variables[0]
             # Cache the log-message into the dictionary
-            self._factor_variable_log_messages[(factor, variable)] = \
-                {value: math.log(factor(value)) for value in variable.domain}
+            self._factor_variable_log_messages[(factor, variable)] = {
+                value: math.log(factor(value)) for value in variable.domain
+            }
             # Add the passed factor-neighbor to the variable
             if hasattr(variable, 'passed_neighbors'):
                 variable.passed_neighbors.append(factor)
