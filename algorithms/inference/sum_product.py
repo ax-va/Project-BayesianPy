@@ -19,9 +19,9 @@ class SumProduct(Factored):
     def __init__(self, factorization: Factorization):
         Factored.__init__(self, factorization)
         # Cache the log-messages into the dictionary
-        self._factor_variable_log_messages = {}
+        self._factor_to_variable_messages = {}
         # Cache the log-messages into the dictionary
-        self._variable_factor_log_messages = {}
+        self._variable_to_factor_messages = {}
         # Query is not yet set
         self._query_variable = None
         # Evidence is not given
@@ -34,14 +34,52 @@ class SumProduct(Factored):
         self._initialize()
         # Running the main loop
         while self._running:
-            for factor in self._next_factors:
-                pass
-            for variable in self._next_variables:
-                pass
+            # Stop condition
+            if len(self._query_variable.passed_neighbors) == len(self._query_variable.factors):
+                # Compute either the marginal or conditional probability distribution
+                # ...
+                # Stop the loop
+                self._running = False
+            else:
+                # The factors to which the message propagation goes further
+                self._next_factors = []
+                # The variables to which the message propagation goes further
+                self._next_variables = []
+                for factor in self._next_factors:
+                    pass
+                for variable in self._next_variables:
+                    # The next log-message from this variable to the next factor
+                    next_variable_to_factor_message = {
+                        value: math.fsum(factor(value) for factor in variable.passed_neighbors)
+                        for value in variable.domain
+                    }
+                    next_factor, = (factor for factor in variable.factors if factor not in variable.passed_neighbors)
+                    # Cache the log-message into the dictionary
+                    self._variable_to_factor_messages[(variable, next_factor)] = next_variable_to_factor_message
+                    # Append the passed variable-neighbor to the next factor
+                    next_factor.passed_neighbors.append(variable)
+                    # If all messages except one are collected,
+                    # then a message can be propagated from the next factor
+                    # to the next variable
+                    self._append_to_next_factors(next_factor)
 
     def set_query(self, query: Variable):
         # Variable 'query' of interest for computing P(query) or P(query|evidence)
         self._query_variable = self._variables[self._factorization.variables.index(query)]
+
+    def _append_to_next_variables(self, variable):
+        # If all messages except one are collected,
+        # then a message can be propagated from this variable
+        # to the next factor
+        if len(variable.passed_neighbors) + 1 == len(variable.factors):
+            self._next_variables.append(variable)
+
+    def _append_to_next_factors(self, factor):
+        # If all messages except one are collected,
+        # then a message can be propagated from this factor
+        # to the next variable
+        if len(factor.passed_neighbors) + 1 == len(factor.variables):
+            self._next_factors.append(factor)
 
     def _initialize(self):
         # Run the algorithm until the running parameter is False
@@ -50,6 +88,8 @@ class SumProduct(Factored):
         self._next_factors = []
         # The variables to which the message propagation goes further
         self._next_variables = []
+        # Append leer passed neighbors to the factors and variables
+        self._initialize_passed_neighbors()
         # Propagation from factor leaves
         self._initialize_over_factor_leaves()
         # Propagation from variable leaves
@@ -60,19 +100,15 @@ class SumProduct(Factored):
             # The leaf factor has only one variable
             variable = factor.variables[0]
             # Cache the log-message into the dictionary
-            self._factor_variable_log_messages[(factor, variable)] = {
+            self._factor_to_variable_messages[(factor, variable)] = {
                 value: math.log(factor(value)) for value in variable.domain
             }
-            # Add the passed factor-neighbor to the variable
-            if hasattr(variable, 'passed_neighbors'):
-                variable.passed_neighbors.append(factor)
-            else:
-                variable.passed_neighbors = [factor]
+            # Append the passed factor-neighbor to the variable
+            variable.passed_neighbors.append(factor)
             # If all messages except one are collected,
             # then a message can be propagated from this variable
             # to the next factor
-            if len(variable.passed_neighbors) + 1 == len(variable.factors):
-                self._next_variables.append(variable)
+            self._append_to_next_variables(variable)
 
     def _initialize_over_variable_leaves(self):
         for variable in self.variable_leaves:
@@ -81,14 +117,17 @@ class SumProduct(Factored):
             # The leaf variable has only one factor
             factor = variable.factors[0]
             # Cache the log-message into the dictionary
-            self._variable_factor_log_messages[(variable, factor)] = {value: 0 for value in variable.domain}
-            # Add the passed variable-neighbor to the factor
-            if hasattr(factor, 'passed_neighbors'):
-                factor.passed_neighbors.append(variable)
-            else:
-                factor.passed_neighbors = [variable]
+            self._variable_to_factor_messages[(variable, factor)] = {value: 0 for value in variable.domain}
+            # Append the passed variable-neighbor to the factor
+            factor.passed_neighbors.append(variable)
             # If all messages except one are collected,
             # then a message can be propagated from this factor
             # to the next variable
-            if len(factor.passed_neighbors) + 1 == len(factor.variables):
-                self._next_factors.append(factor)
+            self._append_to_next_factors(factor)
+
+    def _initialize_passed_neighbors(self):
+        # Append leer passed neighbors to the factors and variables
+        for factor in self._factors:
+            factor.passed_neighbors = []
+        for variable in self._variables:
+            variable.passed_neighbors = []
