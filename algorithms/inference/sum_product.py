@@ -1,11 +1,21 @@
 import math
 
-from bayesian.algorithms.factored import Factored
-from bayesian.modeling.factorization import Factorization
-from bayesian.modeling.variable import Variable
+from bayesian.algorithms.inference.factored import Factored
+from bayesian.modeling.factor_graph.factorization import Factorization
+from bayesian.modeling.factor_graph.variable import Variable
 
 
 class SumProduct(Factored):
+    """
+    The Sum-Product Algorithm (also referred to as the Belief Propagation Algorithm)
+    on factor graph trees for random variables with categorical probability
+    distributions.
+
+    The algorithm returns a marginal probability distribution P(Q) or a conditional
+    probability distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e.
+    random variable of interest, and E_1 = e_1, ..., E_k = e_k are an evidence, i.e.
+    observed variables.
+    """
     def __init__(self, factorization: Factorization):
         Factored.__init__(self, factorization)
         # Cache the log-messages into the dictionary
@@ -41,6 +51,11 @@ class SumProduct(Factored):
         # The variables from which the message propagation goes further
         self._next_variables = []
         # Propagation from factor leaves
+        self._initialize_over_factor_leaves()
+        # Propagation from variable leaves
+        self._initialize_over_variable_leaves()
+
+    def _initialize_over_factor_leaves(self):
         for factor in self.factor_leaves:
             # The leaf factor has only one variable
             variable = factor.variables[0]
@@ -56,7 +71,8 @@ class SumProduct(Factored):
             # then a message can be propagated from the variable
             if len(variable.passed_neighbors) + 1 == len(variable.factors):
                 self._next_variables.append(variable)
-        # Propagation from variable leaves
+
+    def _initialize_over_variable_leaves(self):
         for variable in self.variable_leaves:
             if variable is self._query_variable:
                 continue

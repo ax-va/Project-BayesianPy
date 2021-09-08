@@ -1,6 +1,6 @@
 import copy
 
-from bayesian.modeling.factorization import Factorization
+from bayesian.modeling.factor_graph.factorization import Factorization
 
 
 class Factored:

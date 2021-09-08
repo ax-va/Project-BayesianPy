@@ -1,5 +1,5 @@
-from bayesian.modeling.node import Node
-from bayesian.modeling.variable import Variable
+from bayesian.modeling.factor_graph.node import Node
+from bayesian.modeling.factor_graph.variable import Variable
 
 
 class Factor(Node):

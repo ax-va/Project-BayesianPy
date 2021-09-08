@@ -1,4 +1,4 @@
-from bayesian.modeling.node import Node
+from bayesian.modeling.factor_graph.node import Node
 
 
 class Variable(Node):
