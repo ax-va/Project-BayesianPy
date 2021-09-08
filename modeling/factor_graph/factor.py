@@ -50,6 +50,10 @@ if __name__ == '__main__':
         def __iter__(self):
             return iter(self.data)
 
+        @staticmethod
+        def m():
+            print('hello')
+
     a = A()
     print(1 in a)
 
@@ -61,6 +65,7 @@ if __name__ == '__main__':
     I = iter(a)
     print(next(I))
     print(next(I))
+    a.m()
 
 
 

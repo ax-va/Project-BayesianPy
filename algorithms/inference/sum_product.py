@@ -31,6 +31,11 @@ class SumProduct(InferenceAlgorithm):
         # Evidence is not given
         self._evidence = None
 
+    @staticmethod
+    def _update_passing(from_node, to_node):
+        from_node.passed = True
+        to_node.incoming_messages_number += 1
+
     def run(self):
         # Startup
         # Set the evidence
@@ -105,15 +110,21 @@ class SumProduct(InferenceAlgorithm):
         # If all messages except one are collected,
         # then a message can be propagated from this variable
         # to the next factor
-        if len(variable.passed_neighbors) + 1 == len(variable.factors):
+        if variable.incoming_messages_number + 1 == len(variable.factors):
             self._next_variables.append(variable)
 
     def _extend_next_factors(self, factor):
         # If all messages except one are collected,
         # then a message can be propagated from this factor
         # to the next variable
-        if len(factor.passed_neighbors) + 1 == len(factor.variables):
+        if factor.incoming_messages_number + 1 == len(factor.variables):
             self._next_factors.append(factor)
+
+    def _initialize_factor_passing(self):
+        # There are no passed factors
+        for factor in self._factors:
+            factor.passed = False
+            factor.incoming_messages_number = 0
 
     def _initialize_loop(self):
         # Run the algorithm until the running parameter is False
@@ -122,21 +133,28 @@ class SumProduct(InferenceAlgorithm):
         self._next_factors = []
         # The variables to which the message propagation goes further
         self._next_variables = []
-        # There are no passed factors
-        self._set_factors_to_non_passed()
-        # There are no passed variables
-        self._set_variables_to_non_passed()
+        # There are no passed factors and no incoming messages
+        self._initialize_factor_passing()
+        # There are no passed variables and no incoming messages
+        self._initialize_variable_passing()
         # Propagation from factor leaves
         self._propagate_factor_to_variable_messages_from_leaves()
         # Propagation from variable leaves
         self._propagate_variable_to_factor_messages_from_leaves()
+
+    def _initialize_variable_passing(self):
+        # There are no passed variables
+        for variable in self._variables:
+            variable.passed = False
+            variable.incoming_messages_number = 0
 
     def _propagate_factor_to_variable_messages_from_leaves(self):
         for from_factor in self.factor_leaves:
             # The leaf factor has only one variable
             to_variable = from_factor.variables[0]
             self._compute_factor_to_variable_message_from_leaf(from_factor, to_variable)
-            from_factor.passed = True
+            # Update passed nodes und incoming messages number
+            self._update_passing(from_factor, to_variable)
             # If all messages except one are collected,
             # then a message can be propagated from this variable
             # to the next factor
@@ -148,7 +166,8 @@ class SumProduct(InferenceAlgorithm):
         # The factor-to-variable message to the only one variable that is non-passed
         to_variable, = (variable for variable in from_factor.variables if not variable.passed)
         self._compute_factor_to_variable_message_not_from_leaf(from_factor, to_variable)
-        from_factor.passed = True
+        # Update passed nodes und incoming messages number
+        self._update_passing(from_factor, to_variable)
         # If all messages except one are collected,
         # then a message can be propagated from the next factor
         # to the next variable
@@ -163,7 +182,8 @@ class SumProduct(InferenceAlgorithm):
             # The leaf variable has only one factor
             to_factor = from_variable.factors[0]
             self._compute_variable_to_factor_message_from_leaf(from_variable, to_factor)
-            from_variable.passed = True
+            # Update passed nodes und incoming messages number
+            self._update_passing(from_variable, to_factor)
             # If all messages except one are collected,
             # then a message can be propagated from this factor
             # to the next variable
@@ -173,18 +193,9 @@ class SumProduct(InferenceAlgorithm):
         # The variable-to-factor message to the only one factor that is non-passed
         to_factor, = (factor for factor in from_variable.factors if not factor.passed)
         self._compute_variable_to_factor_message_not_from_leaf(from_variable, to_factor)
-        from_variable.passed = True
+        # Update passed nodes und incoming messages number
+        self._update_passing(from_variable, to_factor)
         # If all messages except one are collected,
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_factors(to_factor)
-
-    def _set_factors_to_non_passed(self):
-        # There are no passed factors
-        for factor in self._factors:
-            factor.passed = False
-
-    def _set_variables_to_non_passed(self):
-        # There are no passed variables
-        for variable in self._variables:
-            variable.passed = False
