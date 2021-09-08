@@ -42,10 +42,11 @@ class SumProduct(Factored):
             else:
                 self._from_factors = self._next_factors
                 self._next_factors = []
-                for from_factor in self._from_factors:
-                    pass
                 self._from_variables = self._next_variables
                 self._next_variables = []
+                for from_factor in self._from_factors:
+                    pass
+
                 for from_variable in self._from_variables:
                     # Previous to_variable is current from_variable
                     to_variable = from_variable
