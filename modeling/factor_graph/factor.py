@@ -23,14 +23,44 @@ class Factor(Node):
 
 
 if __name__ == '__main__':
-    x = Variable(domain={False, True}, name='X')
-    y = Variable(domain={False, True}, name='Y')
-    z = Variable(domain={False, True}, name='Z')
+    x = Variable(domain=(False, True), name='X')
+    y = Variable(domain=(False, True), name='Y')
+    z = Variable(domain=(False, True), name='Z')
     f1 = Factor(
         variables=(x, y, z),
         function=lambda a, b, c: 0.5 if (a or b or c) else 0.1,
         name='f1'
     )
     print(f1(True, False, True))
+
+    t = [(1, 2), (3, 4), (5, 6)]
+    def f(entry):
+        if entry[1] >= 4:
+            return True
+        return False
+    print(list(filter(f, t)))
+
+    class A:
+        def __init__(self):
+            self.data = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
+
+        def __contains__(self, x):
+            return x == 1
+
+        def __iter__(self):
+            return iter(self.data)
+
+    a = A()
+    print(1 in a)
+
+    print([x for x in a])
+    print([x for x in a])
+    I = iter(a)
+    print(next(I))
+    print(next(I))
+    I = iter(a)
+    print(next(I))
+    print(next(I))
+
 
 
