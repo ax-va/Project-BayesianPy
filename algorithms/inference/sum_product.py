@@ -9,7 +9,7 @@ class SumProduct(Factored):
     """
     The Sum-Product Algorithm (also referred to as the Belief Propagation Algorithm)
     on factor graph trees for random variables with categorical probability
-    distributions.  It belongs to Message Passing Algorithms.
+    distributions.  This belongs to Message Passing Algorithms.
 
     Computes a marginal probability distribution P(Q) or a conditional
     probability distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e.
