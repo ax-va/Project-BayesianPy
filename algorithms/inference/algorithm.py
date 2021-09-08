@@ -3,7 +3,7 @@ import copy
 from bayesian.modeling.factor_graph.factorization import Factorization
 
 
-class Factored:
+class InferenceAlgorithm:
     def __init__(self, factorization: Factorization):
         # Save the factorization object
         self._factorization = factorization

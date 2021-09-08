@@ -1,12 +1,12 @@
 import math
 
-from bayesian.algorithms.inference.factored import Factored
+from bayesian.algorithms.inference.algorithm import InferenceAlgorithm
 from bayesian.algorithms.inference.messages import Message, Messages
 from bayesian.modeling.factor_graph.factorization import Factorization
 from bayesian.modeling.factor_graph.variable import Variable
 
 
-class SumProduct(Factored):
+class SumProduct(InferenceAlgorithm):
     """
     The Sum-Product Algorithm (also referred to as the Belief Propagation Algorithm)
     on factor graph trees for random variables with categorical probability
@@ -20,11 +20,11 @@ class SumProduct(Factored):
     Attention: only works on trees, only works with categorical factors.
     """
     def __init__(self, factorization: Factorization):
-        Factored.__init__(self, factorization)
+        InferenceAlgorithm.__init__(self, factorization)
         # To cache the messages
         self._factor_to_variable_messages = Messages()
         self._variable_to_factor_messages = Messages()
-        # Needed for the stop condition
+        # Necessary for the stop condition
         self._incoming_messages_to_query_variable = 0
         # Query is not yet set
         self._query_variable = None
@@ -35,7 +35,7 @@ class SumProduct(Factored):
         # Startup
         # Set the evidence
         # Can you get an immediate response to the query?
-        self._initialize()
+        self._initialize_loop()
         # Running the main loop
         while self._running:
             # Check the stop condition
@@ -57,6 +57,7 @@ class SumProduct(Factored):
 
     def set_query(self, query: Variable):
         # Variable 'query' of interest for computing P(query) or P(query|evidence)
+        # Make sure that the query variable is from the encapsulated sequence
         self._query_variable = self._variables[self._factorization.variables.index(query)]
 
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):
@@ -114,13 +115,17 @@ class SumProduct(Factored):
         if len(factor.passed_neighbors) + 1 == len(factor.variables):
             self._next_factors.append(factor)
 
-    def _initialize(self):
+    def _initialize_loop(self):
         # Run the algorithm until the running parameter is False
         self._running = True
         # The factors to which the message propagation goes further
         self._next_factors = []
         # The variables to which the message propagation goes further
         self._next_variables = []
+        # There are no passed factors
+        self._set_factors_to_non_passed()
+        # There are no passed variables
+        self._set_variables_to_non_passed()
         # Propagation from factor leaves
         self._propagate_factor_to_variable_messages_from_leaves()
         # Propagation from variable leaves
@@ -131,6 +136,7 @@ class SumProduct(Factored):
             # The leaf factor has only one variable
             to_variable = from_factor.variables[0]
             self._compute_factor_to_variable_message_from_leaf(from_factor, to_variable)
+            from_factor.passed = True
             # If all messages except one are collected,
             # then a message can be propagated from this variable
             # to the next factor
@@ -139,12 +145,10 @@ class SumProduct(Factored):
                 self._incoming_messages_to_query_variable += 1
 
     def _propagate_factor_to_variable_message_not_from_leaf(self, from_factor):
-        # The factor-to-variable message to the variable
-        to_variable, = (variable for variable in from_factor.variables
-                        if variable not in from_factor.passed_neighbors)
+        # The factor-to-variable message to the only one variable that is non-passed
+        to_variable, = (variable for variable in from_factor.variables if not variable.passed)
         self._compute_factor_to_variable_message_not_from_leaf(from_factor, to_variable)
-        # Append the passed factor-neighbor to the variable
-        to_variable.passed_neighbors.append(from_factor)
+        from_factor.passed = True
         # If all messages except one are collected,
         # then a message can be propagated from the next factor
         # to the next variable
@@ -159,19 +163,28 @@ class SumProduct(Factored):
             # The leaf variable has only one factor
             to_factor = from_variable.factors[0]
             self._compute_variable_to_factor_message_from_leaf(from_variable, to_factor)
+            from_variable.passed = True
             # If all messages except one are collected,
             # then a message can be propagated from this factor
             # to the next variable
             self._extend_next_factors(to_factor)
 
     def _propagate_variable_to_factor_message_not_from_leaf(self, from_variable):
-        # The variable-to-factor message to the factor
-        to_factor, = (factor for factor in from_variable.factors
-                      if factor not in from_variable.passed_neighbors)
+        # The variable-to-factor message to the only one factor that is non-passed
+        to_factor, = (factor for factor in from_variable.factors if not factor.passed)
         self._compute_variable_to_factor_message_not_from_leaf(from_variable, to_factor)
-        # Append the passed variable-neighbor to the factor
-        to_factor.passed_neighbors.append(from_variable)
+        from_variable.passed = True
         # If all messages except one are collected,
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_factors(to_factor)
+
+    def _set_factors_to_non_passed(self):
+        # There are no passed factors
+        for factor in self._factors:
+            factor.passed = False
+
+    def _set_variables_to_non_passed(self):
+        # There are no passed variables
+        for variable in self._variables:
+            variable.passed = False
