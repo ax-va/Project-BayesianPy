@@ -8,16 +8,16 @@ class Message:
         return self._values[value]
 
     @property
-    def values(self):
-        return self.values
-
-    @property
     def from_node(self):
         return self._from_node
 
     @property
     def to_node(self):
         return self._to_node
+
+    @property
+    def values(self):
+        return self.values
 
 
 class Messages:
