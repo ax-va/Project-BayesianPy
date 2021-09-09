@@ -42,7 +42,7 @@ class SumProduct(InferenceAlgorithm):
 
     @staticmethod
     def _resort_variable_to_factor_messages_by_factor_variables_ordering(extended_messages, factor):
-        # Resort extended variable-to-factor_messages according to the variable ordering in the factor
+        # Resort extended variable-to-factor messages according to the variable ordering in the factor
         return (message for variable in factor.variables for message in extended_messages
                 if variable is message.from_node)
 
@@ -108,7 +108,7 @@ class SumProduct(InferenceAlgorithm):
             # to to_variable and doesn't contribute to the sum of messages
             messages = SumProduct._extend_variable_to_factor_messages_by_zero_message(variable_to_factor_messages,
                                                                                       to_variable)
-            # Resort extended variable-to-factor_messages according to the variable ordering in the factor
+            # Resort extended variable-to-factor messages according to the variable ordering in the factor
             messages = SumProduct._resort_variable_to_factor_messages_by_factor_variables_ordering(messages, to_factor)
             ...
 
