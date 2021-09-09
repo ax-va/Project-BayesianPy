@@ -24,8 +24,6 @@ class SumProduct(InferenceAlgorithm):
         # To cache the messages
         self._factor_to_variable_messages = Messages()
         self._variable_to_factor_messages = Messages()
-        # Necessary for the stop condition
-        self._incoming_messages_to_query_variable = 0
         # Query is not yet set
         self._query_variable = None
         # Evidence is not given
@@ -44,7 +42,7 @@ class SumProduct(InferenceAlgorithm):
         # Running the main loop
         while self._running:
             # Check the stop condition
-            if self._incoming_messages_to_query_variable == len(self._query_variable.factors):
+            if self._query_variable.incoming_messages_number == len(self._query_variable.factors):
                 # Compute either the marginal or conditional probability distribution
                 ...
                 # Stop the loop
@@ -159,8 +157,6 @@ class SumProduct(InferenceAlgorithm):
             # then a message can be propagated from this variable
             # to the next factor
             self._extend_next_variables(to_variable)
-            if self._query_variable is to_variable:
-                self._incoming_messages_to_query_variable += 1
 
     def _propagate_factor_to_variable_message_not_from_leaf(self, from_factor):
         # The factor-to-variable message to the only one variable that is non-passed
@@ -172,8 +168,6 @@ class SumProduct(InferenceAlgorithm):
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_variables(to_variable)
-        if self._query_variable is to_variable:
-            self._incoming_messages_to_query_variable += 1
 
     def _propagate_variable_to_factor_messages_from_leaves(self):
         for from_variable in self.variable_leaves:
