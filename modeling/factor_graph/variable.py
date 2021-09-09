@@ -20,6 +20,10 @@ class Variable(Node):
         return self._linked_factors
 
     @property
+    def factors_number(self):
+        return len(self._linked_factors)
+
+    @property
     def name(self):
         return self._name
 

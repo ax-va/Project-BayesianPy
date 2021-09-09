@@ -11,6 +11,8 @@ class InferenceAlgorithm:
         self._factors = copy.deepcopy(self._factorization.factors)
         # Copy deeply the variables to encapsulate them inside the algorithm
         self._variables = copy.deepcopy(self._factorization.variables)
+        # Evidence is not given
+        self._evidence = None
 
     @property
     def factor_leaves(self):

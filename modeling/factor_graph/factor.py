@@ -17,16 +17,16 @@ class Factor(Node):
         return self._function(*values)
 
     @property
-    def variables_number(self):
-        return len(self._variables)
-
-    @property
     def is_leaf(self):
         return len(self._variables) == 1
 
     @property
     def variables(self):
         return self._variables
+
+    @property
+    def variables_number(self):
+        return len(self._variables)
 
     def evaluate_arguments(self, given_variables=None, given_values=None):
         if given_variables is not None or given_values is not None:

@@ -27,23 +27,42 @@ class SumProduct(InferenceAlgorithm):
         self._variable_to_factor_messages = Messages()
         # Query is not yet set
         self._query_variable = None
-        # Evidence is not given
-        self._evidence = None
+
+    @staticmethod
+    def _extend_variable_to_factor_messages_by_zero_message(propagated_messages, non_contributed_variable):
+        # Extend the propagated variable-to-factor messages by the zero message that corresponds
+        # to non_contributed_variable and doesn't contribute to the sum of messages.
+        # This is done in order to simplify the computation of a new message from a factor to a variable
+        # that is here a non-contributed variable.
+        SumProduct._zero_message.from_node = non_contributed_variable
+        return tuple(propagated_messages) + (SumProduct._zero_message,)
+
+    @staticmethod
+    def _resort_variable_to_factor_messages_by_factor_variables_ordering(extended_messages, factor):
+        # Resort extended variable-to-factor_messages according to the variable ordering in the factor
+        return (message for variable in factor.variables for message in extended_messages
+                if variable is message.from_node)
 
     @staticmethod
     def _update_passing(from_node, to_node):
         from_node.passed = True
         to_node.incoming_messages_number += 1
 
+    @staticmethod
+    def _zero_message(value):
+        return 0
+
     def run(self):
-        # Startup
-        # Set the evidence
-        # Can you get an immediate response to the query?
+        # Is the query set?
+        #
+        # Set the evidence if necessary
+        # ...
+        # Compute messages from leaves and make other initializations
         self._initialize_loop()
         # Running the main loop
         while True:
             # Check the stop condition
-            if self._query_variable.incoming_messages_number == len(self._query_variable.factors):
+            if self._query_variable.incoming_messages_number == self._query_variable.factors_number:
                 # Compute either the marginal or conditional probability distribution
                 ...
                 # Break the loop
@@ -59,8 +78,8 @@ class SumProduct(InferenceAlgorithm):
                     self._propagate_variable_to_factor_message_not_from_leaf(from_variable)
 
     def set_query(self, query: Variable):
-        # Variable 'query' of interest for computing P(query) or P(query|evidence)
-        # Make sure that the query variable is from the encapsulated sequence
+        # Variable 'query' of interest for computing P(query) or P(query|evidence).
+        # Make sure that the query variable is from the encapsulated sequence in this algorithm.
         self._query_variable = self._variables[self._factorization.variables.index(query)]
 
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):
@@ -79,8 +98,15 @@ class SumProduct(InferenceAlgorithm):
             # Get the incoming messages
             variable_to_factor_messages = (message for message in self._variable_to_factor_messages
                                            if message.to_node is to_factor and message.from_node is not to_variable)
+            # Used to reduce computational instability
             max_message = max(message(value) for message in variable_to_factor_messages
                               for value in message.from_node.domain)
+            # Extend the propagated variable-to-factor messages by the zero message that corresponds
+            # to to_variable and doesn't contribute to the sum of messages
+            messages = SumProduct._extend_variable_to_factor_messages_by_zero_message(variable_to_factor_messages,
+                                                                                      to_variable)
+            # Resort extended variable-to-factor_messages according to the variable ordering in the factor
+            messages = SumProduct._resort_variable_to_factor_messages_by_factor_variables_ordering(messages, to_factor)
             ...
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
@@ -108,14 +134,14 @@ class SumProduct(InferenceAlgorithm):
         # If all messages except one are collected,
         # then a message can be propagated from this variable
         # to the next factor
-        if variable.incoming_messages_number + 1 == len(variable.factors):
+        if variable.incoming_messages_number + 1 == variable.factors_number:
             self._next_variables.append(variable)
 
     def _extend_next_factors(self, factor):
         # If all messages except one are collected,
         # then a message can be propagated from this factor
         # to the next variable
-        if factor.incoming_messages_number + 1 == len(factor.variables):
+        if factor.incoming_messages_number + 1 == factor.variables_number:
             self._next_factors.append(factor)
 
     def _initialize_factor_passing(self):
