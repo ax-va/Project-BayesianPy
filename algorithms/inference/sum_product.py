@@ -40,13 +40,12 @@ class SumProduct(InferenceAlgorithm):
         # Can you get an immediate response to the query?
         self._initialize_loop()
         # Running the main loop
-        while self._running:
+        while True:
             # Check the stop condition
             if self._query_variable.incoming_messages_number == len(self._query_variable.factors):
                 # Compute either the marginal or conditional probability distribution
                 ...
-                # Stop the loop
-                self._running = False
+                # Break the loop
                 break
             else:
                 self._from_factors = self._next_factors
@@ -125,8 +124,6 @@ class SumProduct(InferenceAlgorithm):
             factor.incoming_messages_number = 0
 
     def _initialize_loop(self):
-        # Run the algorithm until the running parameter is False
-        self._running = True
         # The factors to which the message propagation goes further
         self._next_factors = []
         # The variables to which the message propagation goes further
