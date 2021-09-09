@@ -12,6 +12,10 @@ class Variable(Node):
         return self._domain
 
     @property
+    def domain_size(self):
+        return len(self._domain)
+
+    @property
     def factors(self):
         return self._linked_factors
 

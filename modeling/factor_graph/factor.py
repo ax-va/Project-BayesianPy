@@ -1,3 +1,6 @@
+import itertools
+import math
+
 from pyb4ml.modeling.factor_graph.node import Node
 from pyb4ml.modeling.factor_graph.variable import Variable
 
@@ -14,12 +17,28 @@ class Factor(Node):
         return self._function(*values)
 
     @property
+    def variables_number(self):
+        return len(self._variables)
+
+    @property
     def is_leaf(self):
         return len(self._variables) == 1
 
     @property
     def variables(self):
         return self._variables
+
+    def evaluate_arguments(self, given_variables=None, given_values=None):
+        if given_variables is not None or given_values is not None:
+            if len(given_variables) != len(given_values):
+                raise ValueError("Arguments 'given_variables' and 'given_values' are not of the same size")
+        common_domain = []
+        for index, variable in enumerate(self._variables):
+            if variable in given_variables:
+                common_domain.append((given_values[index],))
+            else:
+                common_domain.append(variable.domain)
+        return itertools.product(common_domain)
 
 
 if __name__ == '__main__':
@@ -32,40 +51,6 @@ if __name__ == '__main__':
         name='f1'
     )
     print(f1(True, False, True))
-
-    t = [(1, 2), (3, 4), (5, 6)]
-    def f(entry):
-        if entry[1] >= 4:
-            return True
-        return False
-    print(list(filter(f, t)))
-
-    class A:
-        def __init__(self):
-            self.data = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5}
-
-        def __contains__(self, x):
-            return x == 1
-
-        def __iter__(self):
-            return iter(self.data)
-
-        @staticmethod
-        def m():
-            print('hello')
-
-    a = A()
-    print(1 in a)
-
-    print([x for x in a])
-    print([x for x in a])
-    I = iter(a)
-    print(next(I))
-    print(next(I))
-    I = iter(a)
-    print(next(I))
-    print(next(I))
-    a.m()
 
 
 
