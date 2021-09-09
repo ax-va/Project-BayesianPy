@@ -17,7 +17,8 @@ class SumProduct(InferenceAlgorithm):
     a random variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e.
     observed values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
-    Attention: only works on trees, only works with categorical factors.
+    Attention: only works with categorical factors, only works on trees, loopy graphs
+    lead to dead lock.
     """
     def __init__(self, factorization: Factorization):
         InferenceAlgorithm.__init__(self, factorization)
