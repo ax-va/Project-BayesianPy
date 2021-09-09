@@ -18,7 +18,7 @@ class SumProduct(InferenceAlgorithm):
     observed values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
     Attention: only works with categorical factors, only works on trees, leads to dead 
-    lock on loopy trees.
+    lock on loopy graphs.
     """
     def __init__(self, factorization: Factorization):
         InferenceAlgorithm.__init__(self, factorization)
