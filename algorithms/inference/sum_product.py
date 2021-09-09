@@ -19,6 +19,9 @@ class SumProduct(InferenceAlgorithm):
 
     Attention: only works with categorical factors, only works on trees, leads to dead 
     lock on loopy graphs.
+    
+    Recommended: when modeling reduce the number of variables in factors to speed up 
+    the algorithm.
     """
     def __init__(self, factorization: Factorization):
         InferenceAlgorithm.__init__(self, factorization)
