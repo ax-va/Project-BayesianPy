@@ -12,16 +12,16 @@ class SumProduct(InferenceAlgorithm):
     on factor graph trees for random variables with categorical probability
     distributions.  That belongs to Message Passing and Variable Elimination Algorithms.
 
-    Computes a marginal probability distribution P(Q) or a conditional
-    probability distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e.
-    a random variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e.
-    observed values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
+    Computes a marginal probability distribution P(Q) or a conditional probability 
+    distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random 
+    variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e. observed 
+    values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
     Attention: only works with categorical factors, only works on trees, leads to dead 
     lock on loopy graphs.
     
-    Recommended: when modeling reduce the number of random variables in factors to speed
-    up the inference runtime.
+    Recommended: when modeling reduce the number of random variables in each factor to 
+    speed up the inference runtime.
     """
     def __init__(self, factorization: Factorization):
         InferenceAlgorithm.__init__(self, factorization)
