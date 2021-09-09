@@ -21,7 +21,7 @@ class SumProduct(InferenceAlgorithm):
     lock on loopy graphs.
     
     Recommended: when modeling reduce the number of random variables in factors to speed
-    up the algorithm.
+    up the inference runtime.
     """
     def __init__(self, factorization: Factorization):
         InferenceAlgorithm.__init__(self, factorization)
