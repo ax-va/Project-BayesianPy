@@ -1,9 +1,9 @@
 import math
 
-from bayesian.algorithms.inference.algorithm import InferenceAlgorithm
-from bayesian.algorithms.inference.messages import Message, Messages
-from bayesian.modeling.factor_graph.factorization import Factorization
-from bayesian.modeling.factor_graph.variable import Variable
+from pyb4ml.algorithms.inference.algorithm import InferenceAlgorithm
+from pyb4ml.algorithms.inference.messages import Message, Messages
+from pyb4ml.modeling.factor_graph.factorization import Factorization
+from pyb4ml.modeling.factor_graph.variable import Variable
 
 
 class SumProduct(InferenceAlgorithm):

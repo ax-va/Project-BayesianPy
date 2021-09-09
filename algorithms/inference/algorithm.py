@@ -1,6 +1,6 @@
 import copy
 
-from bayesian.modeling.factor_graph.factorization import Factorization
+from pyb4ml.modeling.factor_graph.factorization import Factorization
 
 
 class InferenceAlgorithm:
