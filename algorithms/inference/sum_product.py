@@ -132,6 +132,14 @@ class SumProduct(InferenceAlgorithm):
             # Cache the message
             self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
 
+    def _compute_probability_distribution(self):
+        # Get messages to the query
+        factor_to_query_messages = self._factor_to_variable_messages.get_from_nodes_to_node(
+            from_nodes=self._query_variable.factors,
+            to_node=self._query_variable
+        )
+        ...
+
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
         if not self._variable_to_factor_messages.contains(from_variable, to_factor):
@@ -243,12 +251,3 @@ class SumProduct(InferenceAlgorithm):
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_factors(to_factor)
-
-    def _propagate_factor_to_query_variable_messages(self):
-        # Get messages to the query
-        factor_to_query_messages = self._factor_to_variable_messages.get_from_nodes_to_node(
-            from_nodes=self._query_variable.factors,
-            to_node=self._query_variable
-        )
-        self._compute_probability_distribution(factor_to_query_messages)
-        ...
