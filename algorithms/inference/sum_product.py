@@ -9,7 +9,7 @@ from pyb4ml.modeling.factor_graph.factorization import Factorization
 class SumProduct(InferenceAlgorithm):
     """
     The Sum-Product Algorithm (also referred to as the Belief Propagation Algorithm)
-    on factor graph trees for random variables with categorical probability
+    works on factor graph trees for random variables with categorical probability
     distributions.  That belongs to Message Passing and Variable Elimination Algorithms.
     Here, the factor-to-variable and variable-to-factor messages are propagated from the
     leaves along the tree to the query-variable.  That can be considered as eliminating 
