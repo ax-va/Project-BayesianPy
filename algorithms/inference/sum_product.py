@@ -78,6 +78,7 @@ class SumProduct(InferenceAlgorithm):
             if self._query.incoming_messages_number == self._query.factors_number:
                 # Compute either the marginal or conditional probability distribution
                 self._compute_distribution()
+                print('The algorithm is stopped')
                 # Break the loop
                 break
             else:
