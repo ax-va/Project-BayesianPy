@@ -12,7 +12,7 @@ class SumProduct(InferenceAlgorithm):
     works on factor graph trees for random variables with categorical probability
     distributions.  That belongs to Message Passing and Variable Elimination Algorithms.
     Here, the factor-to-variable and variable-to-factor messages are propagated from the
-    leaves across the tree to the query-variable.  That can be considered as the successive 
+    leaves across the tree to the query variable.  That can be considered as the successive 
     elimination of the factors and variables in the factor graph.  Instead of the messages, 
     the implementation uses logarithms of them for computational stability.  See, for
     example, "Bayesian Reasoning and Machine Learning" by David Barber, 2012, for more
