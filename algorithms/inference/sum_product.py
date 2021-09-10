@@ -11,7 +11,7 @@ class SumProduct(InferenceAlgorithm):
     The Sum-Product Algorithm (also referred to as the Belief Propagation Algorithm)
     on factor graph trees for random variables with categorical probability
     distributions.  That belongs to Message Passing and Variable Elimination Algorithms.
-    Here, the factor-to-variable and variable-to-factor messages are propagated from
+    Here, the factor-to-variable and variable-to-factor messages are propagated from the
     leaves along the tree to the query-variable.  That can be considered as eliminating 
     the factors and variables in the factor graph.  See, for example, "Bayesian Reasoning
     and Machine Learning" by David Barber, 2012, for more details.
