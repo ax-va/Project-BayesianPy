@@ -92,7 +92,7 @@ class SumProduct(InferenceAlgorithm):
             # Compute the message values
             values = {value: math.log(from_factor(value)) for value in to_variable.domain}
             # Cache the message
-            self._factor_to_variable_messages.add(Message(from_factor, to_variable, values))
+            self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
 
     def _compute_factor_to_variable_message_not_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
@@ -130,7 +130,7 @@ class SumProduct(InferenceAlgorithm):
                           )
                       ) for value in to_variable.domain}
             # Cache the message
-            self._factor_to_variable_messages.add(Message(from_factor, to_variable, values))
+            self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
@@ -138,7 +138,7 @@ class SumProduct(InferenceAlgorithm):
             # Compute the message values
             values = {value: 0 for value in from_variable.domain}
             # Cache the message
-            self._variable_to_factor_messages.add(Message(from_variable, to_factor, values))
+            self._variable_to_factor_messages.cache(Message(from_variable, to_factor, values))
 
     def _compute_variable_to_factor_message_not_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
@@ -154,7 +154,7 @@ class SumProduct(InferenceAlgorithm):
                                     )
                                 ) for value in from_variable.domain}
             # Cache the message
-            self._variable_to_factor_messages.add(Message(from_variable, to_factor, values))
+            self._variable_to_factor_messages.cache(Message(from_variable, to_factor, values))
 
     def _extend_next_variables(self, variable):
         # If all messages except one are collected,

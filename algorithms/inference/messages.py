@@ -34,7 +34,7 @@ class Messages:
     def __iter__(self):
         return iter(self._messages)
 
-    def add(self, message):
+    def cache(self, message):
         self._messages[(message.from_node, message.to_node)] = message
 
     def contains(self, from_node, to_node):
