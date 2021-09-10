@@ -249,5 +249,5 @@ class SumProduct(InferenceAlgorithm):
             from_nodes=self._query_variable.factors,
             to_node=self._query_variable
         )
-        self._compute_propability_distribution(factor_to_query_messages)
+        self._compute_probability_distribution(factor_to_query_messages)
         ...
