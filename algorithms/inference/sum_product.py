@@ -23,9 +23,9 @@ class SumProduct(InferenceAlgorithm):
     variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e. observed 
     values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
-    Attention: only works with categorical factors, only works on trees, leads to dead 
+    Restrictions: only works with categorical factors, only works on trees, leads to dead 
     lock on loopy graphs.  The leaf factors must be strictly positive because of the use 
-    of logarithms of them. The non-leaf factors must be non-negative with at least one
+    of logarithms of them.  The non-leaf factors must be non-negative with at least one
     positive value.
     
     Recommended: when modeling, reduce the number of random variables in each factor to 
