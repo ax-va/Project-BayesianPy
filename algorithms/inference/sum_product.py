@@ -95,22 +95,24 @@ class SumProduct(InferenceAlgorithm):
             self._factor_to_variable_messages.add(Message(from_factor, to_variable, values))
 
     def _compute_factor_to_variable_message_not_from_leaf(self, from_factor, to_variable):
-        # from_factor was previously to_factor
-        to_factor = from_factor
         # Compute the message if necessary
         if not self._factor_to_variable_messages.contains(from_factor, to_variable):
-            # Get the incoming messages
-            variable_to_factor_messages = (message for message in self._variable_to_factor_messages
-                                           if message.to_node is to_factor and message.from_node is not to_variable)
+            # Get the incoming messages not from to_variable to from_factor
+            # from_factor was previously to_factor
+            variable_to_factor_messages = self._variable_to_factor_messages.get_not_from_node_to_node(
+                    not_from_node=to_variable,
+                    to_node=from_factor
+            )
             # Used to reduce computational instability
             max_message = max(message(value) for message in variable_to_factor_messages
                               for value in message.from_node.domain)
             # Extend the propagated variable-to-factor messages by the zero message that corresponds
             # to to_variable and doesn't contribute to the sum of messages
-            messages = SumProduct._extend_variable_to_factor_messages_by_zero_message(variable_to_factor_messages,
-                                                                                      to_variable)
+            messages = \
+                SumProduct._extend_variable_to_factor_messages_by_zero_message(variable_to_factor_messages, to_variable)
             # Resort extended variable-to-factor messages according to the variable ordering in the factor
-            messages = SumProduct._resort_variable_to_factor_messages_by_factor_variables_ordering(messages, to_factor)
+            messages = \
+                SumProduct._resort_variable_to_factor_messages_by_factor_variables_ordering(messages, from_factor)
             # Compute the message values
             values = {value:
                       max_message
@@ -145,6 +147,10 @@ class SumProduct(InferenceAlgorithm):
         if not self._variable_to_factor_messages.contains(from_variable, to_factor):
             # Compute the message values
             # Only one non-passed factor
+            values = {value: math.fsum(message(value) for message in self._factor_to_variable_messages
+                                       if message.to_node is to_variable and message.from_node is not to_factor)
+                      for value in to_variable.domain}
+
             values = {value: math.fsum(message(value) for message in self._factor_to_variable_messages
                                        if message.to_node is to_variable and message.from_node is not to_factor)
                       for value in to_variable.domain}
@@ -238,3 +244,10 @@ class SumProduct(InferenceAlgorithm):
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_factors(to_factor)
+
+    def _propagate_factor_to_variable_messages_to_query_variable(self):
+        from_factors = self._query_variable.factors
+        factor_to_query_messages = (message for message in self._factor_to_variable_messages
+                                    if message.from_node in from_factors and message.to_node is self._query_variable)
+        self._compute_propability(factor_to_query_messages)
+        ...
