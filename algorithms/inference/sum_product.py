@@ -121,7 +121,7 @@ class SumProduct(InferenceAlgorithm):
                               from_factor(eval_values)
                               * math.exp(
                                   math.fsum(
-                                      mg(vl) for mg, vl in zip(messages, eval_values)
+                                      msg(vls) for msg, vls in zip(messages, eval_values)
                                   ) - max_message
                               )
                               for eval_values in from_factor.evaluate_arguments(
