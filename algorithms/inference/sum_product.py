@@ -124,7 +124,7 @@ class SumProduct(InferenceAlgorithm):
                                       msg(vls) for msg, vls in zip(messages, eval_values)
                                   ) - max_message
                               )
-                              for eval_values in from_factor.evaluate_arguments(
+                              for eval_values in from_factor.evaluate_arguments_excluding_given(
                                   given_variables=(to_variable,),
                                   given_values=(value,))
                           )

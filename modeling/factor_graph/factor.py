@@ -28,10 +28,10 @@ class Factor(Node):
     def variables_number(self):
         return len(self._variables)
 
-    def evaluate_arguments(self, given_variables=None, given_values=None):
+    def evaluate_arguments_excluding_given(self, given_variables=None, given_values=None):
         if given_variables is not None or given_values is not None:
             if len(given_variables) != len(given_values):
-                raise ValueError("Arguments 'given_variables' and 'given_values' are not of the same size")
+                raise ValueError("Arguments 'with_given_variables' and 'with_given_values' are not of the same size")
         common_domain = []
         for index, variable in enumerate(self._variables):
             if variable in given_variables:
