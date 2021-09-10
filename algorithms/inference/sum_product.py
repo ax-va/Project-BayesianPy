@@ -128,7 +128,7 @@ class SumProduct(InferenceAlgorithm):
                       ) for value in to_variable.domain
                       }
             # Cache the message
-            self._variable_to_factor_messages.add(Message(from_factor, to_variable, values))
+            self._factor_to_variable_messages.add(Message(from_factor, to_variable, values))
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
