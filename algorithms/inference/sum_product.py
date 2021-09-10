@@ -1,4 +1,5 @@
 import math
+import itertools
 
 from pyb4ml.algorithms.inference.algorithm import InferenceAlgorithm
 from pyb4ml.algorithms.inference.messages import Message, Messages
@@ -29,8 +30,16 @@ class SumProduct(InferenceAlgorithm):
         # To cache the messages
         self._factor_to_variable_messages = Messages()
         self._variable_to_factor_messages = Messages()
-        # Query is not yet set
-        self._query_variable = None
+
+    @staticmethod
+    def _evaluate_variables(factor, fixed_variables=None, fixed_values=None):
+        common_domain = []
+        for index, variable in enumerate(factor.variables):
+            if variable in fixed_variables:
+                common_domain.append((fixed_values[index],))
+            else:
+                common_domain.append(variable.domain)
+        return itertools.product(common_domain)
 
     @staticmethod
     def _extend_variable_to_factor_messages_by_zero_message(propagated_messages, non_contributed_variable):
@@ -58,7 +67,8 @@ class SumProduct(InferenceAlgorithm):
 
     def run(self):
         # Is the query set?
-        #
+        if self._query is None:
+            raise AttributeError('The query was not specified')
         # Set the evidence if necessary
         # ...
         # Compute messages from leaves and make other initializations
@@ -66,9 +76,9 @@ class SumProduct(InferenceAlgorithm):
         # Running the main loop
         while True:
             # Check the stop condition
-            if self._query_variable.incoming_messages_number == self._query_variable.factors_number:
+            if self._query.incoming_messages_number == self._query.factors_number:
                 # Compute either the marginal or conditional probability distribution
-                ...
+                self._compute_distribution()
                 # Break the loop
                 break
             else:
@@ -81,10 +91,19 @@ class SumProduct(InferenceAlgorithm):
                 for from_variable in self._from_variables:
                     self._propagate_variable_to_factor_message_not_from_leaf(from_variable)
 
-    def set_query(self, query: Variable):
-        # Variable 'query' of interest for computing P(query) or P(query|evidence).
-        # Make sure that the query variable is from the encapsulated sequence in this algorithm.
-        self._query_variable = self._variables[self._factorization.variables.index(query)]
+    def get_p(self):
+        """
+        Returns P(Q) or if the evidence was given then P(Q|E_1 = e_1, ..., E_k = e_k)
+        as a function of q, where q is in the domain of random variable Q
+        """
+        if self._distribution is not None:
+            def distribution(value):
+                if value not in self._query.domain:
+                    raise ValueError(f'The value {value!r} is not in the domain {self._query.domain}')
+                return self._distribution[value]
+            return distribution
+        else:
+            raise AttributeError('The distribution is not computed')
 
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
@@ -124,7 +143,8 @@ class SumProduct(InferenceAlgorithm):
                                       msg(vls) for msg, vls in zip(messages, eval_values)
                                   ) - max_message
                               )
-                              for eval_values in from_factor.evaluate_variables(
+                              for eval_values in SumProduct._evaluate_variables(
+                                  factor=from_factor,
                                   fixed_variables=(to_variable,),
                                   fixed_values=(value,))
                           )
@@ -132,13 +152,22 @@ class SumProduct(InferenceAlgorithm):
             # Cache the message
             self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
 
-    def _compute_probability_distribution(self):
-        # Get messages to the query
+    def _compute_distribution(self):
+        # Get the incoming messages to the query
         factor_to_query_messages = self._factor_to_variable_messages.get_from_nodes_to_node(
-            from_nodes=self._query_variable.factors,
-            to_node=self._query_variable
+            from_nodes=self._query.factors,
+            to_node=self._query
         )
-        ...
+        # Values of the sum of the incoming messages
+        nn_values = {value:
+            math.exp(
+                math.fsum(message(value) for message in factor_to_query_messages)
+            ) for value in self._query.domain}
+        # The probability distribution must be normalized
+        norm_const = math.fsum(nn_values[value] for value in self._query.domain)
+        # Compute the probability distribution
+        self._distribution = {value: nn_values[value] / norm_const for value in self._query.domain}
+        self._query.passed = True
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
@@ -229,7 +258,7 @@ class SumProduct(InferenceAlgorithm):
 
     def _propagate_variable_to_factor_messages_from_leaves(self):
         for from_variable in self.variable_leaves:
-            if from_variable is self._query_variable:
+            if from_variable is self._query:
                 continue
             # The leaf variable has only one factor
             to_factor = from_variable.factors[0]
