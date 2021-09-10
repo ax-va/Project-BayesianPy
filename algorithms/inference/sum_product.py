@@ -23,6 +23,7 @@ class SumProduct(InferenceAlgorithm):
     Recommended: when modeling reduce the number of random variables in each factor to 
     speed up the inference runtime.
     """
+
     def __init__(self, factorization: Factorization):
         InferenceAlgorithm.__init__(self, factorization)
         # To cache the messages
@@ -110,7 +111,24 @@ class SumProduct(InferenceAlgorithm):
                                                                                       to_variable)
             # Resort extended variable-to-factor messages according to the variable ordering in the factor
             messages = SumProduct._resort_variable_to_factor_messages_by_factor_variables_ordering(messages, to_factor)
-            ...
+            # Compute the message values
+            values = {value:
+                      max_message
+                      + math.log(
+                          math.fsum(
+                              from_factor(eval_values)
+                              * math.exp(
+                                  math.fsum(
+                                      mg(vl) for mg, vl in zip(messages, eval_values)
+                                  ) - max_message
+                              )
+                              for eval_values
+                              in from_factor.evaluate_arguments_with_fixed_variables((to_variable,), (value,))
+                          )
+                      ) for value in to_variable.domain
+                      }
+            # Cache the message
+            self._variable_to_factor_messages.add(Message(from_factor, to_variable, values))
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary

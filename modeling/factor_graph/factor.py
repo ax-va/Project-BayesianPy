@@ -28,7 +28,7 @@ class Factor(Node):
     def variables_number(self):
         return len(self._variables)
 
-    def evaluate_arguments(self, given_variables=None, given_values=None):
+    def evaluate_arguments_with_fixed_variables(self, given_variables=None, given_values=None):
         if given_variables is not None or given_values is not None:
             if len(given_variables) != len(given_values):
                 raise ValueError("Arguments 'given_variables' and 'given_values' are not of the same size")
