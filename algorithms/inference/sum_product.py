@@ -74,11 +74,11 @@ class SumProduct(InferenceAlgorithm):
         if self._distribution is not None:
             def distribution(value):
                 if value not in self._query.domain:
-                    raise ValueError(f'The value {value!r} is not in the domain {self._query.domain}')
+                    raise ValueError(f'the value {value!r} is not in the domain {self._query.domain}')
                 return self._distribution[value]
             return distribution
         else:
-            raise AttributeError('The distribution is not computed')
+            raise AttributeError('distribution not computed')
 
     def run(self, print_messages=False):
         # Whether to print propagating messages
@@ -91,7 +91,7 @@ class SumProduct(InferenceAlgorithm):
             if self._query.incoming_messages_number == self._query.factors_number:
                 # Compute either the marginal or conditional probability distribution
                 self._compute_distribution()
-                print('The algorithm is stopped')
+                print('algorithm stopped')
                 # Break the loop
                 break
             else:
@@ -215,7 +215,7 @@ class SumProduct(InferenceAlgorithm):
     def _initialize_loop(self):
         # Is the query set?
         if self._query is None:
-            raise AttributeError('The query was not specified')
+            raise AttributeError('query not specified')
         # Set the evidence if necessary
         # ...
         # The factors to which the message propagation goes further
@@ -296,4 +296,4 @@ class SumProduct(InferenceAlgorithm):
     def _print_message(self, from_node, to_node):
         # Print the message if necessary
         if self._print_messages:
-            print(f'Message ({from_node} -> {to_node}) propagated')
+            print(f'message ({from_node} -> {to_node}) propagated')
