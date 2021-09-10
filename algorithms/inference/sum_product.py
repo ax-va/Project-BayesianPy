@@ -243,7 +243,7 @@ class SumProduct(InferenceAlgorithm):
         # to the next variable
         self._extend_next_factors(to_factor)
 
-    def _propagate_factor_to_variable_messages_to_query_variable(self):
+    def _propagate_factor_to_query_variable_messages(self):
         # Get messages to the query
         factor_to_query_messages = self._factor_to_variable_messages.get_from_nodes_to_node(
             from_nodes=self._query_variable.factors,
