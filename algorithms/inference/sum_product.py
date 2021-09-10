@@ -25,7 +25,7 @@ class SumProduct(InferenceAlgorithm):
 
     Attention: only works with categorical factors, only works on trees, leads to dead 
     lock on loopy graphs.  The leaf factors must be strongly positive because of the use 
-    of logarithms of them. The non-leaf factors must be non-negatve with at least one
+    of logarithms of them. The non-leaf factors must be non-negative with at least one
     positive value.
     
     Recommended: when modeling, reduce the number of random variables in each factor to 
