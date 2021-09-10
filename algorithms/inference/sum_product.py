@@ -24,9 +24,8 @@ class SumProduct(InferenceAlgorithm):
     values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
     Restrictions: only works with categorical factors, only works on trees, leads to dead 
-    lock on loopy graphs.  The leaf factors must be strictly positive because of the use 
-    of logarithms of them.  The non-leaf factors must be non-negative with at least one
-    positive value.
+    lock on loopy graphs.  The factors must have strictly positive values because of the
+    use of logarithms of them.
     
     Recommended: when modeling, reduce the number of random variables in each factor to 
     speed up the inference runtime.
