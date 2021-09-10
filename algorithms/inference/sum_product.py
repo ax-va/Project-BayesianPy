@@ -73,7 +73,7 @@ class SumProduct(InferenceAlgorithm):
 
     def get_pd(self):
         """
-        Returns P(Q) or if an evidence was given then P(Q|E_1 = e_1, ..., E_k = e_k)
+        Returns P(Q) or if an evidence is set then P(Q|E_1 = e_1, ..., E_k = e_k)
         as a function of q, where q is in the domain of random variable Q
         """
         if self._distribution is not None:
