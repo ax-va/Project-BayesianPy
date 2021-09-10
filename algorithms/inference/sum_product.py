@@ -14,8 +14,8 @@ class SumProduct(InferenceAlgorithm):
     Here, the factor-to-variable and variable-to-factor messages are propagated from the
     leaves along the tree to the query-variable.  That can be considered as eliminating 
     the factors and variables in the factor graph.  Instead of the messages, the 
-    implementation uses logarithms of the messages.  See, for example, "Bayesian 
-    Reasoning and Machine Learning" by David Barber, 2012, for more details.
+    implementation uses logarithms of them.  See, for example, "Bayesian Reasoning and 
+    Machine Learning" by David Barber, 2012, for more details.
 
     Computes a marginal probability distribution P(Q) or a conditional probability 
     distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random 
