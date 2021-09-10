@@ -124,8 +124,9 @@ class SumProduct(InferenceAlgorithm):
                                       mg(vl) for mg, vl in zip(messages, eval_values)
                                   ) - max_message
                               )
-                              for eval_values
-                              in from_factor.evaluate_arguments_with_fixed_variables((to_variable,), (value,))
+                              for eval_values in from_factor.evaluate_arguments(
+                                  given_variables=(to_variable,),
+                                  given_values=(value,))
                           )
                       ) for value in to_variable.domain}
             # Cache the message
