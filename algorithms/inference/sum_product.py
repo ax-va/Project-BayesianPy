@@ -66,14 +66,23 @@ class SumProduct(InferenceAlgorithm):
     def _zero_message(value):
         return 0
 
+    def get_pd(self):
+        """
+        Returns P(Q) or if an evidence was given then P(Q|E_1 = e_1, ..., E_k = e_k)
+        as a function of q, where q is in the domain of random variable Q
+        """
+        if self._distribution is not None:
+            def distribution(value):
+                if value not in self._query.domain:
+                    raise ValueError(f'The value {value!r} is not in the domain {self._query.domain}')
+                return self._distribution[value]
+            return distribution
+        else:
+            raise AttributeError('The distribution is not computed')
+
     def run(self, print_messages=False):
-        # Is the query set?
-        if self._query is None:
-            raise AttributeError('The query was not specified')
         # Whether to print propagating messages
         self._print_messages = print_messages
-        # Set the evidence if necessary
-        # ...
         # Compute messages from leaves and make other initializations
         self._initialize_loop()
         # Running the main loop
@@ -94,20 +103,6 @@ class SumProduct(InferenceAlgorithm):
                     self._propagate_factor_to_variable_message_not_from_leaf(from_factor)
                 for from_variable in self._from_variables:
                     self._propagate_variable_to_factor_message_not_from_leaf(from_variable)
-
-    def get_p(self):
-        """
-        Returns P(Q) or if an evidence was given then P(Q|E_1 = e_1, ..., E_k = e_k)
-        as a function of q, where q is in the domain of random variable Q
-        """
-        if self._distribution is not None:
-            def distribution(value):
-                if value not in self._query.domain:
-                    raise ValueError(f'The value {value!r} is not in the domain {self._query.domain}')
-                return self._distribution[value]
-            return distribution
-        else:
-            raise AttributeError('The distribution is not computed')
 
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
@@ -218,6 +213,11 @@ class SumProduct(InferenceAlgorithm):
             factor.incoming_messages_number = 0
 
     def _initialize_loop(self):
+        # Is the query set?
+        if self._query is None:
+            raise AttributeError('The query was not specified')
+        # Set the evidence if necessary
+        # ...
         # The factors to which the message propagation goes further
         self._next_factors = []
         # The variables to which the message propagation goes further
