@@ -4,7 +4,6 @@ import itertools
 from pyb4ml.algorithms.inference.algorithm import InferenceAlgorithm
 from pyb4ml.algorithms.inference.messages import Message, Messages
 from pyb4ml.modeling.factor_graph.factorization import Factorization
-from pyb4ml.modeling.factor_graph.variable import Variable
 
 
 class SumProduct(InferenceAlgorithm):
@@ -93,7 +92,7 @@ class SumProduct(InferenceAlgorithm):
 
     def get_p(self):
         """
-        Returns P(Q) or if the evidence was given then P(Q|E_1 = e_1, ..., E_k = e_k)
+        Returns P(Q) or if an evidence was given then P(Q|E_1 = e_1, ..., E_k = e_k)
         as a function of q, where q is in the domain of random variable Q
         """
         if self._distribution is not None:
