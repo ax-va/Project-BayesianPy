@@ -29,6 +29,8 @@ class SumProduct(InferenceAlgorithm):
         # To cache the messages
         self._factor_to_variable_messages = Messages()
         self._variable_to_factor_messages = Messages()
+        # Whether to print propagating messages
+        self._print_messages = False
 
     @staticmethod
     def _evaluate_variables(factor, fixed_variables=None, fixed_values=None):
@@ -64,10 +66,12 @@ class SumProduct(InferenceAlgorithm):
     def _zero_message(value):
         return 0
 
-    def run(self):
+    def run(self, print_messages=False):
         # Is the query set?
         if self._query is None:
             raise AttributeError('The query was not specified')
+        # Whether to print propagating messages
+        self._print_messages = print_messages
         # Set the evidence if necessary
         # ...
         # Compute messages from leaves and make other initializations
@@ -244,6 +248,8 @@ class SumProduct(InferenceAlgorithm):
             # then a message can be propagated from this variable
             # to the next factor
             self._extend_next_variables(to_variable)
+            # Print the message if necessary
+            self._print_message(from_factor, to_variable)
 
     def _propagate_factor_to_variable_message_not_from_leaf(self, from_factor):
         # The factor-to-variable message to the only one variable that is non-passed
@@ -255,6 +261,8 @@ class SumProduct(InferenceAlgorithm):
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_variables(to_variable)
+        # Print the message if necessary
+        self._print_message(from_factor, to_variable)
 
     def _propagate_variable_to_factor_messages_from_leaves(self):
         for from_variable in self.variable_leaves:
@@ -269,6 +277,8 @@ class SumProduct(InferenceAlgorithm):
             # then a message can be propagated from this factor
             # to the next variable
             self._extend_next_factors(to_factor)
+            # Print the message if necessary
+            self._print_message(from_variable, to_factor)
 
     def _propagate_variable_to_factor_message_not_from_leaf(self, from_variable):
         # The variable-to-factor message to the only one factor that is non-passed
@@ -280,3 +290,10 @@ class SumProduct(InferenceAlgorithm):
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_factors(to_factor)
+        # Print the message if necessary
+        self._print_message(from_variable, to_factor)
+
+    def _print_message(self, from_node, to_node):
+        # Print the message if necessary
+        if self._print_messages:
+            print(f'Message ({from_node} -> {to_node}) propagated')

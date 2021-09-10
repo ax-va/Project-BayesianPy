@@ -11,6 +11,9 @@ class Message:
     def __call__(self, value):
         return self._values[value]
 
+    def __str__(self):
+        return f'Message({self._from_node} -> {self._to_node})'
+
     @property
     def from_node(self):
         return self._from_node
