@@ -127,8 +127,7 @@ class SumProduct(InferenceAlgorithm):
                               for eval_values
                               in from_factor.evaluate_arguments_with_fixed_variables((to_variable,), (value,))
                           )
-                      ) for value in to_variable.domain
-                      }
+                      ) for value in to_variable.domain}
             # Cache the message
             self._factor_to_variable_messages.add(Message(from_factor, to_variable, values))
 
@@ -141,19 +140,18 @@ class SumProduct(InferenceAlgorithm):
             self._variable_to_factor_messages.add(Message(from_variable, to_factor, values))
 
     def _compute_variable_to_factor_message_not_from_leaf(self, from_variable, to_factor):
-        # from_variable was previously to_variable
-        to_variable = from_variable
         # Compute the message if necessary
         if not self._variable_to_factor_messages.contains(from_variable, to_factor):
             # Compute the message values
             # Only one non-passed factor
-            values = {value: math.fsum(message(value) for message in self._factor_to_variable_messages
-                                       if message.to_node is to_variable and message.from_node is not to_factor)
-                      for value in to_variable.domain}
-
-            values = {value: math.fsum(message(value) for message in self._factor_to_variable_messages
-                                       if message.to_node is to_variable and message.from_node is not to_factor)
-                      for value in to_variable.domain}
+            # from_variable was previously to_variable
+            values = {value:
+                      math.fsum(message(value) for message in
+                                self._factor_to_variable_messages.get_not_from_node_to_node(
+                                    not_from_node=to_factor,
+                                    to_node=from_variable
+                                    )
+                                ) for value in from_variable.domain}
             # Cache the message
             self._variable_to_factor_messages.add(Message(from_variable, to_factor, values))
 
@@ -246,8 +244,10 @@ class SumProduct(InferenceAlgorithm):
         self._extend_next_factors(to_factor)
 
     def _propagate_factor_to_variable_messages_to_query_variable(self):
-        from_factors = self._query_variable.factors
-        factor_to_query_messages = (message for message in self._factor_to_variable_messages
-                                    if message.from_node in from_factors and message.to_node is self._query_variable)
+        # Get messages to the query
+        factor_to_query_messages = self._factor_to_variable_messages.get_from_nodes_to_node(
+            from_nodes=self._query_variable.factors,
+            to_node=self._query_variable
+        )
         self._compute_propability(factor_to_query_messages)
         ...
