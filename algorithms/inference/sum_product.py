@@ -102,7 +102,7 @@ class SumProduct(InferenceAlgorithm):
                 # Compute either the marginal or conditional probability distribution
                 self._compute_distribution()
                 if self._print_passing:
-                    print('algorithm stopped')
+                    print('algorithm stopped\n')
                 # Break the loop
                 break
             else:
