@@ -13,7 +13,8 @@ class SumProduct(InferenceAlgorithm):
     distributions.  That belongs to Message Passing and Variable Elimination Algorithms.
     Here, the factor-to-variable and variable-to-factor messages are propagated from the
     leaves along the tree to the query-variable.  That can be considered as eliminating 
-    the factors and variables in the factor graph.  See, for example, "Bayesian Reasoning
+    the factors and variables in the factor graph.  Instead of messages, the 
+    implementation uses logarithms of messages.  See, for example, "Bayesian Reasoning
     and Machine Learning" by David Barber, 2012, for more details.
 
     Computes a marginal probability distribution P(Q) or a conditional probability 
