@@ -95,13 +95,14 @@ class SumProduct(InferenceAlgorithm):
         # Running the main loop
         while True:
             if self._print_passing:
-                print(f'loop pass: {self._loop_pass}\n')
+                print(f'main-loop pass: {self._loop_pass}\n')
                 self._loop_pass += 1
             # Check the stop condition
             if self._query.incoming_messages_number == self._query.factors_number:
                 # Compute either the marginal or conditional probability distribution
                 self._compute_distribution()
-                print('algorithm stopped')
+                if self._print_passing:
+                    print('algorithm stopped')
                 # Break the loop
                 break
             else:
