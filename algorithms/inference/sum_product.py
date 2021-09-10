@@ -11,6 +11,10 @@ class SumProduct(InferenceAlgorithm):
     The Sum-Product Algorithm (also referred to as the Belief Propagation Algorithm)
     on factor graph trees for random variables with categorical probability
     distributions.  That belongs to Message Passing and Variable Elimination Algorithms.
+    Here, the factor-to-variable and variable-to-factor messages are propagated from
+    leaves along the tree to the query-variable.  That can be considered as eliminating 
+    the factors and variables in the factor graph.  See, for example, "Bayesian Reasoning
+    and Machine Learning" by David Barber, 2012, for more details.
 
     Computes a marginal probability distribution P(Q) or a conditional probability 
     distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random 
@@ -20,7 +24,7 @@ class SumProduct(InferenceAlgorithm):
     Attention: only works with categorical factors, only works on trees, leads to dead 
     lock on loopy graphs.
     
-    Recommended: when modeling reduce the number of random variables in each factor to 
+    Recommended: when modeling, reduce the number of random variables in each factor to 
     speed up the inference runtime.
     """
 
@@ -29,7 +33,7 @@ class SumProduct(InferenceAlgorithm):
         # To cache the messages
         self._factor_to_variable_messages = Messages()
         self._variable_to_factor_messages = Messages()
-        # Whether to print propagating messages
+        # Whether to print propagating node-to-node messages
         self._print_messages = False
 
     @staticmethod
