@@ -2,7 +2,7 @@ import math
 import itertools
 
 from pyb4ml.algorithms.inference.algorithm import InferenceAlgorithm
-from pyb4ml.algorithms.inference.node_to_node_messages import NodeToNodeMessage, NodeToNodeMessages
+from pyb4ml.algorithms.inference.node_to_node_messages import Message, Messages
 from pyb4ml.models.factor_graphs.model import Model
 
 
@@ -34,8 +34,8 @@ class SumProduct(InferenceAlgorithm):
     def __init__(self, model: Model):
         InferenceAlgorithm.__init__(self, model)
         # To cache the node-to-node messages
-        self._factor_to_variable_messages = NodeToNodeMessages()
-        self._variable_to_factor_messages = NodeToNodeMessages()
+        self._factor_to_variable_messages = Messages()
+        self._variable_to_factor_messages = Messages()
         # Whether to print propagating node-to-node messages
         self._print_messages = False
         # Whether to print loop passing
@@ -141,7 +141,7 @@ class SumProduct(InferenceAlgorithm):
             for value in to_variable.domain:
                 values = {value: math.log(from_factor((value, ))) for value in to_variable.domain}
             # Cache the message
-            self._factor_to_variable_messages.cache(NodeToNodeMessage(from_factor, to_variable, values))
+            self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
 
     def _compute_factor_to_variable_message_not_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
@@ -179,7 +179,7 @@ class SumProduct(InferenceAlgorithm):
                           )
                       ) for value in to_variable.domain}
             # Cache the message
-            self._factor_to_variable_messages.cache(NodeToNodeMessage(from_factor, to_variable, values))
+            self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
@@ -187,7 +187,7 @@ class SumProduct(InferenceAlgorithm):
             # Compute the message values
             values = {value: 0 for value in from_variable.domain}
             # Cache the message
-            self._variable_to_factor_messages.cache(NodeToNodeMessage(from_variable, to_factor, values))
+            self._variable_to_factor_messages.cache(Message(from_variable, to_factor, values))
 
     def _compute_variable_to_factor_message_not_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
@@ -203,7 +203,7 @@ class SumProduct(InferenceAlgorithm):
                                     to_node=from_variable)
                                 ) for value in from_variable.domain}
             # Cache the message
-            self._variable_to_factor_messages.cache(NodeToNodeMessage(from_variable, to_factor, values))
+            self._variable_to_factor_messages.cache(Message(from_variable, to_factor, values))
 
     def _extend_next_variables(self, variable):
         # If the variable is query, the propagation should be stopped here

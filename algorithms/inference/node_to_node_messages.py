@@ -2,7 +2,7 @@ from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.variable import Variable
 
 
-class NodeToNodeMessage:
+class Message:
     def __init__(self, from_node, to_node, values):
         self._from_node = from_node
         self._to_node = to_node
@@ -27,7 +27,7 @@ class NodeToNodeMessage:
         return self._values
 
 
-class NodeToNodeMessages:
+class Messages:
     def __init__(self):
         self._messages = {}
 
