@@ -315,5 +315,5 @@ class SumProduct(InferenceAlgorithm):
             print(f'message ({from_node} -> {to_node}) propagated\n')
             
     def _print_stop(self):
-        if self._print_passing:
-                    print('algorithm stopped\n')
+        if self._print_passing:              
+            print('algorithm stopped\n')
