@@ -38,6 +38,12 @@ class SumProduct(InferenceAlgorithm):
         self._variable_to_factor_messages = Messages()
         # Whether to print propagating node-to-node messages
         self._print_messages = False
+        # Whether to print loop passing
+        self._print_loop_passing = False
+        self._from_factors = None
+        self._next_factors = None
+        self._from_variables = None
+        self._next_variables = None
 
     @staticmethod
     def _evaluate_variables(factor, fixed_variables=None, fixed_values=None):
