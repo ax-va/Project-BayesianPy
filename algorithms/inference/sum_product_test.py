@@ -4,6 +4,8 @@ from pyb4ml.models.factor_graphs.student import Student
 model = Student()
 algorithm = SumProduct(factorization=model.factorization)
 
+eps = 1 / 1e10
+
 for query in model.factorization.variables:
     print('query:', query)
     algorithm.set_query(query)

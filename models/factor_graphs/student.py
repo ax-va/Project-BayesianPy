@@ -9,6 +9,7 @@ class Student:
     by Daphne Koller and Nir Friedman, 2009, MIT Press, page 53
     """
     def __init__(self):
+        # random variables
         self._difficulty = Variable(domain={'d0', 'd1'}, name='Difficulty')
         self._intelligence = Variable(domain={'i0', 'i1'}, name='Intelligence')
         self._grade = Variable(domain={'g0', 'g1', 'g2'}, name='Grade')
@@ -22,6 +23,7 @@ class Student:
             self._letter
         )
 
+        # conditional probability distributions
         self._cpd_difficulty = {
             'd0': 0.6,
             'd1': 0.4
@@ -46,6 +48,7 @@ class Student:
             'g2': {'l0': 0.99, 'l1': 0.01}
         }
 
+        # factors
         self._f_d = Factor(
             variables=(self._difficulty, ),
             function=self._f_cpd_difficulty,
@@ -98,6 +101,7 @@ class Student:
     def factorization(self):
         return self._factorization
 
+    # functions for factors
     def _f_cpd_difficulty(self, x):
         return self._cpd_difficulty[x]
 
