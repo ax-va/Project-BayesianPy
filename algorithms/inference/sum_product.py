@@ -327,9 +327,9 @@ class SumProduct(InferenceAlgorithm):
         # Print the message if necessary
         if self._print_messages:
             print(messages.get(from_node, to_node))
-            print('log-values:')
+            print('logarithmic message value:')
             print(messages.get(from_node, to_node).values)
-            print('values:')
+            print('message values:')
             print({key: math.exp(value) for key, value in messages.get(from_node, to_node).values.items()})
             print()
             
