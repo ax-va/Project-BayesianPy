@@ -1,9 +1,10 @@
 from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.factorization import Factorization
 from pyb4ml.modeling.factor_graph.variable import Variable
+from pyb4ml.models.factor_graphs.model import Model
 
 
-class Student:
+class Student(Model):
     """
     The Student example from "Probabilistic Graphical Models: Principles and Techniques"
     by Daphne Koller and Nir Friedman, 2009, MIT Press, page 53
@@ -97,14 +98,6 @@ class Student:
             factors=self._factors,
             variables=self._variables
         )
-
-    @property
-    def factorization(self):
-        return self._factorization
-
-    @property
-    def factors(self):
-        return self._factorization.factors
 
     # functions for factors
     def _f_cpd_difficulty(self, x):

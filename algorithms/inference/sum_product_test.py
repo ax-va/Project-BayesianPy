@@ -6,7 +6,7 @@ algorithm = SumProduct(factorization=model.factorization)
 
 eps = 1 / 1e10
 
-for query in model.factorization.variables:
+for query in model.variables:
     print('query:', query)
     algorithm.set_query(query)
     algorithm.run(print_messages=True, print_loop_passing=True)
