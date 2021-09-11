@@ -52,7 +52,7 @@ class SumProduct(InferenceAlgorithm):
         return itertools.product(*common_domain)
 
     @staticmethod
-    def _extend_variable_to_factor_messages_by_zero_message(propagated_messages, non_contributed_variable):
+    def _extend_messages_by_zero_message(propagated_messages, non_contributed_variable):
         # Extend the propagated variable-to-factor messages by the zero message that corresponds
         # to non_contributed_variable and doesn't contribute to the sum of messages.
         # This is done in order to simplify the computation of a new message from a factor to a variable
@@ -61,7 +61,7 @@ class SumProduct(InferenceAlgorithm):
         return tuple(propagated_messages) + (SumProduct._zero_message, )
 
     @staticmethod
-    def _resort_variable_to_factor_messages_by_factor_variables_ordering(extended_messages, factor):
+    def _resort_messages_by_factor_variables_ordering(extended_messages, factor):
         # Resort extended variable-to-factor messages according to the variable ordering in the factor
         return tuple(message for variable in factor.variables for message in extended_messages
                      if variable is message.from_node)
@@ -168,11 +168,9 @@ class SumProduct(InferenceAlgorithm):
                               for value in message.from_node.domain)
             # Extend the propagated variable-to-factor messages by the zero message that corresponds
             # to to_variable and doesn't contribute to the sum of messages
-            messages1 = \
-                SumProduct._extend_variable_to_factor_messages_by_zero_message(messages0, to_variable)
+            messages1 = SumProduct._extend_messages_by_zero_message(messages0, to_variable)
             # Resort extended variable-to-factor messages according to the variable ordering in the factor
-            messages2 = \
-                SumProduct._resort_variable_to_factor_messages_by_factor_variables_ordering(messages1, from_factor)
+            messages2 = SumProduct._resort_messages_by_factor_variables_ordering(messages1, from_factor)
             # Compute the message values
             values = {value:
                       max_message
