@@ -5,7 +5,7 @@ class Model:
 
     @property
     def factors(self):
-        return self._factorization.factors
+        return self._factors
 
     @property
     def variables(self):
