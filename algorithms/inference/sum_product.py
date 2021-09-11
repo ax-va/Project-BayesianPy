@@ -75,22 +75,6 @@ class SumProduct(InferenceAlgorithm):
     def _zero_message(value):
         return 0
 
-    @property
-    def pd(self):
-        """
-        Returns the probability distribution P(Q) or if an evidence is set then 
-        P(Q|E_1 = e_1, ..., E_k = e_k) as a function of q, where q is in the domain 
-        of random variable Q
-        """
-        if self._distribution is not None:
-            def distribution(value):
-                if value not in self._query.domain:
-                    raise ValueError(f'the value {value!r} is not in the domain {self._query.domain}')
-                return self._distribution[value]
-            return distribution
-        else:
-            raise AttributeError('distribution not computed')
-
     def run(self, print_messages=False, print_loop_passing=False):
         # Whether to print propagating messages
         self._print_messages = print_messages

@@ -24,6 +24,22 @@ class InferenceAlgorithm:
         return tuple(factor for factor in self._factors if factor.is_leaf())
 
     @property
+    def pd(self):
+        """
+        Returns the probability distribution P(Q) or if an evidence is set then
+        P(Q|E_1 = e_1, ..., E_k = e_k) as a function of q, where q is in the domain
+        of random variable Q
+        """
+        if self._distribution is not None:
+            def distribution(value):
+                if value not in self._query.domain:
+                    raise ValueError(f'the value {value!r} is not in the domain {self._query.domain}')
+                return self._distribution[value]
+            return distribution
+        else:
+            raise AttributeError('distribution not computed')
+
+    @property
     def variable_leaves(self):
         return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
 
