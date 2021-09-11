@@ -48,21 +48,21 @@ class Student:
 
         self._f_d = Factor(
             variables=(self._difficulty, ),
-            function=(self._f_cpd_difficulty, ),
+            function=self._f_cpd_difficulty,
             name='f_d'
         )
         self._f_i = Factor(
-            variables=(self._cpd_intelligence, ),
-            function=(self._f_cpd_intelligence, ),
+            variables=(self._intelligence, ),
+            function=self._f_cpd_intelligence,
             name='f_i'
         )
         self._f_g = Factor(
             variables=(
                 self._difficulty,
-                self._cpd_intelligence,
-                self._cpd_grade
+                self._intelligence,
+                self._grade
             ),
-            function=(self._f_cpd_grade, ),
+            function=self._f_cpd_grade,
             name='f_g'
         )
         self._f_s = Factor(
@@ -70,7 +70,7 @@ class Student:
                 self._grade,
                 self._sat
             ),
-            function=(self._f_cpd_sat, ),
+            function=self._f_cpd_sat,
             name='f_s'
         )
         self._f_l = Factor(
@@ -78,7 +78,7 @@ class Student:
                 self._grade,
                 self._letter
             ),
-            function=(self._f_cpd_letter, ),
+            function=self._f_cpd_letter,
             name='f_l'
         )
         self._factors = (

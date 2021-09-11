@@ -35,3 +35,6 @@ class Variable(Node):
 
     def link_factor(self, factor):
         self._linked_factors.append(factor)
+
+    def unlink_factors(self):
+        self._linked_factors = []

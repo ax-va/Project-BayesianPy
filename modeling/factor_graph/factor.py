@@ -10,12 +10,12 @@ class Factor(Node):
         for variable in self._variables:
             variable.link_factor(self)
 
-    def __call__(self, *values):
+    def __call__(self, values):
         return self._function(*values)
 
     @property
-    def is_leaf(self):
-        return len(self._variables) == 1
+    def function(self):
+        return self._function
 
     @property
     def variables(self):
@@ -24,6 +24,9 @@ class Factor(Node):
     @property
     def variables_number(self):
         return len(self._variables)
+
+    def is_leaf(self):
+        return len(self._variables) == 1
 
 
 if __name__ == '__main__':
@@ -35,7 +38,17 @@ if __name__ == '__main__':
         function=lambda a, b, c: 0.5 if (a or b or c) else 0.1,
         name='f1'
     )
-    print(f1(True, False, True))
+    print(f1((True, False, True)))
+
+    f2 = Factor(
+        variables=(x, ),
+        function=lambda a: 0.7 if a else 0.3,
+        name='f_2'
+    )
+    print(f2((True, )))
+
+    x = (1, 2, 3)
+    print(tuple(x))
 
 
 
