@@ -164,8 +164,7 @@ class SumProduct(InferenceAlgorithm):
                 to_node=from_factor
             )
             # Used to reduce computational instability
-            max_message = max(message(value) for message in messages0
-                              for value in message.from_node.domain)
+            max_message = max(message(value) for message in messages0 for value in message.from_node.domain)
             # Extend the propagated variable-to-factor messages by the zero message that corresponds
             # to to_variable and doesn't contribute to the sum of messages
             messages1 = SumProduct._extend_messages_by_zero_message(messages0, to_variable)
