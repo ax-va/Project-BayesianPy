@@ -12,7 +12,7 @@ class InferenceAlgorithm:
         # Encapsulate the factors and variables inside the algorithm.
         # New self._factors and self._variables created.
         self._encapsulate_factors_and_variables()
-        # Query is not yet set
+        # Query is not yet specified
         self._query = None
         # Evidence is not given
         self._evidence = None
