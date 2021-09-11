@@ -16,4 +16,4 @@ for query in model.variables:
     for value in query.domain:
         print(f'P({query}={value!r})={algorithm.pd(value)}')
     print('-'*20)
-    print('-' * 20)
+    print('-'*20)
