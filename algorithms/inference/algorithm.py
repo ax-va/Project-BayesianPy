@@ -7,7 +7,7 @@ from pyb4ml.models.factor_graphs.model import Model
 
 class InferenceAlgorithm:
     def __init__(self, model: Model):
-        # Save the factorization object
+        # Save the model
         self._model = model
         # Encapsulate the factors and variables inside the algorithm
         # self._factors and self._variables created
