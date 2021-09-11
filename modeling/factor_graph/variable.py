@@ -4,7 +4,7 @@ from pyb4ml.modeling.factor_graph.node import Node
 class Variable(Node):
     def __init__(self, domain=None, name=None):
         self._domain = sorted(tuple(set(domain)))
-        self._linked_factors = ()
+        self._linked_factors = []
         Node.__init__(self, name)
 
     @property
@@ -34,7 +34,7 @@ class Variable(Node):
         return len(self._linked_factors) == 1
 
     def link_factor(self, factor):
-        self._linked_factors = self._linked_factors + (factor, )
+        self._linked_factors.append(factor)
 
     def unlink_factors(self):
-        self._linked_factors = ()
+        self._linked_factors = []

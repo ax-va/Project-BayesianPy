@@ -19,14 +19,6 @@ class InferenceAlgorithm:
         # Probability distribution P of interest
         self._distribution = None
 
-    @staticmethod
-    def create_factor_variables(old_factor, old_variables, new_variables):
-        new_factor_variables = []
-        for old_variable in old_factor.variables:
-            index = old_variables.index(old_variable)
-            new_factor_variables.append(new_variables[index])
-        return tuple(new_factor_variables)
-
     @property
     def factor_leaves(self):
         return tuple(factor for factor in self._factors if factor.is_leaf())
@@ -34,6 +26,13 @@ class InferenceAlgorithm:
     @property
     def variable_leaves(self):
         return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
+
+    def _create_factor_variables(self, model_factor):
+        factor_variables = []
+        for model_factor_variable in model_factor.variables:
+            index = self._model.variables.index(model_factor_variable)
+            factor_variables.append(self._variables[index])
+        return tuple(factor_variables)
 
     def _encapsulate_factors_and_variables(self):
         # Encapsulate the factors and variables inside the algorithm
@@ -45,14 +44,10 @@ class InferenceAlgorithm:
         # Create new factors
         self._factors = tuple(
             Factor(
-                variables=self.create_factor_variables(
-                    old_factor=factor,
-                    old_variables=self._model.variables,
-                    new_variables=self._variables
-                ),
-                function=copy.deepcopy(factor.function),
-                name=copy.deepcopy(factor.name)
-            ) for factor in self._model.factors
+                variables=self._create_factor_variables(model_factor),
+                function=copy.deepcopy(model_factor.function),
+                name=copy.deepcopy(model_factor.name)
+            ) for model_factor in self._model.factors
         )
 
     def set_query(self, query: Variable):
