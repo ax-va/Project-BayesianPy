@@ -3,7 +3,7 @@ from pyb4ml.modeling.factor_graph.variable import Variable
 
 
 class Factor(Node):
-    def __init__(self, variables, function, name=None):
+    def __init__(self, variables, function=None, name=None):
         self._variables = variables
         self._function = function
         Node.__init__(self, name)

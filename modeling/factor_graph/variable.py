@@ -2,7 +2,7 @@ from pyb4ml.modeling.factor_graph.node import Node
 
 
 class Variable(Node):
-    def __init__(self, domain, name=None):
+    def __init__(self, domain=None, name=None):
         self._domain = domain
         self._linked_factors = []
         Node.__init__(self, name)
