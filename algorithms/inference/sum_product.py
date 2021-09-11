@@ -94,7 +94,7 @@ class SumProduct(InferenceAlgorithm):
         self._initialize_loop()
         # Running the main loop
         while True:
-            self._main_loop_number += 1
+            self._main_loop_pass += 1
             # Print the number of the main-loop passes
             self._print_main_loop_passes()
             # Check the stop condition
@@ -224,7 +224,7 @@ class SumProduct(InferenceAlgorithm):
             factor.incoming_messages_number = 0
 
     def _initialize_loop(self):
-        self._main_loop_number = 0
+        self._main_loop_pass = 0
         # Is the query set?
         if self._query is None:
             raise AttributeError('query not specified')
@@ -307,7 +307,7 @@ class SumProduct(InferenceAlgorithm):
         
     def _print_main_loop_pass(self):
         if self._print_passing:
-            print(f'main-loop pass: {self._main_loop_number}\n')
+            print(f'main-loop pass: {self._main_loop_pass}\n')
 
     def _print_passing(self, from_node, to_node):
         # Print the message if necessary
