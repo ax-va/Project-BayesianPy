@@ -90,6 +90,12 @@ class SumProduct(InferenceAlgorithm):
     def run(self, print_passing=False):
         # Whether to print propagating messages
         self._print_passing = print_passing
+        self._distribution = None
+        # Is the query set?
+        if self._query is None:
+            raise AttributeError('query not specified')
+        # Evidence?
+        # ...
         # Compute messages from leaves and make other initializations
         self._initialize_loop()
         # Running the main loop
@@ -225,12 +231,6 @@ class SumProduct(InferenceAlgorithm):
 
     def _initialize_loop(self):
         self._main_loop_pass = 0
-        self._distribution = None
-        # Is the query set?
-        if self._query is None:
-            raise AttributeError('query not specified')
-        # Set the evidence if necessary
-        # ...
         # The factors to which the message propagation goes further
         self._next_factors = []
         # The variables to which the message propagation goes further
