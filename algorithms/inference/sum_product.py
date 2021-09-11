@@ -94,16 +94,15 @@ class SumProduct(InferenceAlgorithm):
         self._initialize_loop()
         # Running the main loop
         while True:
-            if self._print_passing:
-                print(f'main-loop pass: {self._loop_pass}\n')
-                self._loop_pass += 1
+            self._main_loop_number += 1
+            # Print the number of the main-loop passes
+            self._print_main_loop_passes()
             # Check the stop condition
             if self._query.incoming_messages_number == self._query.factors_number:
                 # Compute either the marginal or conditional probability distribution
                 self._compute_distribution()
-                if self._print_passing:
-                    print('algorithm stopped\n')
-                # Break the loop
+                self._print_stop()
+                # Break the main loop
                 break
             else:
                 self._from_factors = self._next_factors
@@ -168,7 +167,8 @@ class SumProduct(InferenceAlgorithm):
             from_nodes=self._query.factors,
             to_node=self._query
         )
-        # Values of the sum of the incoming messages
+        # Values of the sum of the incoming messages, 
+        # yet non-normalized to be the disribution
         nn_values = {value:
             math.exp(
                 math.fsum(message(value) for message in factor_to_query_messages)
@@ -224,7 +224,7 @@ class SumProduct(InferenceAlgorithm):
             factor.incoming_messages_number = 0
 
     def _initialize_loop(self):
-        self._loop_pass = 1
+        self._main_loop_number = 0
         # Is the query set?
         if self._query is None:
             raise AttributeError('query not specified')
@@ -304,8 +304,16 @@ class SumProduct(InferenceAlgorithm):
         self._extend_next_factors(to_factor)
         # Print the message if necessary
         self._print_passing(from_variable, to_factor)
+        
+    def _print_main_loop_pass(self):
+        if self._print_passing:
+            print(f'main-loop pass: {self._main_loop_number}\n')
 
     def _print_passing(self, from_node, to_node):
         # Print the message if necessary
         if self._print_passing:
             print(f'message ({from_node} -> {to_node}) propagated\n')
+            
+    def _print_stop(self):
+        if self._print_passing:
+                    print('algorithm stopped\n')
