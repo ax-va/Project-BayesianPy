@@ -1,3 +1,4 @@
+from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.factorization import Factorization
 from pyb4ml.modeling.factor_graph.variable import Variable
 
@@ -18,7 +19,6 @@ class Student:
             self._intelligence,
             self._grade,
             self._sat,
-            self._letter,
             self._letter
         )
 
@@ -45,12 +45,48 @@ class Student:
             'g1': {'l0': 0.40, 'l1': 0.60},
             'g2': {'l0': 0.99, 'l1': 0.01}
         }
+
+        self._f_d = Factor(
+            variables=(self._difficulty, ),
+            function=(self._f_cpd_difficulty, ),
+            name='f_d'
+        )
+        self._f_i = Factor(
+            variables=(self._cpd_intelligence, ),
+            function=(self._f_cpd_intelligence, ),
+            name='f_i'
+        )
+        self._f_g = Factor(
+            variables=(
+                self._difficulty,
+                self._cpd_intelligence,
+                self._cpd_grade
+            ),
+            function=(self._f_cpd_grade, ),
+            name='f_g'
+        )
+        self._f_s = Factor(
+            variables=(
+                self._grade,
+                self._sat
+            ),
+            function=(self._f_cpd_sat, ),
+            name='f_s'
+        )
+        self._f_l = Factor(
+            variables=(
+                self._grade,
+                self._letter
+            ),
+            function=(self._f_cpd_letter, ),
+            name='f_l'
+        )
         self._factors = (
-            self._f_cpd_difficulty,
-            self._f_cpd_intelligence,
-            self._f_cpd_grade,
-            self._f_cpd_sat,
-            self._f_cpd_letter
+            self._f_d,
+            self._f_i,
+            self._f_g,
+            self._f_s,
+            self._f_l
         )
 
         self._factorization = Factorization(
