@@ -6,7 +6,7 @@ from pyb4ml.models.factor_graphs.model import Model
 
 class Student(Model):
     """
-    The Student example from "Probabilistic Graphical Models: Principles and Techniques"
+    The Student model from "Probabilistic Graphical Models: Principles and Techniques"
     by Daphne Koller and Nir Friedman, 2009, MIT Press, page 53
     """
     def __init__(self):
