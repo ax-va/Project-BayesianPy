@@ -9,8 +9,8 @@ class InferenceAlgorithm:
     def __init__(self, model: Model):
         # Save the model
         self._model = model
-        # Encapsulate the factors and variables inside the algorithm
-        # self._factors and self._variables created
+        # Encapsulate the factors and variables inside the algorithm.
+        # New self._factors and self._variables created.
         self._encapsulate_factors_and_variables()
         # Query is not yet set
         self._query = None
