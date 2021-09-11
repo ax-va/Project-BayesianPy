@@ -56,3 +56,13 @@ class InferenceAlgorithm:
             raise ValueError('there is no variable in the factorization that corresponds to the query')
         # Make sure that the query variable is from the encapsulated sequence in this algorithm
         self._query = self._variables[self._model.variables.index(query)]
+
+    def print_pd(self):
+        if self._distribution is not None:
+            if self._evidence is None:
+                for value in self._query.domain:
+                    print(f'P({self._query}={value!r})={self.pd(value)}')
+            else:
+                pass
+        else:
+            raise AttributeError('distribution not computed')
