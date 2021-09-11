@@ -1,11 +1,11 @@
 from pyb4ml.algorithms.inference.sum_product import SumProduct
 from pyb4ml.models.factor_graphs.student import Student
 
-student_model = Student()
-algorithm = SumProduct(factorization=student_model.factorization)
+model = Student()
+algorithm = SumProduct(factorization=model.factorization)
 
-for query in student_model.factorization.factors:
+for query in model.factorization.factors:
     print('query:', query)
-    algorithm.run()
+    algorithm.run(print_passing=True)
     for value in query.domain:
         print(f'P({query}={value!r})={algorithm.pd(value)}')
