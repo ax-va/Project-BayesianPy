@@ -92,6 +92,7 @@ class Student:
             self._f_l
         )
 
+        # factorization
         self._factorization = Factorization(
             factors=self._factors,
             variables=self._variables
@@ -100,6 +101,10 @@ class Student:
     @property
     def factorization(self):
         return self._factorization
+
+    @property
+    def factors(self):
+        return self._factorization.factors
 
     # functions for factors
     def _f_cpd_difficulty(self, x):
