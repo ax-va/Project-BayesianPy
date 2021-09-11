@@ -10,3 +10,4 @@ for query in model.factorization.variables:
     algorithm.run(print_messages=True, print_loop_passing=True)
     for value in query.domain:
         print(f'P({query}={value!r})={algorithm.pd(value)}')
+    print('-'*20)

@@ -31,10 +31,10 @@ class Student:
             'i1': 0.3
         }
         self._cpd_grade = {
-            ('i0', 'd0'): {'g0': 0.30, 'g1': 0.40, 'g2': 0.30},
-            ('i0', 'd1'): {'g0': 0.05, 'g1': 0.25, 'g2': 0.70},
-            ('i1', 'd0'): {'g0': 0.90, 'g1': 0.08, 'g2': 0.02},
-            ('i1', 'd1'): {'g0': 0.50, 'g1': 0.30, 'g2': 0.20}
+            ('d0', 'i0'): {'g0': 0.30, 'g1': 0.40, 'g2': 0.30},
+            ('d0', 'i1'): {'g0': 0.90, 'g1': 0.08, 'g2': 0.02},
+            ('d1', 'i0'): {'g0': 0.05, 'g1': 0.25, 'g2': 0.70},
+            ('d1', 'i1'): {'g0': 0.50, 'g1': 0.30, 'g2': 0.20}
         }
         self._cpd_sat = {
             'i0': {'s0': 0.95, 's1': 0.05},
@@ -67,7 +67,7 @@ class Student:
         )
         self._f_s = Factor(
             variables=(
-                self._grade,
+                self._intelligence,
                 self._sat
             ),
             function=self._f_cpd_sat,
@@ -105,7 +105,7 @@ class Student:
         return self._cpd_intelligence[x]
 
     def _f_cpd_grade(self, x, y, z):
-        return self._cpd_grade[(x,y)][z]
+        return self._cpd_grade[(x, y)][z]
 
     def _f_cpd_sat(self, x, y):
         return self._cpd_sat[x][y]

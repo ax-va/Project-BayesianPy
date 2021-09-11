@@ -1,3 +1,5 @@
+import itertools
+
 from pyb4ml.modeling.factor_graph.node import Node
 from pyb4ml.modeling.factor_graph.variable import Variable
 
@@ -12,6 +14,11 @@ class Factor(Node):
 
     def __call__(self, values):
         return self._function(*values)
+
+    def __str__(self):
+        variables_names = (variable.name for variable in self._variables)
+        return self._name + '(' + ', '.join(variables_names) + ')'
+
 
     @property
     def function(self):
@@ -49,6 +56,9 @@ if __name__ == '__main__':
 
     x = (1, 2, 3)
     print(tuple(x))
+
+    for i in itertools.product(*[('i0', ), {'s1', 's0'}]):
+        print(i)
 
 
 

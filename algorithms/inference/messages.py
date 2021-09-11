@@ -49,15 +49,15 @@ class Messages:
     def get_from_nodes_to_node(self, from_nodes, to_node):
         return (self._messages[(from_node, to_node)] for from_node in from_nodes)
 
-    def get_not_from_node_to_node(self, not_from_node, to_node):
+    def get_cached_from_nodes_to_node(self, to_node):
         if isinstance(to_node, Factor):
             from_nodes = to_node.variables
         elif isinstance(to_node, Variable):
             from_nodes = to_node.factors
         else:
             raise TypeError("Argument 'to_node' is neither of type Factor nor of type Variable")
-        return (message for message in self.get_from_nodes_to_node(from_nodes, to_node)
-                if message.from_node is not not_from_node)
+        return (self._messages[(from_node, to_node)] for from_node in from_nodes
+                if (from_node, to_node) in self._messages)
 
 
 

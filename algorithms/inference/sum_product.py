@@ -42,12 +42,14 @@ class SumProduct(InferenceAlgorithm):
     @staticmethod
     def _evaluate_variables(factor, fixed_variables=None, fixed_values=None):
         common_domain = []
-        for index, variable in enumerate(factor.variables):
+        index = 0
+        for variable in factor.variables:
             if variable in fixed_variables:
-                common_domain.append((fixed_values[index],))
+                common_domain.append((fixed_values[index], ))
+                index += 1
             else:
                 common_domain.append(variable.domain)
-        return itertools.product(common_domain)
+        return itertools.product(*common_domain)
 
     @staticmethod
     def _extend_variable_to_factor_messages_by_zero_message(propagated_messages, non_contributed_variable):
@@ -138,10 +140,8 @@ class SumProduct(InferenceAlgorithm):
         if not self._factor_to_variable_messages.contains(from_factor, to_variable):
             # Get the incoming messages not from to_variable to from_factor
             # from_factor was previously to_factor
-            variable_to_factor_messages = self._variable_to_factor_messages.get_not_from_node_to_node(
-                    not_from_node=to_variable,
-                    to_node=from_factor
-            )
+            variable_to_factor_messages = \
+                self._variable_to_factor_messages.get_cached_from_nodes_to_node(to_node=from_factor)
             # Used to reduce computational instability
             max_message = max(message(value) for message in variable_to_factor_messages
                               for value in message.from_node.domain)
@@ -165,8 +165,9 @@ class SumProduct(InferenceAlgorithm):
                               )
                               for eval_values in SumProduct._evaluate_variables(
                                   factor=from_factor,
-                                  fixed_variables=(to_variable,),
-                                  fixed_values=(value,))
+                                  fixed_variables=(to_variable, ),
+                                  fixed_values=(value, )
+                              )
                           )
                       ) for value in to_variable.domain}
             # Cache the message
@@ -206,20 +207,19 @@ class SumProduct(InferenceAlgorithm):
             # from_variable was previously to_variable
             values = {value:
                       math.fsum(message(value) for message in
-                                self._factor_to_variable_messages.get_not_from_node_to_node(
-                                    not_from_node=to_factor,
-                                    to_node=from_variable
-                                    )
+                                self._factor_to_variable_messages.get_cached_from_nodes_to_node(to_node=from_variable)
                                 ) for value in from_variable.domain}
             # Cache the message
             self._variable_to_factor_messages.cache(Message(from_variable, to_factor, values))
 
     def _extend_next_variables(self, variable):
-        # If all messages except one are collected,
-        # then a message can be propagated from this variable
-        # to the next factor
-        if variable.incoming_messages_number + 1 == variable.factors_number:
-            self._next_variables.append(variable)
+        # If the variable is query, the propagation should be stopped here
+        if variable is not self._query:
+            # If all messages except one are collected,
+            # then a message can be propagated from this variable
+            # to the next factor
+            if variable.incoming_messages_number + 1 == variable.factors_number:
+                self._next_variables.append(variable)
 
     def _extend_next_factors(self, factor):
         # If all messages except one are collected,
@@ -236,6 +236,7 @@ class SumProduct(InferenceAlgorithm):
 
     def _initialize_loop(self):
         self._loop_passing = 0
+        self._print_loop()
         # The factors to which the message propagation goes further
         self._next_factors = []
         # The variables to which the message propagation goes further
@@ -313,13 +314,13 @@ class SumProduct(InferenceAlgorithm):
 
     def _print_loop(self):
         if self._print_loop_passing:
-            print('loop passing', self._loop_passing)
+            print('loop passing:', self._loop_passing)
 
     def _print_message(self, from_node, to_node):
         # Print the message if necessary
         if self._print_messages:
-            print(f'message ({from_node} -> {to_node}) propagated\n')
+            print(f'message ({from_node} -> {to_node}) propagated')
             
     def _print_stop(self):
         if self._print_loop_passing:
-            print('algorithm stopped\n')
+            print('algorithm stopped')
