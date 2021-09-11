@@ -268,7 +268,7 @@ class SumProduct(InferenceAlgorithm):
             # to the next factor
             self._extend_next_variables(to_variable)
             # Print the message if necessary
-            self._print_message(from_factor, to_variable)
+            self._print_message(from_factor, to_variable, self._factor_to_variable_messages)
 
     def _propagate_factor_to_variable_message_not_from_leaf(self, from_factor):
         # The factor-to-variable message to the only one variable that is non-passed
@@ -281,7 +281,7 @@ class SumProduct(InferenceAlgorithm):
         # to the next variable
         self._extend_next_variables(to_variable)
         # Print the message if necessary
-        self._print_message(from_factor, to_variable)
+        self._print_message(from_factor, to_variable, self._factor_to_variable_messages)
 
     def _propagate_variable_to_factor_messages_from_leaves(self):
         for from_variable in self.variable_leaves:
@@ -297,7 +297,7 @@ class SumProduct(InferenceAlgorithm):
             # to the next variable
             self._extend_next_factors(to_factor)
             # Print the message if necessary
-            self._print_message(from_variable, to_factor)
+            self._print_message(from_variable, to_factor, self._variable_to_factor_messages)
 
     def _propagate_variable_to_factor_message_not_from_leaf(self, from_variable):
         # The variable-to-factor message to the only one factor that is non-passed
@@ -310,16 +310,22 @@ class SumProduct(InferenceAlgorithm):
         # to the next variable
         self._extend_next_factors(to_factor)
         # Print the message if necessary
-        self._print_message(from_variable, to_factor)
+        self._print_message(from_variable, to_factor, self._variable_to_factor_messages)
 
     def _print_loop(self):
         if self._print_loop_passing:
             print('loop passing:', self._loop_passing)
+            print()
 
-    def _print_message(self, from_node, to_node):
+    def _print_message(self, from_node, to_node, messages):
         # Print the message if necessary
         if self._print_messages:
-            print(f'message ({from_node} -> {to_node}) propagated')
+            print(messages.get(from_node, to_node))
+            print('log-values:')
+            print(messages.get(from_node, to_node).values)
+            print('values:')
+            print({key: math.exp(value) for key, value in messages.get(from_node, to_node).values.items()})
+            print()
             
     def _print_stop(self):
         if self._print_loop_passing:

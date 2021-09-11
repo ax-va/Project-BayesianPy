@@ -24,7 +24,7 @@ class Message:
 
     @property
     def values(self):
-        return self.values
+        return self._values
 
 
 class Messages:
