@@ -1,6 +1,7 @@
 from pyb4ml.algorithms.inference.sum_product import SumProduct
 from pyb4ml.models.factor_graphs.student import Student
 
+# Test on the Student model
 model = Student()
 algorithm = SumProduct(factorization=model.factorization)
 
