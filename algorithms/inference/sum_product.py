@@ -58,13 +58,13 @@ class SumProduct(InferenceAlgorithm):
         # This is done in order to simplify the computation of a new message from a factor to a variable
         # that is here a non-contributed variable.
         SumProduct._zero_message.from_node = non_contributed_variable
-        return tuple(propagated_messages) + (SumProduct._zero_message,)
+        return tuple(propagated_messages) + (SumProduct._zero_message, )
 
     @staticmethod
     def _resort_variable_to_factor_messages_by_factor_variables_ordering(extended_messages, factor):
         # Resort extended variable-to-factor messages according to the variable ordering in the factor
-        return (message for variable in factor.variables for message in extended_messages
-                if variable is message.from_node)
+        return tuple(message for variable in factor.variables for message in extended_messages
+                     if variable is message.from_node)
 
     @staticmethod
     def _update_passing(from_node, to_node):
@@ -126,6 +126,24 @@ class SumProduct(InferenceAlgorithm):
                 for from_variable in self._from_variables:
                     self._propagate_variable_to_factor_message_not_from_leaf(from_variable)
 
+    def _compute_distribution(self):
+        # Get the incoming messages to the query
+        factor_to_query_messages = self._factor_to_variable_messages.get_from_nodes_to_node(
+            from_nodes=self._query.factors,
+            to_node=self._query
+        )
+        # Values of the sum of the incoming messages,
+        # yet non-normalized to be the disribution
+        nn_values = {value:
+                     math.exp(
+                         math.fsum(message(value) for message in factor_to_query_messages)
+            ) for value in self._query.domain}
+        # The probability distribution must be normalized
+        norm_const = math.fsum(nn_values[value] for value in self._query.domain)
+        # Compute the probability distribution
+        self._distribution = {value: nn_values[value] / norm_const for value in self._query.domain}
+        self._query.passed = True
+
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
         if not self._factor_to_variable_messages.contains(from_factor, to_variable):
@@ -138,20 +156,23 @@ class SumProduct(InferenceAlgorithm):
     def _compute_factor_to_variable_message_not_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
         if not self._factor_to_variable_messages.contains(from_factor, to_variable):
+            from_variables = tuple(variable for variable in from_factor.variables if variable is not to_variable)
             # Get the incoming messages not from to_variable to from_factor
             # from_factor was previously to_factor
-            variable_to_factor_messages = \
-                self._variable_to_factor_messages.get_cached_from_nodes_to_node(to_node=from_factor)
+            messages0 = self._variable_to_factor_messages.get_from_nodes_to_node(
+                from_nodes=from_variables,
+                to_node=from_factor
+            )
             # Used to reduce computational instability
-            max_message = max(message(value) for message in variable_to_factor_messages
+            max_message = max(message(value) for message in messages0
                               for value in message.from_node.domain)
             # Extend the propagated variable-to-factor messages by the zero message that corresponds
             # to to_variable and doesn't contribute to the sum of messages
-            messages = \
-                SumProduct._extend_variable_to_factor_messages_by_zero_message(variable_to_factor_messages, to_variable)
+            messages1 = \
+                SumProduct._extend_variable_to_factor_messages_by_zero_message(messages0, to_variable)
             # Resort extended variable-to-factor messages according to the variable ordering in the factor
-            messages = \
-                SumProduct._resort_variable_to_factor_messages_by_factor_variables_ordering(messages, from_factor)
+            messages2 = \
+                SumProduct._resort_variable_to_factor_messages_by_factor_variables_ordering(messages1, from_factor)
             # Compute the message values
             values = {value:
                       max_message
@@ -160,7 +181,7 @@ class SumProduct(InferenceAlgorithm):
                               from_factor(eval_values)
                               * math.exp(
                                   math.fsum(
-                                      msg(vls) for msg, vls in zip(messages, eval_values)
+                                      msg(vls) for msg, vls in zip(messages2, eval_values)
                                   ) - max_message
                               )
                               for eval_values in SumProduct._evaluate_variables(
@@ -173,24 +194,6 @@ class SumProduct(InferenceAlgorithm):
             # Cache the message
             self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
 
-    def _compute_distribution(self):
-        # Get the incoming messages to the query
-        factor_to_query_messages = self._factor_to_variable_messages.get_from_nodes_to_node(
-            from_nodes=self._query.factors,
-            to_node=self._query
-        )
-        # Values of the sum of the incoming messages, 
-        # yet non-normalized to be the disribution
-        nn_values = {value:
-            math.exp(
-                math.fsum(message(value) for message in factor_to_query_messages)
-            ) for value in self._query.domain}
-        # The probability distribution must be normalized
-        norm_const = math.fsum(nn_values[value] for value in self._query.domain)
-        # Compute the probability distribution
-        self._distribution = {value: nn_values[value] / norm_const for value in self._query.domain}
-        self._query.passed = True
-
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
         if not self._variable_to_factor_messages.contains(from_variable, to_factor):
@@ -202,12 +205,15 @@ class SumProduct(InferenceAlgorithm):
     def _compute_variable_to_factor_message_not_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
         if not self._variable_to_factor_messages.contains(from_variable, to_factor):
+            from_factors = tuple(factor for factor in from_variable.factors if factor is not to_factor)
             # Compute the message values
             # Only one non-passed factor
             # from_variable was previously to_variable
             values = {value:
                       math.fsum(message(value) for message in
-                                self._factor_to_variable_messages.get_cached_from_nodes_to_node(to_node=from_variable)
+                                self._factor_to_variable_messages.get_from_nodes_to_node(
+                                    from_nodes=from_factors,
+                                    to_node=from_variable)
                                 ) for value in from_variable.domain}
             # Cache the message
             self._variable_to_factor_messages.cache(Message(from_variable, to_factor, values))

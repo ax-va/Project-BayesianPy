@@ -19,7 +19,6 @@ class Factor(Node):
         variables_names = (variable.name for variable in self._variables)
         return self._name + '(' + ', '.join(variables_names) + ')'
 
-
     @property
     def function(self):
         return self._function
