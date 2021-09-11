@@ -53,11 +53,5 @@ if __name__ == '__main__':
     )
     print(f2((True, )))
 
-    x = (1, 2, 3)
-    print(tuple(x))
-
-    for i in itertools.product(*[('i0', ), {'s1', 's0'}]):
-        print(i)
-
 
 
