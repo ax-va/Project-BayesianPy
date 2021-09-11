@@ -225,6 +225,7 @@ class SumProduct(InferenceAlgorithm):
 
     def _initialize_loop(self):
         self._main_loop_pass = 0
+        self._distribution = None
         # Is the query set?
         if self._query is None:
             raise AttributeError('query not specified')
