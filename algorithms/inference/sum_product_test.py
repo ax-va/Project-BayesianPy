@@ -3,14 +3,15 @@ from pyb4ml.models.factor_graphs.student import Student
 
 # Test on the Student model
 model = Student()
-algorithm = SumProduct(factorization=model.factorization)
+algorithm = SumProduct(model=model)
 
 eps = 1 / 1e10
 
 for query in model.variables:
     print('query:', query)
     algorithm.set_query(query)
-    algorithm.run(print_messages=True, print_loop_passing=True)
+    # algorithm.run(print_messages=True, print_loop_passing=True)
+    algorithm.run()
     print('-'*20)
     print('probability distribution:')
     for value in query.domain:

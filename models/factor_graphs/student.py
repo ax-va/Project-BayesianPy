@@ -92,12 +92,7 @@ class Student(Model):
             self._f_s,
             self._f_l
         )
-
-        # factorization
-        self._factorization = Factorization(
-            factors=self._factors,
-            variables=self._variables
-        )
+        Model.__init__(self, self._factors, self._variables)
 
     # functions for factors
     def _f_cpd_difficulty(self, x):

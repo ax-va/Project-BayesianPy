@@ -3,7 +3,7 @@ import itertools
 
 from pyb4ml.algorithms.inference.algorithm import InferenceAlgorithm
 from pyb4ml.algorithms.inference.messages import Message, Messages
-from pyb4ml.modeling.factor_graph.factorization import Factorization
+from pyb4ml.models.factor_graphs.model import Model
 
 
 class SumProduct(InferenceAlgorithm):
@@ -31,8 +31,8 @@ class SumProduct(InferenceAlgorithm):
     speed up the inference runtime.
     """
 
-    def __init__(self, factorization: Factorization):
-        InferenceAlgorithm.__init__(self, factorization)
+    def __init__(self, model: Model):
+        InferenceAlgorithm.__init__(self, model)
         # To cache the messages
         self._factor_to_variable_messages = Messages()
         self._variable_to_factor_messages = Messages()

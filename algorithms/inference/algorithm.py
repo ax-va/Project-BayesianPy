@@ -1,14 +1,14 @@
 import copy
 
 from pyb4ml.modeling.factor_graph.factor import Factor
-from pyb4ml.modeling.factor_graph.factorization import Factorization
 from pyb4ml.modeling.factor_graph.variable import Variable
+from pyb4ml.models.factor_graphs.model import Model
 
 
 class InferenceAlgorithm:
-    def __init__(self, factorization: Factorization):
+    def __init__(self, model: Model):
         # Save the factorization object
-        self._factorization = factorization
+        self._model = model
         # Encapsulate the factors and variables inside the algorithm
         # self._factors and self._variables created
         self._encapsulate_factors_and_variables()
@@ -38,7 +38,7 @@ class InferenceAlgorithm:
     def _encapsulate_factors_and_variables(self):
         # Encapsulate the factors and variables inside the algorithm
         # Deeply copy the variables
-        self._variables = tuple(copy.deepcopy(self._factorization.variables))
+        self._variables = tuple(copy.deepcopy(self._model.variables))
         # Unlink the factors from the variables
         for variable in self._variables:
             variable.unlink_factors()
@@ -47,17 +47,17 @@ class InferenceAlgorithm:
             Factor(
                 variables=self.create_factor_variables(
                     old_factor=factor,
-                    old_variables=self._factorization.variables,
+                    old_variables=self._model.variables,
                     new_variables=self._variables
                 ),
                 function=copy.deepcopy(factor.function),
                 name=copy.deepcopy(factor.name)
-            ) for factor in self._factorization.factors
+            ) for factor in self._model.factors
         )
 
     def set_query(self, query: Variable):
         # Variable 'query' of interest for computing P(query) or P(query|evidence)
-        if query not in self._factorization.variables:
+        if query not in self._model.variables:
             raise ValueError('there is no variable in the factorization that corresponds to the query')
         # Make sure that the query variable is from the encapsulated sequence in this algorithm
-        self._query = self._variables[self._factorization.variables.index(query)]
+        self._query = self._variables[self._model.variables.index(query)]
