@@ -8,8 +8,6 @@ class Model:
             factors=factors,
             variables=variables
         )
-        self._factors = self._factorization.factors
-        self._variables = self._factorization.variables
 
     @property
     def factorization(self):
@@ -17,8 +15,8 @@ class Model:
 
     @property
     def factors(self):
-        return self._factors
+        return self._factorization.factors
 
     @property
     def variables(self):
-        return self._variables
+        return self._factorization.variables
