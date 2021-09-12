@@ -52,47 +52,47 @@ class Student(Model):
         }
 
         # factors
-        self._f_d = Factor(
+        self._f0 = Factor(
             variables=(self._difficulty, ),
             function=self._f_cpd_difficulty,
-            name='f_d'
+            name='f0'
         )
-        self._f_i = Factor(
+        self._f1 = Factor(
             variables=(self._intelligence, ),
             function=self._f_cpd_intelligence,
-            name='f_i'
+            name='f1'
         )
-        self._f_g = Factor(
+        self._f2 = Factor(
             variables=(
                 self._difficulty,
                 self._intelligence,
                 self._grade
             ),
             function=self._f_cpd_grade,
-            name='f_g'
+            name='f2'
         )
-        self._f_s = Factor(
+        self._f3 = Factor(
             variables=(
                 self._intelligence,
                 self._sat
             ),
             function=self._f_cpd_sat,
-            name='f_s'
+            name='f3'
         )
-        self._f_l = Factor(
+        self._f4 = Factor(
             variables=(
                 self._grade,
                 self._letter
             ),
             function=self._f_cpd_letter,
-            name='f_l'
+            name='f4'
         )
         self._factors = (
-            self._f_d,
-            self._f_i,
-            self._f_g,
-            self._f_s,
-            self._f_l
+            self._f0,
+            self._f1,
+            self._f2,
+            self._f3,
+            self._f4
         )
         Model.__init__(self, self._factors, self._variables)
 
