@@ -29,8 +29,8 @@ class SumProduct(InferenceAlgorithm):
     Recommended: when modeling, reduce the number of random variables in each factor to 
     speed up the inference runtime.
 
-    [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge
-    University Press, 2012
+    [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
+    2012
     """
 
     def __init__(self, model: Model):
