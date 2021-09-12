@@ -33,6 +33,19 @@ class InferenceAlgorithm:
     def variable_leaves(self):
         return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
 
+    def set_model(self, model):
+        # Save the model
+        self._model = model
+        # Encapsulate the factors and variables inside the algorithm.
+        # New self._factors and self._variables created.
+        self._encapsulate_factors_and_variables()
+        # Query is not yet specified
+        self._query = None
+        # Evidence is not given
+        self._evidence = None
+        # Probability distribution P of interest
+        self._distribution = None
+    
     def set_query(self, query: Variable):
         # Variable 'query' of interest for computing P(query) or P(query|evidence)
         if query not in self._model.variables:
@@ -49,19 +62,6 @@ class InferenceAlgorithm:
                 pass
         else:
             raise AttributeError('distribution not computed')
-
-    def set_model(self, model):
-        # Save the model
-        self._model = model
-        # Encapsulate the factors and variables inside the algorithm.
-        # New self._factors and self._variables created.
-        self._encapsulate_factors_and_variables()
-        # Query is not yet specified
-        self._query = None
-        # Evidence is not given
-        self._evidence = None
-        # Probability distribution P of interest
-        self._distribution = None
 
     def _create_factor_variables(self, model_factor):
         factor_variables = []
