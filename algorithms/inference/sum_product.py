@@ -15,8 +15,7 @@ class SumProduct(InferenceAlgorithm):
     leaves across the tree to the query variable.  That can be considered as the successive 
     elimination of the factors and variables in the factor graph.  Instead of the messages, 
     the implementation uses logarithms of them for computational stability.  See, for
-    example, "Bayesian Reasoning and Machine Learning" by David Barber, 2012, Cambridge
-    University Press, for more details.
+    example, [1] for more details.
 
     Computes a marginal probability distribution P(Q) or a conditional probability 
     distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random 
@@ -29,6 +28,9 @@ class SumProduct(InferenceAlgorithm):
     
     Recommended: when modeling, reduce the number of random variables in each factor to 
     speed up the inference runtime.
+
+    [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge
+    University Press, 2012
     """
 
     def __init__(self, model: Model):
