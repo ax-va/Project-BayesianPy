@@ -16,7 +16,7 @@ for query in model.variables:
     print('probability distribution:')
     for value in query.domain:
         print(f'P({query}={value!r})={algorithm.pd(value)}')
-    # Print the distribution as above
+    # Print also the distribution as above
     # algorithm.print_pd()
     print('-'*20)
     print('-'*20)
