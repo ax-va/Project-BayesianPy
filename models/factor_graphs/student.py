@@ -12,7 +12,7 @@ class Student(Model):
     Principles and Techniques", MIT Press, 2009
     """
     def __init__(self):
-        # random variables
+        # Random variables
         self._difficulty = Variable(domain={'d0', 'd1'}, name='Difficulty')
         self._intelligence = Variable(domain={'i0', 'i1'}, name='Intelligence')
         self._grade = Variable(domain={'g0', 'g1', 'g2'}, name='Grade')
@@ -26,7 +26,7 @@ class Student(Model):
             self._letter
         )
 
-        # conditional probability distributions
+        # Conditional probability distributions (CPDs)
         self._cpd_difficulty = {
             'd0': 0.6,
             'd1': 0.4
@@ -51,7 +51,7 @@ class Student(Model):
             'g2': {'l0': 0.99, 'l1': 0.01}
         }
 
-        # factors
+        # Factors
         self._f0 = Factor(
             variables=(self._difficulty, ),
             function=self._f_cpd_difficulty,
@@ -96,7 +96,7 @@ class Student(Model):
         )
         Model.__init__(self, self._factors, self._variables)
 
-    # functions for factors
+    # Factor functions
     def _f_cpd_difficulty(self, x):
         return self._cpd_difficulty[x]
 
