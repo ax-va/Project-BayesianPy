@@ -33,7 +33,7 @@ for query in model.variables:
     if query.name == 'Grade':
         # P(g) = \sum_{d,i,s,l} {P(l|g) * P(g|d,i) * P(s|i) * P(d) * P(i)}
         # % \sum_{s} {P(s|i) * P(i)} = P(i)
-        # % \sum_{l} {P(l|g} = 1
+        # % \sum_{l} {P(l|g)} = 1
         # = P(g|d0,i0) * P(d0) * P(i0)
         # + P(g|d0,i1) * P(d0) * P(i1)
         # + P(g|d1,i0) * P(d1) * P(i0)
