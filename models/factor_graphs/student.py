@@ -1,5 +1,4 @@
 from pyb4ml.modeling.factor_graph.factor import Factor
-from pyb4ml.modeling.factor_graph.factorization import Factorization
 from pyb4ml.modeling.factor_graph.variable import Variable
 from pyb4ml.models.factor_graphs.model import Model
 
@@ -18,7 +17,7 @@ class Student(Model):
         self._grade = Variable(domain={'g0', 'g1', 'g2'}, name='Grade')
         self._sat = Variable(domain={'s0', 's1'}, name='SAT')
         self._letter = Variable(domain={'l0', 'l1'}, name='Letter')
-        self._variables = (
+        variables = (
             self._difficulty,
             self._intelligence,
             self._grade,
@@ -87,14 +86,14 @@ class Student(Model):
             function=self._f_cpd_letter,
             name='f4'
         )
-        self._factors = (
+        factors = (
             self._f0,
             self._f1,
             self._f2,
             self._f3,
             self._f4
         )
-        Model.__init__(self, self._factors, self._variables)
+        Model.__init__(self, factors, variables)
 
     # Factor functions
     def _f_cpd_difficulty(self, x):
