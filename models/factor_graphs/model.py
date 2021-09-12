@@ -3,7 +3,7 @@ from pyb4ml.modeling.factor_graph.factorization import Factorization
 
 class Model:
     def __init__(self, factors, variables):
-        # factorization
+        # Factorization
         self._factorization = Factorization(
             factors=factors,
             variables=variables
