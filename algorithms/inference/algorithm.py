@@ -38,13 +38,13 @@ class InferenceAlgorithm:
         return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
 
     def set_evidence(self, variables, values):
+        if len(variables) != len(values):
+            self._evidence = None
+            raise ValueError('the sizes of evidence variables and values must be the same')
         if self._evidence is not None:
             # Refresh the variables if their domain was changed.
             # Create self._factors and self._variables.
             self._encapsulate_factors_and_variables()
-        if len(variables) != len(values):
-            self._evidence = None
-            raise ValueError('the sizes of evidence variables and values must be the same')
         self._evidence = []
         # Setting the evidence is equivalent to reducing the domain of the variable to only one value
         for variable, value in zip(variables, values):
