@@ -10,6 +10,10 @@ class InferenceAlgorithm:
         self.set_model(model)
 
     @property
+    def evidence(self):
+        return self._evidence
+
+    @property
     def factor_leaves(self):
         return tuple(factor for factor in self._factors if factor.is_leaf())
 
@@ -33,11 +37,39 @@ class InferenceAlgorithm:
     def variable_leaves(self):
         return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
 
-    def set_model(self, model):
+    def set_evidence(self, variables, values):
+        if self._evidence is not None:
+            # Refresh the variables if their domain was changed.
+            # Create self._factors and self._variables.
+            self._encapsulate_factors_and_variables()
+        if len(variables) != len(values):
+            raise ValueError('the sizes of evidence variables and values must be the same')
+        self._evidence = []
+        # Setting the evidence is equivalent to reducing the domain of the variable to only one value
+        for variable, value in zip(variables, values):
+            if variable is self._query:
+                self._evidence = None
+                raise ValueError(f'evidence variable {variable} and query variable {self._query} must not match')
+            if value not in variable.domain:
+                self._evidence = None
+                raise ValueError(f'value {value} is not in the domain {variable.domain} of variable {variable}')
+            try:
+                ev_variable = self._get_encapsulated_variable(variable)
+            except ValueError:
+                self._evidence = None
+                raise ValueError(f'there is no variable in the model that corresponds to evidence variable {variable}')
+            # Set the new domain containing only one value
+            ev_variable.set_domain({value})
+            self._evidence.append(ev_variable)
+        self._evidence = tuple(self._evidence)
+        if self._evidence == ():
+            self._evidence = None
+
+    def set_model(self, model: Model):
         # Save the model
         self._model = model
         # Encapsulate the factors and variables inside the algorithm.
-        # New self._factors and self._variables created.
+        # Create self._factors and self._variables.
         self._encapsulate_factors_and_variables()
         # Query is not yet specified
         self._query = None
@@ -46,12 +78,12 @@ class InferenceAlgorithm:
         # Probability distribution P of interest
         self._distribution = None
     
-    def set_query(self, query: Variable):
+    def set_query(self, variable: Variable):
         # Variable 'query' of interest for computing P(query) or P(query|evidence)
-        if query not in self._model.variables:
-            raise ValueError('there is no variable in the model that corresponds to the query')
-        # Make sure that the query variable is from the encapsulated sequence in this algorithm
-        self._query = self._variables[self._model.variables.index(query)]
+        try:
+            self._query = self._get_encapsulated_variable(variable)
+        except ValueError:
+            raise ValueError('there is no variable in the model that corresponds to the query variable')
 
     def print_pd(self):
         if self._distribution is not None:
@@ -59,7 +91,9 @@ class InferenceAlgorithm:
                 for value in self._query.domain:
                     print(f'P({self._query}={value!r})={self.pd(value)}')
             else:
-                pass
+                ev_str = '|' + ', '.join(f'{ev_var.name}={ev_var.domain[0]!r}' for ev_var in self._evidence) + ')'
+                for value in self._query.domain:
+                    print(f'P({self._query}={value!r}{ev_str}={self.pd(value)}')
         else:
             raise AttributeError('distribution not computed')
 
@@ -85,3 +119,7 @@ class InferenceAlgorithm:
                 name=copy.deepcopy(model_factor.name)
             ) for model_factor in self._model.factors
         )
+
+    def _get_encapsulated_variable(self, variable):
+        # Make sure that the encapsulated variable is got
+        return self._variables[self._model.variables.index(variable)]

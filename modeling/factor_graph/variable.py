@@ -3,7 +3,7 @@ from pyb4ml.modeling.factor_graph.node import Node
 
 class Variable(Node):
     def __init__(self, domain=None, name=None):
-        self._domain = sorted(tuple(set(domain)))
+        self._domain = tuple(sorted(set(domain))) if domain is not None else None
         self._linked_factors = []
         Node.__init__(self, name)
 
@@ -23,10 +23,6 @@ class Variable(Node):
     def factors_number(self):
         return len(self._linked_factors)
 
-    @property
-    def name(self):
-        return self._name
-
     def is_isolated_leaf(self):
         return len(self._linked_factors) == 0
 
@@ -35,6 +31,9 @@ class Variable(Node):
 
     def link_factor(self, factor):
         self._linked_factors.append(factor)
+
+    def set_domain(self, domain):
+        self._domain = tuple(sorted(set(domain)))
 
     def unlink_factors(self):
         self._linked_factors = []
