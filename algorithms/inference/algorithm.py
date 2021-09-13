@@ -43,6 +43,7 @@ class InferenceAlgorithm:
             # Create self._factors and self._variables.
             self._encapsulate_factors_and_variables()
         if len(variables) != len(values):
+            self._evidence = None
             raise ValueError('the sizes of evidence variables and values must be the same')
         self._evidence = []
         # Setting the evidence is equivalent to reducing the domain of the variable to only one value
