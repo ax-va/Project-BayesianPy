@@ -42,9 +42,9 @@ class InferenceAlgorithm:
             self._evidence = None
             raise ValueError('the sizes of evidence variables and values must be the same')
         if self._evidence is not None:
-            # Refresh the variables if their domain was changed.
-            # Create self._factors and self._variables.
-            self._encapsulate_factors_and_variables()
+            # Refresh the algorithm variables if their domains were changed
+            for a_variable, m_variable in zip(self._variables, self._model.variables):
+                a_variable.set_domain(m_variable.domain)
         self._evidence = []
         # Setting the evidence is equivalent to reducing the domain of the variable to only one value
         for variable, value in zip(variables, values):
@@ -55,7 +55,7 @@ class InferenceAlgorithm:
                 self._evidence = None
                 raise ValueError(f'value {value} is not in the domain {variable.domain} of variable {variable}')
             try:
-                ev_variable = self._get_encapsulated_variable(variable)
+                ev_variable = self._get_algorithm_variable(variable)
             except ValueError:
                 self._evidence = None
                 raise ValueError(f'there is no variable in the model that corresponds to evidence variable {variable}')
@@ -71,7 +71,7 @@ class InferenceAlgorithm:
         self._model = model
         # Encapsulate the factors and variables inside the algorithm.
         # Create self._factors and self._variables.
-        self._encapsulate_factors_and_variables()
+        self._create_algorithm_factors_and_variables()
         # Query is not yet specified
         self._query = None
         # Evidence is not given
@@ -82,7 +82,7 @@ class InferenceAlgorithm:
     def set_query(self, variable: Variable):
         # Variable 'query' of interest for computing P(query) or P(query|evidence)
         try:
-            self._query = self._get_encapsulated_variable(variable)
+            self._query = self._get_algorithm_variable(variable)
         except ValueError:
             raise ValueError('there is no variable in the model that corresponds to the query variable')
 
@@ -98,14 +98,7 @@ class InferenceAlgorithm:
         else:
             raise AttributeError('distribution not computed')
 
-    def _create_factor_variables(self, model_factor):
-        factor_variables = []
-        for model_factor_variable in model_factor.variables:
-            index = self._model.variables.index(model_factor_variable)
-            factor_variables.append(self._variables[index])
-        return tuple(factor_variables)
-
-    def _encapsulate_factors_and_variables(self):
+    def _create_algorithm_factors_and_variables(self):
         # Encapsulate the factors and variables inside the algorithm
         # Deeply copy the variables
         self._variables = tuple(copy.deepcopy(self._model.variables))
@@ -121,6 +114,13 @@ class InferenceAlgorithm:
             ) for model_factor in self._model.factors
         )
 
-    def _get_encapsulated_variable(self, variable):
+    def _create_factor_variables(self, model_factor):
+        factor_variables = []
+        for model_factor_variable in model_factor.variables:
+            index = self._model.variables.index(model_factor_variable)
+            factor_variables.append(self._variables[index])
+        return tuple(factor_variables)
+
+    def _get_algorithm_variable(self, variable):
         # Make sure that the encapsulated variable is got
         return self._variables[self._model.variables.index(variable)]

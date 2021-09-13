@@ -36,8 +36,8 @@ class SumProduct(InferenceAlgorithm):
     def __init__(self, model: Model):
         InferenceAlgorithm.__init__(self, model)
         # To cache the node-to-node messages
-        self._factor_to_variable_messages = Messages()
-        self._variable_to_factor_messages = Messages()
+        self._factor_to_variable_messages = {self._evidence: Messages()}
+        self._variable_to_factor_messages = {self._evidence: Messages()}
         # Whether to print propagating node-to-node messages
         self._print_messages = False
         # Whether to print loop passing

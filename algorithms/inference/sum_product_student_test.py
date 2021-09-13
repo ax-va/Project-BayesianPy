@@ -81,17 +81,13 @@ for query in model.variables:
         assert 0.502336 - eps <= pd('l1') <= 0.502336 + eps
 
 print([variable.name for variable in model.variables])
-difficulty, = [variable for variable in model.variables if variable.name == 'Difficulty']
-# variable1, = [variable for variable in model.variables if variable.name == 'Letter']
-# variable2, = [variable for variable in model.variables if variable.name == 'SAT']
-grade, = [variable for variable in model.variables if variable.name == 'Grade']
-# print(variable1.domain, variable2.domain)
+difficulty = model.get_variable('Difficulty')
+letter = model.get_variable('Letter')
+sat = model.get_variable('SAT')
+grade = model.get_variable('Grade')
 algorithm.set_query(difficulty)
-# algorithm.set_evidence((grade, ), ('g0', ))
-# algorithm.set_evidence((variable1, variable2), ('l1', 's1'))
-# Not changed because the algorithm encapsulates the variables
-# print(variable1.domain, variable2.domain)
-# print([evidence.name for evidence in algorithm.evidence])
-# print([evidence.domain for evidence in algorithm.evidence])
+algorithm.set_evidence((grade, ), ('g0', ))
+print([variable.name for variable in algorithm.evidence])
+print([variable.domain for variable in algorithm.evidence])
 algorithm.run(print_messages=True, print_loop_passing=True)
 algorithm.print_pd()
