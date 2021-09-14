@@ -76,7 +76,7 @@ for query in model.variables:
         # = P(l|g0) * 0.362 + P(l|g1) * 0.2884 + P(l|g2) * 0.3496
         # =>
         # P(l0) = 0.1 * 0.362 + 0.4 * 0.2884 + 0.99 * 0.3496 = 0.497664
-        assert 0.497664- eps <= pd('l0') <= 0.497664 + eps
+        assert 0.497664 - eps <= pd('l0') <= 0.497664 + eps
         # P(l1) = 0.9 * 0.362 + 0.6 * 0.2884 + 0.01 * 0.3496 = 0.502336
         assert 0.502336 - eps <= pd('l1') <= 0.502336 + eps
 
@@ -84,10 +84,20 @@ print([variable.name for variable in model.variables])
 difficulty = model.get_variable('Difficulty')
 letter = model.get_variable('Letter')
 sat = model.get_variable('SAT')
-grade = model.get_variable('Grade')
+
 algorithm.set_query(difficulty)
-algorithm.set_evidence((grade, ), ('g0', ))
-print([variable.name for variable in algorithm.evidence])
-print([variable.domain for variable in algorithm.evidence])
-algorithm.run(print_messages=True, print_loop_passing=True)
+algorithm.set_evidence((letter, 'l0'), (sat, 's0'))
+algorithm.run()
+algorithm.print_pd()
+
+algorithm.set_evidence((letter, 'l0'))
+algorithm.run()
+algorithm.print_pd()
+
+algorithm.set_evidence(None)
+algorithm.run()
+algorithm.print_pd()
+
+algorithm.set_evidence((letter, 'l1'))
+algorithm.run()
 algorithm.print_pd()

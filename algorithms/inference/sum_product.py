@@ -36,8 +36,8 @@ class SumProduct(InferenceAlgorithm):
     def __init__(self, model: Model):
         InferenceAlgorithm.__init__(self, model)
         # To cache the node-to-node messages
-        self._factor_to_variable_messages = {self._evidence: Messages()}
-        self._variable_to_factor_messages = {self._evidence: Messages()}
+        self._factor_to_variable_messages = {}
+        self._variable_to_factor_messages = {}
         # Whether to print propagating node-to-node messages
         self._print_messages = False
         # Whether to print loop passing
@@ -83,6 +83,10 @@ class SumProduct(InferenceAlgorithm):
     def _zero_message(value):
         return 0
 
+    def delete_cached_messages(self):
+        self._factor_to_variable_messages = {}
+        self._variable_to_factor_messages = {}
+
     def run(self, print_messages=False, print_loop_passing=False):
         # Whether to print propagating messages
         self._print_messages = print_messages
@@ -92,8 +96,13 @@ class SumProduct(InferenceAlgorithm):
         # Is the query set?
         if self._query is None:
             raise AttributeError('query not specified')
-        # Evidence?
-        # ...
+        # The messages are cached based on evidence
+        if self._evidence not in self._factor_to_variable_messages:
+            # Cache if not cached
+            self._factor_to_variable_messages[self._evidence] = Messages()
+        if self._evidence not in self._variable_to_factor_messages:
+            # Cache if not cached
+            self._variable_to_factor_messages[self._evidence] = Messages()
         # Compute messages from leaves and make other initializations
         self._initialize_loop()
         # Running the main loop
@@ -120,7 +129,7 @@ class SumProduct(InferenceAlgorithm):
 
     def _compute_distribution(self):
         # Get the incoming messages to the query
-        factor_to_query_messages = self._factor_to_variable_messages.get_from_nodes_to_node(
+        factor_to_query_messages = self._factor_to_variable_messages[self._evidence].get_from_nodes_to_node(
             from_nodes=self._query.factors,
             to_node=self._query
         )
@@ -138,20 +147,20 @@ class SumProduct(InferenceAlgorithm):
 
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
-        if not self._factor_to_variable_messages.contains(from_factor, to_variable):
+        if not self._factor_to_variable_messages[self._evidence].contains(from_factor, to_variable):
             # Compute the message values
             for value in to_variable.domain:
                 values = {value: math.log(from_factor((value, ))) for value in to_variable.domain}
             # Cache the message
-            self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
+            self._factor_to_variable_messages[self._evidence].cache(Message(from_factor, to_variable, values))
 
     def _compute_factor_to_variable_message_not_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
-        if not self._factor_to_variable_messages.contains(from_factor, to_variable):
+        if not self._factor_to_variable_messages[self._evidence].contains(from_factor, to_variable):
             from_variables = tuple(variable for variable in from_factor.variables if variable is not to_variable)
             # Get the incoming messages not from to_variable to from_factor
             # from_factor was previously to_factor
-            messages0 = self._variable_to_factor_messages.get_from_nodes_to_node(
+            messages0 = self._variable_to_factor_messages[self._evidence].get_from_nodes_to_node(
                 from_nodes=from_variables,
                 to_node=from_factor
             )
@@ -181,31 +190,31 @@ class SumProduct(InferenceAlgorithm):
                           )
                       ) for value in to_variable.domain}
             # Cache the message
-            self._factor_to_variable_messages.cache(Message(from_factor, to_variable, values))
+            self._factor_to_variable_messages[self._evidence].cache(Message(from_factor, to_variable, values))
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
-        if not self._variable_to_factor_messages.contains(from_variable, to_factor):
+        if not self._variable_to_factor_messages[self._evidence].contains(from_variable, to_factor):
             # Compute the message values
             values = {value: 0 for value in from_variable.domain}
             # Cache the message
-            self._variable_to_factor_messages.cache(Message(from_variable, to_factor, values))
+            self._variable_to_factor_messages[self._evidence].cache(Message(from_variable, to_factor, values))
 
     def _compute_variable_to_factor_message_not_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
-        if not self._variable_to_factor_messages.contains(from_variable, to_factor):
+        if not self._variable_to_factor_messages[self._evidence].contains(from_variable, to_factor):
             from_factors = tuple(factor for factor in from_variable.factors if factor is not to_factor)
             # Compute the message values
             # Only one non-passed factor
             # from_variable was previously to_variable
             values = {value:
                       math.fsum(message(value) for message in
-                                self._factor_to_variable_messages.get_from_nodes_to_node(
+                                self._factor_to_variable_messages[self._evidence].get_from_nodes_to_node(
                                     from_nodes=from_factors,
                                     to_node=from_variable)
                                 ) for value in from_variable.domain}
             # Cache the message
-            self._variable_to_factor_messages.cache(Message(from_variable, to_factor, values))
+            self._variable_to_factor_messages[self._evidence].cache(Message(from_variable, to_factor, values))
 
     def _extend_next_variables(self, variable):
         # If the variable is query, the propagation should be stopped here

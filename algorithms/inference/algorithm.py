@@ -6,8 +6,24 @@ from pyb4ml.models.factor_graphs.model import Model
 
 
 class InferenceAlgorithm:
-    def __init__(self, model: Model):
-        self.set_model(model)
+    def __init__(self, model: Model = None, query: Variable = None, evidence=None):
+        # Specifying the model
+        if model is not None:
+            self.set_model(model)
+        else:
+            self._model = None
+        # Specifying the query
+        if query is not None:
+            self.set_query(query)
+        else:
+            self._query = None
+        # Specifying the evidence
+        if evidence is not None:
+            self.set_evidence(*evidence)
+        else:
+            self._evidence = None
+        # Probability distribution P(query) or P(query|evidence) of interest
+        self._distribution = None
 
     @property
     def evidence(self):
@@ -37,34 +53,30 @@ class InferenceAlgorithm:
     def variable_leaves(self):
         return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
 
-    def set_evidence(self, variables, values):
-        if len(variables) != len(values):
+    def set_evidence(self, *evidence):
+        # Refresh the domain of variables
+        self._refresh_algorithm_variables_domain()
+        if not evidence[0]:
             self._evidence = None
-            raise ValueError('the sizes of evidence variables and values must be the same')
-        if self._evidence is not None:
-            # Refresh the algorithm variables if their domains were changed
-            for a_variable, m_variable in zip(self._variables, self._model.variables):
-                a_variable.set_domain(m_variable.domain)
-        self._evidence = []
-        # Setting the evidence is equivalent to reducing the domain of the variable to only one value
-        for variable, value in zip(variables, values):
-            if variable is self._query:
-                self._evidence = None
-                raise ValueError(f'evidence variable {variable} and query variable {self._query} must not match')
-            if value not in variable.domain:
-                self._evidence = None
-                raise ValueError(f'value {value} is not in the domain {variable.domain} of variable {variable}')
-            try:
-                ev_variable = self._get_algorithm_variable(variable)
-            except ValueError:
-                self._evidence = None
-                raise ValueError(f'there is no variable in the model that corresponds to evidence variable {variable}')
-            # Set the new domain containing only one value
-            ev_variable.set_domain({value})
-            self._evidence.append(ev_variable)
-        self._evidence = tuple(self._evidence)
-        if self._evidence == ():
-            self._evidence = None
+        else:
+            self._evidence = []
+            # Setting the evidence is equivalent to reducing the domain of the variable to only one value
+            for var, val in evidence:
+                if var is self._query:
+                    self._evidence = None
+                    raise ValueError(f'evidence variable {var} and query variable {self._query} must not match')
+                if val not in var.domain:
+                    self._evidence = None
+                    raise ValueError(f'value {val} is not in the domain {var.domain} of variable {var}')
+                try:
+                    evidence_var = self._get_algorithm_variable(var)
+                except ValueError:
+                    self._evidence = None
+                    raise ValueError(f'there is no variable in the model that corresponds to evidence variable {var}')
+                # Set the new domain containing only one value
+                evidence_var.set_domain({val})
+                self._evidence.append((evidence_var, val))
+            self._evidence = tuple(sorted(self._evidence, key=lambda x: x[0].name))
 
     def set_model(self, model: Model):
         # Save the model
@@ -72,12 +84,6 @@ class InferenceAlgorithm:
         # Encapsulate the factors and variables inside the algorithm.
         # Create self._factors and self._variables.
         self._create_algorithm_factors_and_variables()
-        # Query is not yet specified
-        self._query = None
-        # Evidence is not given
-        self._evidence = None
-        # Probability distribution P of interest
-        self._distribution = None
     
     def set_query(self, variable: Variable):
         # Variable 'query' of interest for computing P(query) or P(query|evidence)
@@ -92,7 +98,7 @@ class InferenceAlgorithm:
                 for value in self._query.domain:
                     print(f'P({self._query}={value!r})={self.pd(value)}')
             else:
-                ev_str = '|' + ', '.join(f'{ev_var.name}={ev_var.domain[0]!r}' for ev_var in self._evidence) + ')'
+                ev_str = '|' + ', '.join(f'{ev_var.name}={ev_val!r}' for ev_var, ev_val in self._evidence) + ')'
                 for value in self._query.domain:
                     print(f'P({self._query}={value!r}{ev_str}={self.pd(value)}')
         else:
@@ -108,13 +114,13 @@ class InferenceAlgorithm:
         # Create new factors
         self._factors = tuple(
             Factor(
-                variables=self._create_factor_variables(model_factor),
+                variables=self._create_algorithm_factor_variables(model_factor),
                 function=copy.deepcopy(model_factor.function),
                 name=copy.deepcopy(model_factor.name)
             ) for model_factor in self._model.factors
         )
 
-    def _create_factor_variables(self, model_factor):
+    def _create_algorithm_factor_variables(self, model_factor):
         factor_variables = []
         for model_factor_variable in model_factor.variables:
             index = self._model.variables.index(model_factor_variable)
@@ -124,3 +130,8 @@ class InferenceAlgorithm:
     def _get_algorithm_variable(self, variable):
         # Make sure that the encapsulated variable is got
         return self._variables[self._model.variables.index(variable)]
+
+    def _refresh_algorithm_variables_domain(self):
+        # Refresh the domain of variables
+        for alg_var, mod_var in zip(self._variables, self._model.variables):
+            alg_var.set_domain(mod_var.domain)
