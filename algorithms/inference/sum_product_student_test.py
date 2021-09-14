@@ -86,7 +86,7 @@ letter = model.get_variable('Letter')
 sat = model.get_variable('SAT')
 
 algorithm.set_query(difficulty)
-algorithm.set_evidence((letter, 'l0'), (sat, 's0'))
+algorithm.set_evidence((letter, 'l0'), (sat, 's1'))
 algorithm.run()
 algorithm.print_pd()
 
