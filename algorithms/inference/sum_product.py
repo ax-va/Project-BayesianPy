@@ -83,26 +83,25 @@ class SumProduct(InferenceAlgorithm):
     def _zero_message(value):
         return 0
 
-    def delete_cached_messages(self):
+    def clear_cached_messages(self):
         self._factor_to_variable_messages = {}
         self._variable_to_factor_messages = {}
 
     def run(self, print_messages=False, print_loop_passing=False):
+        # Is a model specified?
+        self.is_model_set()
+        # Is a query specified?
+        self.is_query_set()
+        # The messages are cached based on evidence
+        self._create_factor_to_variable_messages_cache_if_necessary()
+        # The messages are cached based on evidence
+        self._create_variable_to_factor_messages_cache_if_necessary()
         # Whether to print propagating messages
         self._print_messages = print_messages
         # Whether to print loop passing
         self._print_loop_passing = print_loop_passing
+        # Clear the distribution
         self._distribution = None
-        # Is the query set?
-        if self._query is None:
-            raise AttributeError('query not specified')
-        # The messages are cached based on evidence
-        if self._evidence not in self._factor_to_variable_messages:
-            # Cache if not cached
-            self._factor_to_variable_messages[self._evidence] = Messages()
-        if self._evidence not in self._variable_to_factor_messages:
-            # Cache if not cached
-            self._variable_to_factor_messages[self._evidence] = Messages()
         # Compute messages from leaves and make other initializations
         self._initialize_loop()
         # Running the main loop
@@ -216,6 +215,16 @@ class SumProduct(InferenceAlgorithm):
             # Cache the message
             self._variable_to_factor_messages[self._evidence].cache(Message(from_variable, to_factor, values))
 
+    def _create_factor_to_variable_messages_cache_if_necessary(self):
+        if self._evidence not in self._factor_to_variable_messages:
+            # Cache if not cached
+            self._factor_to_variable_messages[self._evidence] = Messages()
+
+    def _create_variable_to_factor_messages_cache_if_necessary(self):
+        if self._evidence not in self._variable_to_factor_messages:
+            # Cache if not cached
+            self._variable_to_factor_messages[self._evidence] = Messages()
+
     def _extend_next_variables(self, variable):
         # If the variable is query, the propagation should be stopped here
         if variable is not self._query:
@@ -240,6 +249,7 @@ class SumProduct(InferenceAlgorithm):
 
     def _initialize_loop(self):
         self._loop_passing = 0
+        # Print the loop information if necessary
         self._print_loop()
         # The factors to which the message propagation goes further
         self._next_factors = []
@@ -272,7 +282,7 @@ class SumProduct(InferenceAlgorithm):
             # to the next factor
             self._extend_next_variables(to_variable)
             # Print the message if necessary
-            self._print_message(from_factor, to_variable, self._factor_to_variable_messages)
+            self._print_message(from_factor, to_variable, self._factor_to_variable_messages[self._evidence])
 
     def _propagate_factor_to_variable_message_not_from_leaf(self, from_factor):
         # The factor-to-variable message to the only one variable that is non-passed
@@ -285,7 +295,7 @@ class SumProduct(InferenceAlgorithm):
         # to the next variable
         self._extend_next_variables(to_variable)
         # Print the message if necessary
-        self._print_message(from_factor, to_variable, self._factor_to_variable_messages)
+        self._print_message(from_factor, to_variable, self._factor_to_variable_messages[self._evidence])
 
     def _propagate_variable_to_factor_messages_from_leaves(self):
         for from_variable in self.variable_leaves:
@@ -301,7 +311,7 @@ class SumProduct(InferenceAlgorithm):
             # to the next variable
             self._extend_next_factors(to_factor)
             # Print the message if necessary
-            self._print_message(from_variable, to_factor, self._variable_to_factor_messages)
+            self._print_message(from_variable, to_factor, self._variable_to_factor_messages[self._evidence])
 
     def _propagate_variable_to_factor_message_not_from_leaf(self, from_variable):
         # The variable-to-factor message to the only one factor that is non-passed
@@ -314,7 +324,7 @@ class SumProduct(InferenceAlgorithm):
         # to the next variable
         self._extend_next_factors(to_factor)
         # Print the message if necessary
-        self._print_message(from_variable, to_factor, self._variable_to_factor_messages)
+        self._print_message(from_variable, to_factor, self._variable_to_factor_messages[self._evidence])
 
     def _print_loop(self):
         if self._print_loop_passing:

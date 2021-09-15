@@ -53,6 +53,16 @@ class InferenceAlgorithm:
     def variable_leaves(self):
         return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
 
+    def is_model_set(self):
+        # Is a model specified?
+        if self._model is None:
+            raise AttributeError('model not specified')
+
+    def is_query_set(self):
+        # Is a query specified?
+        if self._query is None:
+            raise AttributeError('query not specified')
+
     def set_evidence(self, *evidence):
         # Refresh the domain of variables
         self._refresh_algorithm_variables_domain()
