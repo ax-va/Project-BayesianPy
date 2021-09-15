@@ -100,7 +100,7 @@ class InferenceAlgorithm:
         try:
             self._query = self._get_algorithm_variable(variable)
         except ValueError:
-            raise ValueError('there is no variable in the model that corresponds to the query variable')
+            raise ValueError(f'there is no variable in the model that corresponds to query variable {variable}')
 
     def print_pd(self):
         if self._distribution is not None:
