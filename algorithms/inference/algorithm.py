@@ -34,24 +34,12 @@ class InferenceAlgorithm:
         return tuple(factor for factor in self._factors if factor.is_leaf())
 
     @property
-    def pd(self):
-        """
-        Returns the probability distribution P(Q) or if an evidence is set then
-        P(Q|E_1 = e_1, ..., E_k = e_k) as a function of q, where q is in the domain
-        of random variable Q
-        """
-        if self._distribution is not None:
-            def distribution(value):
-                if value not in self._query.domain:
-                    raise ValueError(f'the value {value!r} is not in the domain {self._query.domain}')
-                return self._distribution[value]
-            return distribution
-        else:
-            raise AttributeError('distribution not computed')
-
-    @property
     def variable_leaves(self):
         return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
+
+    def has_query_only_one_variable(self):
+        if len(self._query) != 1:
+            raise ValueError('query has more than one variables')
 
     def is_model_set(self):
         # Is a model specified?
@@ -82,7 +70,7 @@ class InferenceAlgorithm:
                     evidence_var = self._get_algorithm_variable(var)
                 except ValueError:
                     self._evidence = None
-                    raise ValueError(f'there is no variable in the model that corresponds to evidence variable {var}')
+                    raise ValueError(f'no variable in the model that corresponds to evidence variable {var}')
                 # Set the new domain containing only one value
                 evidence_var.set_domain({val})
                 self._evidence.append((evidence_var, val))
@@ -95,24 +83,16 @@ class InferenceAlgorithm:
         # Create self._factors and self._variables.
         self._create_algorithm_factors_and_variables()
     
-    def set_query(self, variable: Variable):
-        # Variable 'query' of interest for computing P(query) or P(query|evidence)
-        try:
-            self._query = self._get_algorithm_variable(variable)
-        except ValueError:
-            raise ValueError(f'there is no variable in the model that corresponds to query variable {variable}')
-
-    def print_pd(self):
-        if self._distribution is not None:
-            if self._evidence is None:
-                for value in self._query.domain:
-                    print(f'P({self._query}={value!r})={self.pd(value)}')
-            else:
-                ev_str = '|' + ', '.join(f'{ev_var.name}={ev_val!r}' for ev_var, ev_val in self._evidence) + ')'
-                for value in self._query.domain:
-                    print(f'P({self._query}={value!r}{ev_str}={self.pd(value)}')
-        else:
-            raise AttributeError('distribution not computed')
+    def set_query(self, *variables):
+        self._query = []
+        for variable in variables:
+            # Variable 'query' of interest for computing P(query) or P(query|evidence)
+            try:
+                query = self._get_algorithm_variable(variable)
+            except ValueError:
+                raise ValueError(f'no variable in the model that corresponds to query variable {variable}')
+            self._query.append(query)
+        self._query = tuple(sorted(self._query, key=lambda x: x.name))
 
     def _create_algorithm_factors_and_variables(self):
         # Encapsulate the factors and variables inside the algorithm

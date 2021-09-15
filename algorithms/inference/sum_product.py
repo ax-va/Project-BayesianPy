@@ -22,9 +22,9 @@ class SumProduct(InferenceAlgorithm):
     variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e. observed 
     values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
-    Restrictions: only works with categorical random variables, only works on trees, leads 
-    to dead lock on loopy graphs.  The factors must be strictly positive because of the use 
-    of logarithms.
+    Restrictions: only works with categorical random variables, only works on trees (leads
+    to dead lock on loopy graphs).  The factors must be strictly positive because of the
+    use of logarithms.
     
     Recommended: when modeling, reduce the number of random variables in each factor to 
     speed up the inference runtime.
@@ -38,6 +38,8 @@ class SumProduct(InferenceAlgorithm):
         # To cache the node-to-node messages
         self._factor_to_variable_messages = {}
         self._variable_to_factor_messages = {}
+        # Query
+        self._query_variable = None
         # Whether to print propagating node-to-node messages
         self._print_messages = False
         # Whether to print loop passing
@@ -83,15 +85,47 @@ class SumProduct(InferenceAlgorithm):
     def _zero_message(value):
         return 0
 
+    @property
+    def pd(self):
+        """
+        Returns the probability distribution P(Q) or if an evidence is set then
+        P(Q|E_1 = e_1, ..., E_k = e_k) as a function of q, where q is in the domain
+        of random variable Q
+        """
+        if self._distribution is not None:
+            def distribution(value):
+                if value not in self._query_variable.domain:
+                    raise ValueError(f'value {value!r} is not in domain {self._query_variable.domain}')
+                return self._distribution[value]
+            return distribution
+        else:
+            raise AttributeError('distribution not computed')
+
     def clear_cached_messages(self):
         self._factor_to_variable_messages = {}
         self._variable_to_factor_messages = {}
+
+    def print_pd(self):
+        if self._distribution is not None:
+            if self._evidence is None:
+                for value in self._query_variable.domain:
+                    print(f'P({self._query_variable}={value!r})={self.pd(value)}')
+            else:
+                ev_str = '|' + ', '.join(f'{ev_var.name}={ev_val!r}' for ev_var, ev_val in self._evidence) + ')'
+                for value in self._query_variable.domain:
+                    print(f'P({self._query_variable}={value!r}{ev_str}={self.pd(value)}')
+        else:
+            raise AttributeError('distribution not computed')
 
     def run(self, print_messages=False, print_loop_passing=False):
         # Is a model specified?
         self.is_model_set()
         # Is a query specified?
         self.is_query_set()
+        # Has the query only one variable?
+        self.has_query_only_one_variable()
+        # Set the first variable to the query
+        self._query_variable = self._query[0]
         # The messages are cached based on evidence
         self._create_factor_to_variable_messages_cache_if_necessary()
         # The messages are cached based on evidence
@@ -110,7 +144,7 @@ class SumProduct(InferenceAlgorithm):
             # Print the number of the main-loop passes
             self._print_loop()
             # Check the stop condition
-            if self._query.incoming_messages_number == self._query.factors_number:
+            if self._query_variable.incoming_messages_number == self._query_variable.factors_number:
                 # Compute either the marginal or conditional probability distribution
                 self._compute_distribution()
                 self._print_stop()
@@ -129,20 +163,20 @@ class SumProduct(InferenceAlgorithm):
     def _compute_distribution(self):
         # Get the incoming messages to the query
         factor_to_query_messages = self._factor_to_variable_messages[self._evidence].get_from_nodes_to_node(
-            from_nodes=self._query.factors,
-            to_node=self._query
+            from_nodes=self._query_variable.factors,
+            to_node=self._query_variable
         )
         # Values of the sum of the incoming messages,
         # yet non-normalized to be the disribution
         nn_values = {value:
                      math.exp(
                          math.fsum(message(value) for message in factor_to_query_messages)
-            ) for value in self._query.domain}
+            ) for value in self._query_variable.domain}
         # The probability distribution must be normalized
-        norm_const = math.fsum(nn_values[value] for value in self._query.domain)
+        norm_const = math.fsum(nn_values[value] for value in self._query_variable.domain)
         # Compute the probability distribution
-        self._distribution = {value: nn_values[value] / norm_const for value in self._query.domain}
-        self._query.passed = True
+        self._distribution = {value: nn_values[value] / norm_const for value in self._query_variable.domain}
+        self._query_variable.passed = True
 
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
@@ -227,7 +261,7 @@ class SumProduct(InferenceAlgorithm):
 
     def _extend_next_variables(self, variable):
         # If the variable is query, the propagation should be stopped here
-        if variable is not self._query:
+        if variable is not self._query_variable:
             # If all messages except one are collected,
             # then a message can be propagated from this variable
             # to the next factor
@@ -299,7 +333,7 @@ class SumProduct(InferenceAlgorithm):
 
     def _propagate_variable_to_factor_messages_from_leaves(self):
         for from_variable in self.variable_leaves:
-            if from_variable is self._query:
+            if from_variable is self._query_variable:
                 continue
             # The leaf variable has only one factor
             to_factor = from_variable.factors[0]
