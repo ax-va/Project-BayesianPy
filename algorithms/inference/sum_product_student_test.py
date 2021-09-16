@@ -3,7 +3,8 @@ from pyb4ml.models.factor_graphs.student import Student
 
 # Test the Sum-Product Algorithm on the Student model
 model = Student()
-algorithm = SumProduct(model)
+algorithm = SumProduct()
+algorithm.set_model(model)
 
 eps = 1 / 1e12
 

@@ -33,7 +33,7 @@ class SumProduct(InferenceAlgorithm):
     2012
     """
 
-    def __init__(self, model: Model):
+    def __init__(self,  model: Model = None, query=None, evidence=None):
         InferenceAlgorithm.__init__(self, model)
         # To cache the node-to-node messages
         self._factor_to_variable_messages = {}

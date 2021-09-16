@@ -6,7 +6,7 @@ from pyb4ml.models.factor_graphs.model import Model
 
 
 class InferenceAlgorithm:
-    def __init__(self, model: Model = None, query: Variable = None, evidence=None):
+    def __init__(self, model: Model = None, query= None, evidence=None):
         # Specifying the model
         if model is not None:
             self.set_model(model)
