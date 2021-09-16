@@ -95,7 +95,7 @@ class SumProduct(InferenceAlgorithm):
         if self._distribution is not None:
             def distribution(value):
                 if value not in self._query_variable.domain:
-                    raise ValueError(f'value {value!r} is not in domain {self._query_variable.domain}')
+                    raise ValueError(f'value {value!r} not in domain {self._query_variable.domain}')
                 return self._distribution[value]
             return distribution
         else:
