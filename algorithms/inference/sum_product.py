@@ -33,12 +33,12 @@ class SumProduct(InferenceAlgorithm):
     2012
     """
 
-    def __init__(self,  model: Model = None, query=None, evidence=None):
-        InferenceAlgorithm.__init__(self, model)
+    def __init__(self,  model: Model, query=None, evidence=None):
+        InferenceAlgorithm.__init__(self, model, query, evidence)
         # To cache the node-to-node messages
         self._factor_to_variable_messages = {}
         self._variable_to_factor_messages = {}
-        # Query
+        # Query variable
         self._query_variable = None
         # Whether to print propagating node-to-node messages
         self._print_messages = False
@@ -118,8 +118,6 @@ class SumProduct(InferenceAlgorithm):
             raise AttributeError('distribution not computed')
 
     def run(self, print_messages=False, print_loop_passing=False):
-        # Is a model specified?
-        self.is_model_set()
         # Is a query specified?
         self.is_query_set()
         # Has the query only one variable?

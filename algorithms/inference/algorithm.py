@@ -6,12 +6,9 @@ from pyb4ml.models.factor_graphs.model import Model
 
 
 class InferenceAlgorithm:
-    def __init__(self, model: Model = None, query= None, evidence=None):
+    def __init__(self, model: Model, query=None, evidence=None):
         # Specifying the model
-        if model is not None:
-            self.set_model(model)
-        else:
-            self._model = None
+        self._set_model(model)
         # Specifying the query
         if query is not None:
             self.set_query(query)
@@ -40,11 +37,6 @@ class InferenceAlgorithm:
     def has_query_only_one_variable(self):
         if len(self._query) != 1:
             raise ValueError('query has more than one variables')
-
-    def is_model_set(self):
-        # Is a model specified?
-        if self._model is None:
-            raise AttributeError('model not specified')
 
     def is_query_set(self):
         # Is a query specified?
@@ -75,13 +67,6 @@ class InferenceAlgorithm:
                 evidence_var.set_domain({val})
                 self._evidence.append((evidence_var, val))
             self._evidence = tuple(sorted(self._evidence, key=lambda x: x[0].name))
-
-    def set_model(self, model: Model):
-        # Save the model
-        self._model = model
-        # Encapsulate the factors and variables inside the algorithm.
-        # Create self._factors and self._variables.
-        self._create_algorithm_factors_and_variables()
     
     def set_query(self, *variables):
         self._query = []
@@ -125,3 +110,10 @@ class InferenceAlgorithm:
         # Refresh the domain of variables
         for alg_var, mod_var in zip(self._variables, self._model.variables):
             alg_var.set_domain(mod_var.domain)
+
+    def _set_model(self, model: Model):
+        # Save the model
+        self._model = model
+        # Encapsulate the factors and variables inside the algorithm.
+        # Create self._factors and self._variables.
+        self._create_algorithm_factors_and_variables()
