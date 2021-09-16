@@ -7,6 +7,7 @@ algorithm = SumProduct(model)
 
 eps = 1 / 1e12
 
+# Test marginal distributions
 for query in model.variables:
     algorithm.set_query(query)
     algorithm.run()
@@ -68,6 +69,7 @@ for query in model.variables:
         # P(l1) = 0.9 * 0.362 + 0.6 * 0.2884 + 0.01 * 0.3496 = 0.502336
         assert 0.502336 - eps <= pd('l1') <= 0.502336 + eps
 
+# Test conditional distributions
 # P(d,l0,s0) = P(d) * (
 # P(i0) * P(s0|i0) * (P(g0|d,i0) * P(l0|g0) + P(g1|d,i0) * P(l0|g1) + P(g2|d,i0) * P(l0|g2)) +
 # P(i1) * P(s0|i1) * (P(g0|d,i1) * P(l0|g0) + P(g1|d,i1) * P(l0|g1) + P(g2|d,i1) * P(l0|g2)))
