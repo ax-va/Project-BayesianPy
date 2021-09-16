@@ -208,7 +208,7 @@ algorithm.print_pd()
 assert 0.736431392534 - eps <= pd('d0') <= 0.736431392534 + eps
 assert 0.263568607466 - eps <= pd('d1') <= 0.263568607466 + eps
 
-# Test marginal distributions
+# Test marginal distributions again
 algorithm.set_evidence(None)
 for query in model.variables:
     algorithm.set_query(query)
