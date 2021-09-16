@@ -5,24 +5,12 @@ from pyb4ml.models.factor_graphs.student import Student
 model = Student()
 algorithm = SumProduct(model)
 
-eps = 1 / 1e15
-
-for query in model.variables:
-    print('query:', query)
-    algorithm.set_query(query)
-    # algorithm.run(print_messages=True, print_loop_passing=True)
-    algorithm.run()
-    print('-'*20)
-    print('probability distribution:')
-    for value in query.domain:
-        print(f'P({query}={value!r})={algorithm.pd(value)}')
-    # Print also the probability distribution as above: algorithm.print_pd()
-    print('-'*20)
-    print('-'*20)
+eps = 1 / 1e12
 
 for query in model.variables:
     algorithm.set_query(query)
     algorithm.run()
+    algorithm.print_pd()
     pd = algorithm.pd
     if query.name == 'Difficulty':
         assert 0.6 - eps <= pd('d0') <= 0.6 + eps
@@ -80,24 +68,72 @@ for query in model.variables:
         # P(l1) = 0.9 * 0.362 + 0.6 * 0.2884 + 0.01 * 0.3496 = 0.502336
         assert 0.502336 - eps <= pd('l1') <= 0.502336 + eps
 
-print([variable.name for variable in model.variables])
+# P(d,l0,s0) = P(d) * (
+# P(i0) * P(s0|i0) * (P(g0|d,i0) * P(l0|g0) + P(g1|d,i0) * P(l0|g1) + P(g2|d,i0) * P(l0|g2)) +
+# P(i1) * P(s0|i1) * (P(g0|d,i1) * P(l0|g0) + P(g1|d,i1) * P(l0|g1) + P(g2|d,i1) * P(l0|g2)))
+# =>
+# P(d0,l0,s0) = 0.6 * (
+# 0.7 * 0.95 * (0.3 * 0.1 + 0.4 * 0.4 + 0.3 * 0.99) +
+# 0.3 * 0.2 * (0.9 * 0.1 + 0.08 * 0.4 + 0.02 * 0.99)) = 0.1994178
+# P(d1,l0,s0) = 0.4 * (
+# 0.7 * 0.95 * (0.05 * 0.1 + 0.25 * 0.4 + 0.7 * 0.99) +
+# 0.3 * 0.2 * (0.5 * 0.1 + 0.3 * 0.4 + 0.2 * 0.99)) = 0.2211
+# =>
+# P(l0,s0) = 0.1994178 + 0.2211 = 0.4205178
+# =>
+# P(d0|l0,s1) = 0.1994178 / 0.4205178 = 0.474219640643
+# P(d1|l0,s1) = 0.2211 / 0.4205178 = 0.525780359357
 difficulty = model.get_variable('Difficulty')
 letter = model.get_variable('Letter')
 sat = model.get_variable('SAT')
+algorithm.set_query(difficulty)
+algorithm.set_evidence((letter, 'l0'), (sat, 's0'))
+algorithm.run()
+pd = algorithm.pd
+algorithm.print_pd()
+assert 0.474219640643 - eps <= pd('d0') <= 0.474219640643 + eps
+assert 0.525780359357 - eps <= pd('d1') <= 0.525780359357 + eps
 
+# P(d,l0,s1) = P(d) * (
+# P(i0) * P(s1|i0) * (P(g0|d,i0) * P(l0|g0) + P(g1|d,i0) * P(l0|g1) + P(g2|d,i0) * P(l0|g2)) +
+# P(i1) * P(s1|i1) * (P(g0|d,i1) * P(l0|g0) + P(g1|d,i1) * P(l0|g1) + P(g2|d,i1) * P(l0|g2)))
+# =>
+# P(d0,l0,s1) = 0.6 * (
+# 0.7 * 0.05 * (0.3 * 0.1 + 0.4 * 0.4 + 0.3 * 0.99) +
+# 0.3 * 0.8 * (0.9 * 0.1 + 0.08 * 0.4 + 0.02 * 0.99)) = 0.0306462
+# P(d1,l0,s1) = 0.4 * (
+# 0.7 * 0.05 * (0.05 * 0.1 + 0.25 * 0.4 + 0.7 * 0.99) +
+# 0.3 * 0.8 * (0.5 * 0.1 + 0.3 * 0.4 + 0.2 * 0.99)) = 0.0465
+# =>
+# P(l0,s1) = 0.0306462 + 0.0465 = 0.0771462
+# =>
+# P(d0|l0,s1) = 0.0306462 / 0.0771462 = 0.397248341461
+# P(d1|l0,s1) = 0.0465 / 0.0771462 = 0.602751658539
+difficulty = model.get_variable('Difficulty')
+letter = model.get_variable('Letter')
+sat = model.get_variable('SAT')
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'), (sat, 's1'))
 algorithm.run()
+pd = algorithm.pd
 algorithm.print_pd()
+assert 0.397248341461 - eps <= pd('d0') <= 0.397248341461 + eps
+assert 0.602751658539 - eps <= pd('d1') <= 0.602751658539 + eps
 
+# P(d0,l0) = 0.1994178 + 0.0306462= 0.230064
+# P(d1,l0) = 0.2211 + 0.0465 = 0.2676
+# P(l0) = 0.230064 + 0.2676 = 0.497664
+# P(l0) = 0.4205178 + 0.0771462 = 0.497664
+# =>
+# P(d0|l0) = 0.230064 / 0.497664 = 0.462287808642
+# P(d1|l0) = 0.2676 / 0.497664 = 0.537712191358
+
+difficulty = model.get_variable('Difficulty')
+letter = model.get_variable('Letter')
+algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'))
 algorithm.run()
+pd = algorithm.pd
 algorithm.print_pd()
-
-algorithm.set_evidence(None)
-algorithm.run()
-algorithm.print_pd()
-
-algorithm.set_evidence((letter, 'l1'))
-algorithm.run()
-algorithm.print_pd()
+assert 0.462287808642 - eps <= pd('d0') <= 0.462287808642 + eps
+assert 0.537712191358 - eps <= pd('d1') <= 0.537712191358 + eps
