@@ -122,23 +122,6 @@ algorithm.print_pd()
 assert 0.397248341461 - eps <= pd('d0') <= 0.397248341461 + eps
 assert 0.602751658539 - eps <= pd('d1') <= 0.602751658539 + eps
 
-# P(d0,l0) = 0.1994178 + 0.0306462= 0.230064
-# P(d1,l0) = 0.2211 + 0.0465 = 0.2676
-# P(l0) = 0.230064 + 0.2676 = 0.497664
-# P(l0) = 0.4205178 + 0.0771462 = 0.497664
-# =>
-# P(d0|l0) = 0.230064 / 0.497664 = 0.462287808642
-# P(d1|l0) = 0.2676 / 0.497664 = 0.537712191358
-difficulty = model.get_variable('Difficulty')
-letter = model.get_variable('Letter')
-algorithm.set_query(difficulty)
-algorithm.set_evidence((letter, 'l0'))
-algorithm.run()
-pd = algorithm.pd
-algorithm.print_pd()
-assert 0.462287808642 - eps <= pd('d0') <= 0.462287808642 + eps
-assert 0.537712191358 - eps <= pd('d1') <= 0.537712191358 + eps
-
 # P(d,l1,s0) = P(d) * (
 # P(i0) * P(s0|i0) * (P(g0|d,i0) * P(l1|g0) + P(g1|d,i0) * P(l1|g1) + P(g2|d,i0) * P(l1|g2)) +
 # P(i1) * P(s0|i1) * (P(g0|d,i1) * P(l1|g0) + P(g1|d,i1) * P(l1|g1) + P(g2|d,i1) * P(l1|g2)))
@@ -191,6 +174,23 @@ algorithm.print_pd()
 assert 0.679055949393 - eps <= pd('d0') <= 0.679055949393 + eps
 assert 0.320944050607 - eps <= pd('d1') <= 0.320944050607 + eps
 
+# P(d0,l0) = 0.1994178 + 0.0306462= 0.230064
+# P(d1,l0) = 0.2211 + 0.0465 = 0.2676
+# P(l0) = 0.230064 + 0.2676 = 0.497664
+# P(l0) = 0.4205178 + 0.0771462 = 0.497664
+# =>
+# P(d0|l0) = 0.230064 / 0.497664 = 0.462287808642
+# P(d1|l0) = 0.2676 / 0.497664 = 0.537712191358
+difficulty = model.get_variable('Difficulty')
+letter = model.get_variable('Letter')
+algorithm.set_query(difficulty)
+algorithm.set_evidence((letter, 'l0'))
+algorithm.run()
+pd = algorithm.pd
+algorithm.print_pd()
+assert 0.462287808642 - eps <= pd('d0') <= 0.462287808642 + eps
+assert 0.537712191358 - eps <= pd('d1') <= 0.537712191358 + eps
+
 # P(d0,l1) = 0.2355822 + 0.1343538 = 0.369936
 # P(d1,l1) = 0.0689 + 0.0635 = 0.1324
 # P(l1) = 0.369936 + 0.1324 = 0.502336
@@ -207,6 +207,40 @@ pd = algorithm.pd
 algorithm.print_pd()
 assert 0.736431392534 - eps <= pd('d0') <= 0.736431392534 + eps
 assert 0.263568607466 - eps <= pd('d1') <= 0.263568607466 + eps
+
+# P(d0,s0) = 0.1994178 + 0.2355822 = 0.435
+# P(d1,s0) = 0.2211 + 0.0689 = 0.29
+# P(s0) = 0.435 + 0.29 = 0.725
+# P(d0|s0) = 0.435 / 0.725 = 0.6
+# P(d1|s0) = 0.29 / 0.725 = 0.4
+# The trail Difficulty - Grade - Intelligence - SAT
+# is not active given the empty set of observed variables
+difficulty = model.get_variable('Difficulty')
+sat = model.get_variable('SAT')
+algorithm.set_query(difficulty)
+algorithm.set_evidence((sat, 's0'))
+algorithm.run()
+pd = algorithm.pd
+algorithm.print_pd()
+assert 0.6 - eps <= pd('d0') <= 0.6 + eps
+assert 0.4 - eps <= pd('d1') <= 0.4 + eps
+
+# P(d0,s1) = 0.0306462 + 0.1343538 = 0.165
+# P(d1,s1) = 0.0465 + 0.0635 = 0.11
+# P(s1) = = 0.275
+# P(d0|s1) = 0.165 / 0.275 = 0.6
+# P(d1|s1) = 0.11 / 0.275 = 0.4
+# The trail Difficulty - Grade - Intelligence - SAT
+# is not active given the empty set of observed variables
+difficulty = model.get_variable('Difficulty')
+sat = model.get_variable('SAT')
+algorithm.set_query(difficulty)
+algorithm.set_evidence((sat, 's1'))
+algorithm.run()
+pd = algorithm.pd
+algorithm.print_pd()
+assert 0.6 - eps <= pd('d0') <= 0.6 + eps
+assert 0.4 - eps <= pd('d1') <= 0.4 + eps
 
 # Test marginal distributions again
 algorithm.set_evidence(None)
