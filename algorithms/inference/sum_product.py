@@ -3,7 +3,7 @@ import itertools
 
 from pyb4ml.algorithms.inference.algorithm import InferenceAlgorithm
 from pyb4ml.algorithms.inference.node_to_node_messages import Message, Messages
-from pyb4ml.models.factor_graphs.model import Model
+from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
 class SumProduct(InferenceAlgorithm):
@@ -33,7 +33,7 @@ class SumProduct(InferenceAlgorithm):
     2012
     """
 
-    def __init__(self,  model: Model, query=None, evidence=None):
+    def __init__(self, model: FactorGraph, query=None, evidence=None):
         InferenceAlgorithm.__init__(self, model, query, evidence)
         # To cache the node-to-node messages
         self._factor_to_variable_messages = {}

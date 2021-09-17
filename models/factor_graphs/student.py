@@ -1,9 +1,9 @@
 from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.variable import Variable
-from pyb4ml.models.factor_graphs.model import Model
+from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
-class Student(Model):
+class Student(FactorGraph):
     """
     The Student model [1, page 53]. See also "student.pdf" or "student.odp".
 
@@ -93,7 +93,7 @@ class Student(Model):
             self._f3,
             self._f4
         )
-        Model.__init__(self, factors, variables)
+        FactorGraph.__init__(self, factors, variables)
 
     # Factor functions
     def _f_cpd_difficulty(self, x):

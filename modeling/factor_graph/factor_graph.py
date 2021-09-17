@@ -1,7 +1,7 @@
 from pyb4ml.modeling.factor_graph.factorization import Factorization
 
 
-class Model:
+class FactorGraph:
     def __init__(self, factors, variables):
         # Factorization
         self._factorization = Factorization(

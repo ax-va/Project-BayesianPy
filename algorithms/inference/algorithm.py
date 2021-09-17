@@ -1,12 +1,11 @@
 import copy
 
 from pyb4ml.modeling.factor_graph.factor import Factor
-from pyb4ml.modeling.factor_graph.variable import Variable
-from pyb4ml.models.factor_graphs.model import Model
+from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
 class InferenceAlgorithm:
-    def __init__(self, model: Model, query=None, evidence=None):
+    def __init__(self, model: FactorGraph, query=None, evidence=None):
         # Specifying the model
         self._set_model(model)
         # Specifying the query
@@ -111,7 +110,7 @@ class InferenceAlgorithm:
         for alg_var, mod_var in zip(self._variables, self._model.variables):
             alg_var.set_domain(mod_var.domain)
 
-    def _set_model(self, model: Model):
+    def _set_model(self, model: FactorGraph):
         # Save the model
         self._model = model
         # Encapsulate the factors and variables inside the algorithm.
