@@ -215,6 +215,7 @@ assert 0.263568607466 - eps <= pd('d1') <= 0.263568607466 + eps
 # P(d1|s0) = 0.29 / 0.725 = 0.4
 # The trail Difficulty - Grade - Intelligence - SAT
 # is not active given the empty set of observed variables
+# because neither Grade nor Letter is observed
 difficulty = model.get_variable('Difficulty')
 sat = model.get_variable('SAT')
 algorithm.set_query(difficulty)
@@ -232,6 +233,7 @@ assert 0.4 - eps <= pd('d1') <= 0.4 + eps
 # P(d1|s1) = 0.11 / 0.275 = 0.4
 # The trail Difficulty - Grade - Intelligence - SAT
 # is not active given the empty set of observed variables
+# because neither Grade nor Letter is observed
 difficulty = model.get_variable('Difficulty')
 sat = model.get_variable('SAT')
 algorithm.set_query(difficulty)
