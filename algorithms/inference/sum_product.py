@@ -1,12 +1,12 @@
 import math
 import itertools
 
-from pyb4ml.algorithms.inference.algorithm import InferenceAlgorithm
-from pyb4ml.algorithms.inference.node_to_node_messages import Message, Messages
+from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
+from pyb4ml.algorithms.inference.factor_graph_messages import Message, Messages
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
-class SumProduct(InferenceAlgorithm):
+class SumProduct(FactoredAlgorithm):
     """
     The Sum-Product Algorithm (also referred to as the Belief Propagation Algorithm)
     works on factor-graph trees for random variables with categorical probability
@@ -34,7 +34,7 @@ class SumProduct(InferenceAlgorithm):
     """
 
     def __init__(self, model: FactorGraph, query=None, evidence=None):
-        InferenceAlgorithm.__init__(self, model, query, evidence)
+        FactoredAlgorithm.__init__(self, model, query, evidence)
         # To cache the node-to-node messages
         self._factor_to_variable_messages = {}
         self._variable_to_factor_messages = {}
@@ -68,7 +68,7 @@ class SumProduct(InferenceAlgorithm):
         # This is done in order to simplify the computation of a new message from a factor to a variable
         # that is here a non-contributed variable.
         SumProduct._zero_message.from_node = non_contributed_variable
-        return tuple(propagated_messages) + (SumProduct._zero_message, )
+        return tuple(propagated_messages) + (SumProduct._zero_message,)
 
     @staticmethod
     def _resort_messages_by_factor_variables_ordering(extended_messages, factor):

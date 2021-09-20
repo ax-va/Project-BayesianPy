@@ -4,7 +4,7 @@ from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
-class InferenceAlgorithm:
+class FactoredAlgorithm:
     def __init__(self, model: FactorGraph, query=None, evidence=None):
         # Specifying the model
         self._set_model(model)
