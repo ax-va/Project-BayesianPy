@@ -244,6 +244,9 @@ algorithm.print_pd()
 assert 0.6 - eps <= pd('d0') <= 0.6 + eps
 assert 0.4 - eps <= pd('d1') <= 0.4 + eps
 
+# algorithm.set_evidence((difficulty, 'd0'))
+# algorithm.set_query(sat)
+
 # Test marginal distributions again
 algorithm.set_evidence(None)
 for query in model.variables:

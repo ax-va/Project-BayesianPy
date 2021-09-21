@@ -119,9 +119,9 @@ class SumProduct(FactoredAlgorithm):
 
     def run(self, print_messages=False, print_loop_passing=False):
         # Is a query specified?
-        self.is_query_set()
+        FactoredAlgorithm.is_query_set(self)
         # Has the query only one variable?
-        self.has_query_only_one_variable()
+        FactoredAlgorithm.has_query_only_one_variable(self)
         # Set the first variable to the query
         self._query_variable = self._query[0]
         # The messages are cached based on evidence
