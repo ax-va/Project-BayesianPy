@@ -55,17 +55,10 @@ class FactoredAlgorithm:
             self._set_evidence(*evidence)
     
     def set_query(self, *variables):
-        self._query = []
-        for query_var in variables:
-            # Variable 'query' of interest for computing P(query) or P(query|evidence)
-            try:
-                query_var = self._get_algorithm_variable(query_var)
-            except ValueError:
-                self._query = None
-                raise ValueError(f'no variable in the model that corresponds to query variable {query_var.name!r}')
-            self._check_query_variable_in_evidence(query_var)
-            self._query.append(query_var)
-        self._query = tuple(sorted(self._query, key=lambda x: x.name))
+        if not variables[0]:
+            self._query = None
+        else:
+            self._set_query(*variables)
 
     def _check_evidence_variable_domain(self, ev_var, ev_val):
         if ev_val not in ev_var.domain:
@@ -132,6 +125,19 @@ class FactoredAlgorithm:
             ev_var.set_domain({ev_val})
             self._evidence.append((ev_var, ev_val))
         self._evidence = tuple(sorted(self._evidence, key=lambda x: x[0].name))
+
+    def _set_query(self, *variables):
+        self._query = []
+        for query_var in variables:
+            # Variable 'query' of interest for computing P(query) or P(query|evidence)
+            try:
+                query_var = self._get_algorithm_variable(query_var)
+            except ValueError:
+                self._query = None
+                raise ValueError(f'no variable in the model that corresponds to query variable {query_var.name!r}')
+            self._check_query_variable_in_evidence(query_var)
+            self._query.append(query_var)
+        self._query = tuple(sorted(self._query, key=lambda x: x.name))
 
     def _set_model(self, model: FactorGraph):
         # Save the model
