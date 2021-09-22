@@ -59,6 +59,7 @@ class SumProduct(FactoredAlgorithm):
                     if variable is fixed_var:
                         common_domain.append((fixed_val, ))
                         non_fixed = False
+                        break
             if non_fixed:
                 common_domain.append(variable.domain)
         return itertools.product(*common_domain)
