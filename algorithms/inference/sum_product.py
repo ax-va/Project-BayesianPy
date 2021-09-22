@@ -14,7 +14,7 @@ class SumProduct(FactoredAlgorithm):
     Here, the factor-to-variable and variable-to-factor messages are propagated from the
     leaves across the tree to the query variable.  That can be considered as the successive 
     elimination of the factors and variables in the factor graph.  This implementation 
-    encourages reuse of the algorithm by caching already computed messages. Instead of the 
+    encourages reuse of the algorithm by caching already computed messages.  Instead of the 
     messages, the implementation uses logarithms of them for computational stability.  See, 
     for example, [1] for more details.
     
