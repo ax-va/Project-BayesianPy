@@ -28,8 +28,8 @@ class SumProduct(FactoredAlgorithm):
     positive because of the use of logarithms.
     
     Recommended: When modeling, reduce the number of random variables in each factor to 
-    speed up the inference runtime.  To reduce the number of variables in factors, you can 
-    increase the number of variables themselves in a model.
+    speed up the inference runtime.  To reduce the number of variables in factors, you can, 
+    for example, increase the number of variables themselves in a model.
 
     [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
