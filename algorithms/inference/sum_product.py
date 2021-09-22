@@ -54,7 +54,7 @@ class SumProduct(FactoredAlgorithm):
         common_domain = []
         index = 0
         for variable in factor.variables:
-            if variable in fixed_variables:
+            if not fixed_variables and variable in fixed_variables:
                 common_domain.append((fixed_values[index], ))
                 index += 1
             else:
