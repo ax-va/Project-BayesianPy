@@ -23,12 +23,13 @@ class SumProduct(FactoredAlgorithm):
     variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e. observed 
     values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
-    Restrictions: only works with random variables with categorical value domains, only 
+    Restrictions: Only works with random variables with categorical value domains, only 
     works on trees (leads to dead lock on loopy graphs).  The factors must be strictly
     positive because of the use of logarithms.
     
-    Recommended: when modeling, reduce the number of random variables in each factor to 
-    speed up the inference runtime.
+    Recommended: When modeling, reduce the number of random variables in each factor to 
+    speed up the inference runtime.  To reduce the number of variables in factors, you can 
+    increase the number of variables themselves in the model.
 
     [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
