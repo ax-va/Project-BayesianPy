@@ -14,9 +14,9 @@ class SumProduct(FactoredAlgorithm):
     Here, the factor-to-variable and variable-to-factor messages are propagated from the
     leaves across the tree to the query variable.  That can be considered as the successive 
     elimination of the factors and variables in the factor graph.  This implementation 
-    encourages reuse of the algorithm by caching already computed messages given evidence
-    or no evidence.  Instead of the messages, the implementation uses logarithms of them 
-    for computational stability.  See, for example, [1] for more details.
+    encourages reuse of the algorithm by caching already computed messages given an 
+    evidence or no evidence.  Instead of the messages, the implementation uses logarithms 
+    of them for computational stability.  See, for example, [1] for more details.
     
     Computes a marginal probability distribution P(Q) or a conditional probability 
     distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random 
