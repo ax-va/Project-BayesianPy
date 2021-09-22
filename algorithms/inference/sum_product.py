@@ -33,8 +33,8 @@ class SumProduct(FactoredAlgorithm):
     2012
     """
 
-    def __init__(self, model: FactorGraph, query=None, evidence=None):
-        FactoredAlgorithm.__init__(self, model, query, evidence)
+    def __init__(self, model: FactorGraph):
+        FactoredAlgorithm.__init__(self, model)
         # To cache the node-to-node messages
         self._factor_to_variable_messages = {}
         self._variable_to_factor_messages = {}
