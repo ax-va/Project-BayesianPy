@@ -5,19 +5,13 @@ from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
 class FactoredAlgorithm:
-    def __init__(self, model: FactorGraph, query=None, evidence=None):
+    def __init__(self, model: FactorGraph):
         # Specifying the model
         self._set_model(model)
-        # Specifying the query
-        if query is not None:
-            self.set_query(*query)
-        else:
-            self._query = None
-        # Specifying the evidence
-        if evidence is not None:
-            self.set_evidence(*evidence)
-        else:
-            self._evidence = None
+        # Query not specified
+        self._query = None
+        # Evidence not specified
+        self._evidence = None
         # Probability distribution P(query) or P(query|evidence) of interest
         self._distribution = None
 
