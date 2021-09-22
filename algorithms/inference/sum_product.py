@@ -94,8 +94,8 @@ class SumProduct(FactoredAlgorithm):
     def pd(self):
         """
         Returns the probability distribution P(Q) or if an evidence is set then
-        P(Q|E_1 = e_1, ..., E_k = e_k) as a function of q, where q is in the domain
-        of random variable Q
+        P(Q|E_1 = e_1, ..., E_k = e_k) as a function of q, where q is in the value
+        domain of random variable Q
         """
         if self._distribution is not None:
             def distribution(value):
