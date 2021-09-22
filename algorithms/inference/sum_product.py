@@ -50,14 +50,16 @@ class SumProduct(FactoredAlgorithm):
         self._next_variables = None
 
     @staticmethod
-    def _evaluate_variables(factor, fixed_variables=None, fixed_values=None):
+    def _evaluate_variables(factor, fixed_variables_and_values=None):
         common_domain = []
-        index = 0
         for variable in factor.variables:
-            if fixed_variables and variable in fixed_variables:
-                common_domain.append((fixed_values[index], ))
-                index += 1
-            else:
+            non_fixed = True 
+            if fixed_variables_and_values:
+                for fixed_var, fixed_val in fixed_variables_and_values:
+                    if variable is fixed_var:
+                        common_domain.append((fixed_val, ))
+                        non_fixed = False
+            if non_fixed:
                 common_domain.append(variable.domain)
         return itertools.product(*common_domain)
 
@@ -215,8 +217,7 @@ class SumProduct(FactoredAlgorithm):
                               )
                               for eval_values in SumProduct._evaluate_variables(
                                   factor=from_factor,
-                                  fixed_variables=(to_variable, ),
-                                  fixed_values=(value, )
+                                  fixed_variables_and_values=((to_variable, value), )                              
                               )
                           )
                       ) for value in to_variable.domain}
