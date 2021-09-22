@@ -10,7 +10,7 @@ class FactoredAlgorithm:
         self._set_model(model)
         # Specifying the query
         if query is not None:
-            self.set_query(query)
+            self.set_query(*query)
         else:
             self._query = None
         # Specifying the evidence
