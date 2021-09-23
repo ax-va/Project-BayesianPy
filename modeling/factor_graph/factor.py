@@ -4,7 +4,7 @@ from pyb4ml.modeling.factor_graph.variable import Variable
 
 class Factor(Node):
     def __init__(self, variables, function=None, name=None):
-        self._variables = variables
+        self._variables = tuple(variables)
         self._function = function
         Node.__init__(self, name)
         for variable in self._variables:
@@ -50,4 +50,5 @@ if __name__ == '__main__':
         name='f_2'
     )
     print(f2((True, )))
+
 
