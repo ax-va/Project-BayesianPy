@@ -243,7 +243,7 @@ class BPA(FactoredAlgorithm):
 
     def _initialize_factor_passing(self):
         # There are no passed factors
-        for factor in self._factors:
+        for factor in self.factors:
             factor.passed = False
             factor.incoming_messages_number = 0
 
@@ -266,7 +266,7 @@ class BPA(FactoredAlgorithm):
 
     def _initialize_variable_passing(self):
         # There are no passed variables
-        for variable in self._variables:
+        for variable in self.variables:
             variable.passed = False
             variable.incoming_messages_number = 0
 

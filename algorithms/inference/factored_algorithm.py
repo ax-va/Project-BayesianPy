@@ -2,6 +2,7 @@ import copy
 
 from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
+from pyb4ml.modeling.factor_graph.factorization import Factorization
 
 
 class FactoredAlgorithm:
@@ -21,7 +22,11 @@ class FactoredAlgorithm:
 
     @property
     def factor_leaves(self):
-        return tuple(factor for factor in self._factors if factor.is_leaf())
+        return tuple(factor for factor in self.factors if factor.is_leaf())
+
+    @property
+    def factors(self):
+        return self._factorization.factors
 
     @property
     def query(self):
@@ -29,7 +34,11 @@ class FactoredAlgorithm:
 
     @property
     def variable_leaves(self):
-        return tuple(variable for variable in self._variables if variable.is_non_isolated_leaf())
+        return tuple(variable for variable in self.variables if variable.is_non_isolated_leaf())
+
+    @property
+    def variables(self):
+        return self._factorization.variables
 
     def has_query_only_one_variable(self):
         if len(self._query) != 1:
@@ -72,36 +81,34 @@ class FactoredAlgorithm:
                 raise ValueError(f'query variable {query_var.name!r} is in evidence '
                                  f'{tuple((e[0].name, e[1]) for e in self._evidence)}')
 
-    def _create_algorithm_factors_and_variables(self):
+    def _create_algorithm_factorization(self):
         # Encapsulate the factors and variables inside the algorithm
         # Deeply copy the variables
-        self._variables = tuple(copy.deepcopy(self._model.variables))
+        variables = tuple(copy.deepcopy(self._model.variables))
         # Unlink the factors from the variables
-        for variable in self._variables:
+        for variable in variables:
             variable.unlink_factors()
         # Create new factors
-        self._factors = tuple(
+        factors = tuple(
             Factor(
-                variables=self._create_algorithm_factor_variables(model_factor),
+                variables=self._create_algorithm_factor_variables(model_factor, variables),
                 function=copy.deepcopy(model_factor.function),
                 name=copy.deepcopy(model_factor.name)
             ) for model_factor in self._model.factors
         )
+        self._factorization = Factorization(factors, variables)
 
-    def _create_algorithm_factor_variables(self, model_factor):
-        factor_variables = []
-        for model_factor_variable in model_factor.variables:
-            index = self._model.variables.index(model_factor_variable)
-            factor_variables.append(self._variables[index])
-        return tuple(factor_variables)
+    def _create_algorithm_factor_variables(self, model_factor, variables):
+        return tuple(variables[self._model.variables.index(model_factor_variable)]
+                     for model_factor_variable in model_factor.variables)
 
     def _get_algorithm_variable(self, variable):
         # Make sure that the encapsulated variable is got
-        return self._variables[self._model.variables.index(variable)]
+        return self.variables[self._model.variables.index(variable)]
 
     def _refresh_algorithm_variables_domain(self):
         # Refresh the domain of variables
-        for alg_var, mod_var in zip(self._variables, self._model.variables):
+        for alg_var, mod_var in zip(self.variables, self._model.variables):
             alg_var.set_domain(mod_var.domain)
 
     def _set_evidence(self, *evidence):
@@ -136,6 +143,6 @@ class FactoredAlgorithm:
     def _set_model(self, model: FactorGraph):
         # Save the model
         self._model = model
-        # Encapsulate the factors and variables inside the algorithm.
-        # Create self._factors and self._variables.
-        self._create_algorithm_factors_and_variables()
+        # Encapsulate the factors and variables inside the algorithm by using factorization.
+        # Create self._factorization.
+        self._create_algorithm_factorization()
