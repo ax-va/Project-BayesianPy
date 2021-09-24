@@ -11,14 +11,19 @@ class Bucket:
 
 
 class Buckets:
-    def __init__(self, elimination_order, factorization):
+    def __init__(self, be_algorithm):
         self._buckets = {}
-        for variable in elimination_order:
+        self._factor_cache = be_algorithm.factor_cache
+        self._fill_buckets(be_algorithm.elimination_order)
+        self._fill_buckets(be_algorithm.query)        
+                          
+    def _fill_buckets(self, variables):
+        for variable in variables:        
             self._buckets[variable] = Bucket()
-            # Fill the bucket with factors and delete the factors from the factorization
-            for factor_variables in factorization.cache.keys():
+            # Fill the bucket with factors and delete the factors from the factorization cache
+            for factor_variables in self._factor_cache.keys():
                 if variable in factor_variables:
                     # Add the factor into the bucket
-                    self._buckets[variable].add(factorization.cache[factor_variables])
+                    self._buckets[variable].add(self._factor_cache[factor_variables])
                     # Reduce the factorization cache by the factor
-                    del factorization.cache[factor_variables]
+                    del self._factor_cache[factor_variables]
