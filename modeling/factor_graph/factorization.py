@@ -11,5 +11,5 @@ class Factorization:
     def variables(self):
         return self._variables
     
-    def create_factor_cache(self)
+    def create_factor_cache(self):
         return {factor.variables: factor for factor in self._factors}
