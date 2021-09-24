@@ -1,3 +1,5 @@
+import itertools
+
 from pyb4ml.modeling.factor_graph.node import Node
 from pyb4ml.modeling.factor_graph.variable import Variable
 
@@ -10,7 +12,9 @@ class Factor(Node):
         for variable in self._variables:
             variable.link_factor(self)
 
-    def __call__(self, values):
+    def __call__(self, *variables_with_values):
+        variables_values_dict = dict(variables_with_values)
+        values = (variables_values_dict[variable] for variable in self._variables)
         return self._function(*values)
 
     def __str__(self):
@@ -42,13 +46,17 @@ if __name__ == '__main__':
         function=lambda a, b, c: 0.5 if (a or b or c) else 0.1,
         name='f1'
     )
-    print(f1((True, False, True)))
+    print(f1((x, True), (z, False), (y, True)))
 
     f2 = Factor(
         variables=(x, ),
         function=lambda a: 0.7 if a else 0.3,
         name='f_2'
     )
-    print(f2((True, )))
+    print(f2((x, True)))
+
+    itr = itertools.product(('a', 'b'), (1, 2, 3), (True, False))
+    print(*itr)
+    print(*itr)
 
 

@@ -52,43 +52,14 @@ class SumProduct(FactoredAlgorithm):
         self._next_variables = None
 
     @staticmethod
-    def _evaluate_variables(factor, fixed_variables_and_values=None):
-        common_domain = []
-        for variable in factor.variables:
-            non_fixed = True 
-            if fixed_variables_and_values:
-                for fixed_var, fixed_val in fixed_variables_and_values:
-                    if variable is fixed_var:
-                        common_domain.append((fixed_val, ))
-                        non_fixed = False
-                        break
-            if non_fixed:
-                common_domain.append(variable.domain)
-        return itertools.product(*common_domain)
-
-    @staticmethod
-    def _extend_messages_by_zero_message(propagated_messages, non_contributed_variable):
-        # Extend the propagated variable-to-factor messages by the zero message that corresponds
-        # to non_contributed_variable and doesn't contribute to the sum of messages.
-        # This is done in order to simplify the computation of a new message from a factor to a variable
-        # that is here a non-contributed variable.
-        SumProduct._zero_message.from_node = non_contributed_variable
-        return tuple(propagated_messages) + (SumProduct._zero_message,)
-
-    @staticmethod
-    def _resort_messages_by_factor_variables_ordering(extended_messages, factor):
-        # Resort extended variable-to-factor messages according to the variable ordering in the factor
-        return tuple(message for variable in factor.variables for message in extended_messages
-                     if variable is message.from_node)
+    def _evaluate_variables(variables):
+        common_domain = (variable.domain for variable in variables)
+        return tuple(itertools.product(*common_domain))
 
     @staticmethod
     def _update_passing(from_node, to_node):
         from_node.passed = True
         to_node.incoming_messages_number += 1
-
-    @staticmethod
-    def _zero_message(value):
-        return 0
 
     @property
     def pd(self):
@@ -102,6 +73,7 @@ class SumProduct(FactoredAlgorithm):
                 if value not in self._query_variable.domain:
                     raise ValueError(f'value {value!r} not in domain {self._query_variable.domain}')
                 return self._distribution[value]
+
             return distribution
         else:
             raise AttributeError('distribution not computed')
@@ -170,11 +142,10 @@ class SumProduct(FactoredAlgorithm):
             to_node=self._query_variable
         )
         # Values of the sum of the incoming messages,
-        # yet non-normalized to be the disribution
-        nn_values = {value:
-                     math.exp(
-                         math.fsum(message(value) for message in factor_to_query_messages)
-            ) for value in self._query_variable.domain}
+        # yet non-normalized to be the distribution
+        nn_values = {value: math.exp(
+            math.fsum(message(value) for message in factor_to_query_messages)
+        ) for value in self._query_variable.domain}
         # The probability distribution must be normalized
         norm_const = math.fsum(nn_values[value] for value in self._query_variable.domain)
         # Compute the probability distribution
@@ -186,7 +157,7 @@ class SumProduct(FactoredAlgorithm):
         if not self._factor_to_variable_messages[self._evidence].contains(from_factor, to_variable):
             # Compute the message values
             for value in to_variable.domain:
-                values = {value: math.log(from_factor((value, ))) for value in to_variable.domain}
+                values = {value: math.log(from_factor((to_variable, value))) for value in to_variable.domain}
             # Cache the message
             self._factor_to_variable_messages[self._evidence].cache(Message(from_factor, to_variable, values))
 
@@ -196,34 +167,28 @@ class SumProduct(FactoredAlgorithm):
             from_variables = tuple(variable for variable in from_factor.variables if variable is not to_variable)
             # Get the incoming messages not from to_variable to from_factor
             # from_factor was previously to_factor
-            messages0 = self._variable_to_factor_messages[self._evidence].get_from_nodes_to_node(
+            messages = self._variable_to_factor_messages[self._evidence].get_from_nodes_to_node(
                 from_nodes=from_variables,
                 to_node=from_factor
             )
             # Used to reduce computational instability
-            max_message = max(message(value) for message in messages0 for value in message.from_node.domain)
-            # Extend the propagated variable-to-factor messages by the zero message that corresponds
-            # to to_variable and doesn't contribute to the sum of messages
-            messages1 = SumProduct._extend_messages_by_zero_message(messages0, to_variable)
-            # Resort extended variable-to-factor messages according to the variable ordering in the factor
-            messages2 = SumProduct._resort_messages_by_factor_variables_ordering(messages1, from_factor)
+            max_message = max(message(value) for message in messages for value in message.from_node.domain)
+            # Cross-product of the domains of from_variables
+            from_variables_evaluated_values = SumProduct._evaluate_variables(
+                variables=from_variables
+            )
             # Compute the message values
-            values = {value:
-                      max_message
-                      + math.log(
-                          math.fsum(
-                              from_factor(eval_values)
-                              * math.exp(
-                                  math.fsum(
-                                      msg(vls) for msg, vls in zip(messages2, eval_values)
-                                  ) - max_message
+            values = {value: max_message + math.log(
+                              math.fsum(
+                                  from_factor(*zip(from_variables, from_variables_values), (to_variable, value))
+                                  * math.exp(
+                                      math.fsum(
+                                          msg(vls) for msg, vls in zip(messages, from_variables_values)
+                                      ) - max_message
+                                  )
+                                  for from_variables_values in from_variables_evaluated_values
                               )
-                              for eval_values in SumProduct._evaluate_variables(
-                                  factor=from_factor,
-                                  fixed_variables_and_values=((to_variable, value), )                              
-                              )
-                          )
-                      ) for value in to_variable.domain}
+                          ) for value in to_variable.domain}
             # Cache the message
             self._factor_to_variable_messages[self._evidence].cache(Message(from_factor, to_variable, values))
 
@@ -242,12 +207,11 @@ class SumProduct(FactoredAlgorithm):
             # Compute the message values
             # Only one non-passed factor
             # from_variable was previously to_variable
-            values = {value:
-                      math.fsum(message(value) for message in
-                                self._factor_to_variable_messages[self._evidence].get_from_nodes_to_node(
-                                    from_nodes=from_factors,
-                                    to_node=from_variable)
-                                ) for value in from_variable.domain}
+            values = {value: math.fsum(message(value) for message in
+                                       self._factor_to_variable_messages[self._evidence].get_from_nodes_to_node(
+                                           from_nodes=from_factors,
+                                           to_node=from_variable)
+                                       ) for value in from_variable.domain}
             # Cache the message
             self._variable_to_factor_messages[self._evidence].cache(Message(from_variable, to_factor, values))
 
@@ -377,7 +341,7 @@ class SumProduct(FactoredAlgorithm):
             print('message values:')
             print({key: math.exp(value) for key, value in message.values.items()})
             print()
-            
+
     def _print_stop(self):
         if self._print_loop_passing:
             print('algorithm stopped')
