@@ -53,8 +53,8 @@ class BPA(FactoredAlgorithm):
 
     @staticmethod
     def _evaluate_variables(variables):
-        common_domain = (variable.domain for variable in variables)
-        return tuple(itertools.product(*common_domain))
+        domains = (variable.domain for variable in variables)
+        return tuple(itertools.product(*domains))
 
     @staticmethod
     def _update_passing(from_node, to_node):
