@@ -20,10 +20,10 @@ class Buckets:
     def _fill_buckets(self, variables):
         for variable in variables:        
             self._buckets[variable] = Bucket()
-            # Fill the bucket with factors and delete the factors from the factorization cache
+            # Fill the bucket with factors and delete the factors from the factor cache
             for factor_variables in self._factor_cache.keys():
                 if variable in factor_variables:
                     # Add the factor into the bucket
                     self._buckets[variable].add(self._factor_cache[factor_variables])
-                    # Reduce the factorization cache by the factor
+                    # Reduce the factor cache by the factor
                     del self._factor_cache[factor_variables]
