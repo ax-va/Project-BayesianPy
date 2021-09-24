@@ -1,9 +1,9 @@
-from pyb4ml.algorithms.inference.sum_product import SumProduct
+from pyb4ml.algorithms.inference.belief_propagation import BeliefPropagation
 from pyb4ml.models.factor_graphs.student import Student
 
 # Test the Sum-Product Algorithm on the Student model
 model = Student()
-algorithm = SumProduct(model)
+algorithm = BeliefPropagation(model)
 
 eps = 1 / 1e12
 

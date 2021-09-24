@@ -8,6 +8,8 @@ class BucketElimination(FactoredAlgorithm):
         self._elimination_order = elimination_order
         if set(model.variables) != set(elimination_order):
             raise ValueError('the elimination order must contain the same variables as the model')
+        if len(model.variables) != len(elimination_order):
+            raise ValueError('the elimination order must contain the same number of variables as the model')
 
     def _resort_algorithm_variables(self):
         pass
