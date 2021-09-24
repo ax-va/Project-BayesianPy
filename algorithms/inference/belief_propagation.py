@@ -73,7 +73,6 @@ class BPA(FactoredAlgorithm):
                 if value not in self._query_variable.domain:
                     raise ValueError(f'value {value!r} not in domain {self._query_variable.domain}')
                 return self._distribution[value]
-
             return distribution
         else:
             raise AttributeError('distribution not computed')
