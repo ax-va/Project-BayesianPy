@@ -6,7 +6,7 @@ from pyb4ml.algorithms.inference.factor_graph_messages import Message, Messages
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
-class BP(FactoredAlgorithm):
+class BPA(FactoredAlgorithm):
     """
     The Belief Propagation Algorithm (also referred to as the Sum-Product Algorithm)
     works on factor graph trees for random variables with categorical probability
@@ -174,7 +174,7 @@ class BP(FactoredAlgorithm):
             # Used to reduce computational instability
             max_message = max(message(value) for message in messages for value in message.from_node.domain)
             # Cross product of the domains of from_variables
-            from_variables_evaluated_values = BP._evaluate_variables(
+            from_variables_evaluated_values = BPA._evaluate_variables(
                 variables=from_variables
             )
             # Compute the message values

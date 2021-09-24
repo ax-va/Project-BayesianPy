@@ -2,7 +2,7 @@ from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
-class BE(FactoredAlgorithm):
+class BEA(FactoredAlgorithm):
     """
     The Bucket Elimination Algorithm
     """
