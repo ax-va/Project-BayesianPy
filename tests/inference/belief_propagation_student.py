@@ -1,9 +1,9 @@
-from pyb4ml.algorithms.inference.belief_propagation import BeliefPropagation
+from pyb4ml.algorithms.inference.belief_propagation import BP
 from pyb4ml.models.factor_graphs.student import Student
 
 # Test the Belief Propagation Algorithm on the Student model
 model = Student()
-algorithm = BeliefPropagation(model)
+algorithm = BP(model)
 
 eps = 1 / 1e12
 
