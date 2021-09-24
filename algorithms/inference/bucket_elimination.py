@@ -2,7 +2,10 @@ from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
-class BucketElimination(FactoredAlgorithm):
+class BE(FactoredAlgorithm):
+    """
+    The Bucket Elimination Algorithm
+    """
     def __init__(self, model: FactorGraph, elimination_order=None):
         FactoredAlgorithm.__init__(self, model)
         self._elimination_order = elimination_order
