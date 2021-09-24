@@ -1,5 +1,3 @@
-import itertools
-
 from pyb4ml.modeling.factor_graph.node import Node
 from pyb4ml.modeling.factor_graph.variable import Variable
 
@@ -54,9 +52,3 @@ if __name__ == '__main__':
         name='f_2'
     )
     print(f2((x, True)))
-
-    itr = itertools.product(('a', 'b'), (1, 2, 3), (True, False))
-    print(*itr)
-    print(*itr)
-
-
