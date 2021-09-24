@@ -24,8 +24,8 @@ class BEA(FactoredAlgorithm):
 
     def _remove_query_variables_from_elimination_order(self):
         self._elimination_order = list(self._elimination_order)
-        for query_var in self._query:
-            self._elimination_order.remove(query_var)
+        for query_variable in self._query:
+            self._elimination_order.remove(query_variable)
         self._elimination_order = tuple(self._elimination_order)
 
 
