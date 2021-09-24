@@ -21,11 +21,11 @@ class BEA(FactoredAlgorithm):
     def _copy_elimination_order(self, elimination_order):
         return tuple(self.variables[self._model.variables.index(elm_var)] for elm_var in elimination_order)
 
-    def _reorder_query_variables(self):
+    def _remove_query_variables_from_elimination_order(self):
         self._elimination_order = list(self._elimination_order)
         for query_var in self._query:
             self._elimination_order.remove(query_var)
-        self._elimination_order = tuple(self._elimination_order.extend(list(self._query)))
+        self._elimination_order = tuple(self._elimination_order)
 
 
 
