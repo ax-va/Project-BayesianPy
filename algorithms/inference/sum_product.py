@@ -173,7 +173,7 @@ class SumProduct(FactoredAlgorithm):
             )
             # Used to reduce computational instability
             max_message = max(message(value) for message in messages for value in message.from_node.domain)
-            # Cross-product of the domains of from_variables
+            # Cross product of the domains of from_variables
             from_variables_evaluated_values = SumProduct._evaluate_variables(
                 variables=from_variables
             )
