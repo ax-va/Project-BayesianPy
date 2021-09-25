@@ -100,9 +100,9 @@ class BPA(FactoredAlgorithm):
         FactoredAlgorithm.has_query_only_one_variable(self)
         # Set the first variable to the query
         self._query_variable = self._query[0]
-        # The messages are cached based on evidence
+        # The message caching is based on evidence
         self._create_factor_to_variable_messages_cache_if_necessary()
-        # The messages are cached based on evidence
+        # The message caching is based on evidence
         self._create_variable_to_factor_messages_cache_if_necessary()
         # Whether to print propagating messages
         self._print_messages = print_messages
@@ -111,7 +111,7 @@ class BPA(FactoredAlgorithm):
         # Clear the distribution
         self._distribution = None
         # Compute messages from leaves and make other initializations
-        self._initialize_loop()
+        self._initialize_main_loop()
         # Running the main loop
         while True:
             self._loop_passing += 1
@@ -246,7 +246,7 @@ class BPA(FactoredAlgorithm):
             factor.passed = False
             factor.incoming_messages_number = 0
 
-    def _initialize_loop(self):
+    def _initialize_main_loop(self):
         self._loop_passing = 0
         # Print the loop information if necessary
         self._print_loop()
