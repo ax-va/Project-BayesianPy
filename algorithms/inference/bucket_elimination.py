@@ -21,6 +21,17 @@ class BEA(FactoredAlgorithm):
         self._factor_cache = self._factorization.create_factor_cache()
         self._bucket_cache = {}
 
+    def run(self):
+        # Is a query specified?
+        FactoredAlgorithm.is_query_set(self)
+        # No query variables in the elimination order
+        self._remove_query_variables_from_elimination_order()
+        # Initialize the bucket cache
+        self._initialize_main_loop()
+        # Running the main loop
+        for variable in self._elimination_order:
+            pass
+
     def _copy_elimination_order(self, elimination_order):
         return tuple(self.variables[self._model.variables.index(variable)] for variable in elimination_order)
 
@@ -31,11 +42,15 @@ class BEA(FactoredAlgorithm):
             for factor_variables in self._factor_cache.keys():
                 if variable in factor_variables:
                     # Add the factor into the bucket
-                    self._bucket_cache[variable].add(self._factor_cache[factor_variables])
+                    self._bucket_cache[variable].add_factor(self._factor_cache[factor_variables])
+                    # Add the remaining free variables into the bucket
+                    free_variables = (free_variable for free_variable in factor_variables
+                                      if free_variable is not variable)
+                    self._bucket_cache[variable].add_free_variables(free_variables)
                     # Reduce the factor cache by the factor
                     del self._factor_cache[factor_variables]
 
-    def _initialize_loop(self):
+    def _initialize_main_loop(self):
         self._initialize_bucket_cache(self._elimination_order)
         self._initialize_bucket_cache(self._query)
 

@@ -1,5 +1,4 @@
 import math
-import itertools
 
 from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
 from pyb4ml.algorithms.inference.factor_graph_messages import Message, Messages
@@ -50,11 +49,6 @@ class BPA(FactoredAlgorithm):
         self._next_factors = None
         self._from_variables = None
         self._next_variables = None
-
-    @staticmethod
-    def _evaluate_variables(variables):
-        domains = (variable.domain for variable in variables)
-        return tuple(itertools.product(*domains))
 
     @staticmethod
     def _update_passing(from_node, to_node):
@@ -173,9 +167,7 @@ class BPA(FactoredAlgorithm):
             # Used to reduce computational instability
             max_message = max(message(value) for message in messages for value in message.from_node.domain)
             # Cross product of the domains of from_variables
-            from_variables_evaluated_values = BPA._evaluate_variables(
-                variables=from_variables
-            )
+            from_variables_evaluated_values = FactoredAlgorithm.evaluate_variables(from_variables)
             # Compute the message values
             values = {value: max_message + math.log(
                               math.fsum(

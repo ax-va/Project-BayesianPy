@@ -1,4 +1,5 @@
 import copy
+import itertools
 
 from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
@@ -15,6 +16,11 @@ class FactoredAlgorithm:
         self._evidence = None
         # Probability distribution P(query) or P(query|evidence) of interest
         self._distribution = None
+
+    @staticmethod
+    def evaluate_variables(variables):
+        domains = (variable.domain for variable in variables)
+        return tuple(itertools.product(*domains))
 
     @property
     def evidence(self):

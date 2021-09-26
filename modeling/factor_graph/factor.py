@@ -52,3 +52,11 @@ if __name__ == '__main__':
         name='f_2'
     )
     print(f2((x, True)))
+
+    a = (1, 2, 3)
+    b = ('a', 'b', 'c')
+    print(list(zip(a, b)))
+    def func(*values):
+        return values
+
+    print(func(*[1, 2, 3]))
