@@ -12,11 +12,11 @@ class Student(FactorGraph):
     """
     def __init__(self):
         # Random variables
-        self._difficulty = Variable(domain=('d0', 'd1'), name='Difficulty')
-        self._intelligence = Variable(domain=('i0', 'i1'), name='Intelligence')
-        self._grade = Variable(domain=('g0', 'g1', 'g2'), name='Grade')
-        self._sat = Variable(domain=('s0', 's1'), name='SAT')
-        self._letter = Variable(domain=('l0', 'l1'), name='Letter')
+        self._difficulty = Variable(domain={'d0', 'd1'}, name='Difficulty')
+        self._intelligence = Variable(domain={'i0', 'i1'}, name='Intelligence')
+        self._grade = Variable(domain={'g0', 'g1', 'g2'}, name='Grade')
+        self._sat = Variable(domain={'s0', 's1'}, name='SAT')
+        self._letter = Variable(domain={'l0', 'l1'}, name='Letter')
         variables = {
             self._difficulty,
             self._intelligence,
