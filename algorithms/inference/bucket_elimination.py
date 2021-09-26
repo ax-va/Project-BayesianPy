@@ -1,6 +1,5 @@
 from pyb4ml.algorithms.inference.bucket import Bucket
 from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
-from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
