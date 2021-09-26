@@ -270,3 +270,17 @@ for query in model.variables:
     if query.name == 'Letter':
         assert 0.497664 - eps <= pd('l0') <= 0.497664 + eps
         assert 0.502336 - eps <= pd('l1') <= 0.502336 + eps
+
+algorithm.clear_cached_messages()
+
+# Test conditional distributions again
+difficulty = model.get_variable('Difficulty')
+letter = model.get_variable('Letter')
+sat = model.get_variable('SAT')
+algorithm.set_query(difficulty)
+algorithm.set_evidence((letter, 'l0'), (sat, 's0'))
+algorithm.run()
+pd = algorithm.pd
+algorithm.print_pd()
+assert 0.474219640643 - eps <= pd('d0') <= 0.474219640643 + eps
+assert 0.525780359357 - eps <= pd('d1') <= 0.525780359357 + eps
