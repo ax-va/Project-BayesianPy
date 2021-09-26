@@ -112,6 +112,7 @@ class BPA(FactoredAlgorithm):
             self._loop_passing += 1
             # Print the number of the main-loop passes
             self._print_loop()
+            # Next initialization
             self._from_factors = self._next_factors
             self._next_factors = []
             self._from_variables = self._next_variables
@@ -120,6 +121,7 @@ class BPA(FactoredAlgorithm):
                 self._propagate_factor_to_variable_message_not_from_leaf(from_factor)
             for from_variable in self._from_variables:
                 self._propagate_variable_to_factor_message_not_from_leaf(from_variable)
+        # Propagation stopped
         # Compute either the marginal or conditional probability distribution
         self._compute_distribution()
         self._print_stop()
