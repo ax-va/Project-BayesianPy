@@ -19,7 +19,7 @@ class BEA(FactoredAlgorithm):
             self._elimination_order = ...
         else:
             self._elimination_order = self._copy_elimination_order(elimination_order)
-        self._factor_cache = self._factorization.create_factor_cache()
+        self._factor_cache = self._factor_graph.create_factor_cache()
         self._bucket_cache = {}
 
     def run(self):

@@ -32,7 +32,7 @@ class FactoredAlgorithm:
 
     @property
     def factors(self):
-        return self._factorization.factors
+        return self._factor_graph.factors
 
     @property
     def query(self):
@@ -44,7 +44,7 @@ class FactoredAlgorithm:
 
     @property
     def variables(self):
-        return self._factorization.variables
+        return self._factor_graph.variables
 
     def has_query_only_one_variable(self):
         if len(self._query) != 1:
@@ -87,7 +87,7 @@ class FactoredAlgorithm:
                 raise ValueError(f'query variable {query_var.name!r} is in evidence '
                                  f'{tuple((e[0].name, e[1]) for e in self._evidence)}')
 
-    def _create_algorithm_factorization(self):
+    def _create_algorithm_factor_graph(self):
         # Encapsulate the factors and variables inside the algorithm
         # Deeply copy the variables
         variables = tuple(copy.deepcopy(self._model.variables))
@@ -102,7 +102,7 @@ class FactoredAlgorithm:
                 name=copy.deepcopy(model_factor.name)
             ) for model_factor in self._model.factors
         )
-        self._factorization = Factorization(factors, variables)
+        self._factor_graph = FactorGraph(factors, variables)
 
     def _create_algorithm_factor_variables(self, model_factor, variables):
         return tuple(variables[self._model.variables.index(model_factor_variable)]
@@ -151,4 +151,4 @@ class FactoredAlgorithm:
         self._model = model
         # Encapsulate the factors and variables inside the algorithm by using factorization.
         # Create self._factorization.
-        self._create_algorithm_factorization()
+        self._create_algorithm_factor_graph()

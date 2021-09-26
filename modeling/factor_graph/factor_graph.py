@@ -21,6 +21,9 @@ class FactorGraph:
     def variables(self):
         return self._factorization.variables
 
+    def create_factor_cache(self):
+        return self._factorization.create_factor_cache()
+
     def get_variable(self, name):
         for variable in self.variables:
             if variable.name == name:

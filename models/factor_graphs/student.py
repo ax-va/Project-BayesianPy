@@ -17,13 +17,13 @@ class Student(FactorGraph):
         self._grade = Variable(domain={'g0', 'g1', 'g2'}, name='Grade')
         self._sat = Variable(domain={'s0', 's1'}, name='SAT')
         self._letter = Variable(domain={'l0', 'l1'}, name='Letter')
-        variables = (
+        variables = {
             self._difficulty,
             self._intelligence,
             self._grade,
             self._sat,
             self._letter
-        )
+        }
 
         # Conditional probability distributions (CPDs)
         self._cpd_difficulty = {
@@ -52,47 +52,47 @@ class Student(FactorGraph):
 
         # Factors
         self._f0 = Factor(
-            variables=(self._difficulty, ),
+            variables={self._difficulty},
             function=self._f_cpd_difficulty,
             name='f0'
         )
         self._f1 = Factor(
-            variables=(self._intelligence, ),
+            variables={self._intelligence},
             function=self._f_cpd_intelligence,
             name='f1'
         )
         self._f2 = Factor(
-            variables=(
+            variables={
                 self._difficulty,
                 self._intelligence,
                 self._grade
-            ),
+            },
             function=self._f_cpd_grade,
             name='f2'
         )
         self._f3 = Factor(
-            variables=(
+            variables={
                 self._intelligence,
                 self._sat
-            ),
+            },
             function=self._f_cpd_sat,
             name='f3'
         )
         self._f4 = Factor(
-            variables=(
+            variables={
                 self._grade,
                 self._letter
-            ),
+            },
             function=self._f_cpd_letter,
             name='f4'
         )
-        factors = (
+        factors = {
             self._f0,
             self._f1,
             self._f2,
             self._f3,
             self._f4
-        )
+        }
         FactorGraph.__init__(self, factors, variables)
 
     # Factor functions
