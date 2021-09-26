@@ -39,9 +39,9 @@ class Factor(Node):
 
 
 if __name__ == '__main__':
-    x = Variable(domain=(False, True), name='X')
-    y = Variable(domain=(False, True), name='Y')
-    z = Variable(domain=(False, True), name='Z')
+    x = Variable(domain={False, True}, name='X')
+    y = Variable(domain={False, True}, name='Y')
+    z = Variable(domain={False, True}, name='Z')
     f1 = Factor(
         variables=(x, y, z),
         function=lambda a, b, c: 0.5 if (a or b or c) else 0.1,
