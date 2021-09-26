@@ -43,7 +43,7 @@ class BEA(FactoredAlgorithm):
                 if variable in factor_variables:
                     # Add the factor into the bucket
                     self._bucket_cache[variable].add_factor(self._factor_cache[factor_variables])
-                    # Add the remaining free variables into the bucket
+                    # Add the free variables of the output factor into the bucket
                     free_variables = (free_variable for free_variable in factor_variables
                                       if free_variable is not variable)
                     self._bucket_cache[variable].add_free_variables(free_variables)
