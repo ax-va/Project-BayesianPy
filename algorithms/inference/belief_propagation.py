@@ -167,17 +167,17 @@ class BPA(FactoredAlgorithm):
             # Used to reduce computational instability
             max_message = max(message(value) for message in messages for value in message.from_node.domain)
             # Cross product of the domains of from_variables
-            from_variables_evaluated_values = FactoredAlgorithm.evaluate_variables(from_variables)
+            evaluated_from_variables_values = FactoredAlgorithm.evaluate_variables(from_variables)
             # Compute the message values
             values = {value: max_message + math.log(
                               math.fsum(
                                   from_factor(*zip(from_variables, from_variables_values), (to_variable, value))
                                   * math.exp(
                                       math.fsum(
-                                          msg(vls) for msg, vls in zip(messages, from_variables_values)
+                                          msg(val) for msg, val in zip(messages, from_variables_values)
                                       ) - max_message
                                   )
-                                  for from_variables_values in from_variables_evaluated_values
+                                  for from_variables_values in evaluated_from_variables_values
                               )
                           ) for value in to_variable.domain}
             # Cache the message
