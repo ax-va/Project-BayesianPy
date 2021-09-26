@@ -31,6 +31,9 @@ class Factor(Node):
     def variables_number(self):
         return len(self._variables)
 
+    def filter_variables_with_values(self, variables_with_values):
+        return tuple(var_val for var_val in variables_with_values if var_val[0] in self._variables)
+
     def is_leaf(self):
         return len(self._variables) == 1
 

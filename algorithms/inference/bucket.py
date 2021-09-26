@@ -10,10 +10,6 @@ class Bucket:
         self._factors = []
         self._free_variables = []
 
-    @staticmethod
-    def _get_free_variables_with_values_for_factor(self, free_variables_with_values, factor):
-        return tuple(x for x in free_variables_with_values if x[0] in factor.variables)
-
     @property
     def factors(self):
         return self._factors
@@ -43,7 +39,7 @@ class Bucket:
             factor_value = math.fsum(
                 math.prod(
                     factor(
-                        *self._get_free_variables_with_values_for_factor(free_variables_with_values, factor),
+                        *factor.filter_variables_with_values(free_variables_with_values),
                         (self._variable, value)
                     ) for factor in self._factors
                 ) for value in self._variable.domain
