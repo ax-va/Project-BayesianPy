@@ -31,6 +31,8 @@ class Bucket:
         return len(set(self._free_variables)) > 0
 
     def compute_factor_with_free_variables(self):
+        # Remove duplicates and sort free variables
+        self._set_free_variables()
         # Evaluate free variables
         evaluated_free_variables = FactoredAlgorithm.evaluate_variables(self._free_variables)
         function_value_dict = {}
