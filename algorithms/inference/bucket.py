@@ -34,12 +34,12 @@ class Bucket:
         # Remove duplicates and sort free variables
         self._set_free_variables()
         # Evaluate free variables
-        evaluated_free_variables = FactoredAlgorithm.evaluate_variables(self._free_variables)
+        free_variables_values = FactoredAlgorithm.evaluate_variables(self._free_variables)
         # Compute the function for the output factor
         function_value_dict = {}
-        for free_values in evaluated_free_variables:
+        for free_values in free_variables_values:
             free_variables_with_values = tuple(zip(self._free_variables, free_values))
-            factor_value = math.fsum(
+            function_value_dict[free_values] = math.fsum(
                 math.prod(
                     factor(
                         *factor.filter_variables_with_values(free_variables_with_values),
@@ -47,7 +47,6 @@ class Bucket:
                     ) for factor in self._input_factors
                 ) for value in self._variable.domain
             )
-            function_value_dict[free_values] = factor_value
         output_factor = Factor(
             variables=self._free_variables,
             function=lambda *values: function_value_dict[values],
