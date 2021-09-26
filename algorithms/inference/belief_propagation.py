@@ -72,6 +72,8 @@ class BPA(FactoredAlgorithm):
             raise AttributeError('distribution not computed')
 
     def clear_cached_messages(self):
+        del self._factor_to_variable_messages
+        del self._variable_to_factor_messages
         self._factor_to_variable_messages = {}
         self._variable_to_factor_messages = {}
 
