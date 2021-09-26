@@ -23,9 +23,15 @@ class FactorGraph:
 
     def create_factor_cache(self):
         return self._factorization.create_factor_cache()
+    
+    def get_factor(self, name):
+        for factor in self.factors:
+            if factor.name == name:
+                return factor
+        raise AttributeError(f'the factor with name {name!r} not found')                            
 
     def get_variable(self, name):
         for variable in self.variables:
             if variable.name == name:
                 return variable
-        raise ValueError('the variable with name {name!r} not found')
+        raise AttributeError(f'the variable with name {name!r} not found')
