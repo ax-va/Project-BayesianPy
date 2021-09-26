@@ -58,5 +58,3 @@ class Bucket:
     def _set_free_variables(self):
         # Remove duplicates and sort free variables
         self._free_variables = tuple(sorted(set(self._free_variables), key=lambda x: x.name))
-
-
