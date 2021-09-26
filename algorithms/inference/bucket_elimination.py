@@ -15,6 +15,7 @@ class BEA(FactoredAlgorithm):
         if len(model.variables) != len(elimination_order):
             raise ValueError('the elimination order must contain the same number of variables as the model')
         if elimination_order is None:
+            # Compute an elimination order
             self._elimination_order = ...
         else:
             self._elimination_order = self._copy_elimination_order(elimination_order)
@@ -24,12 +25,12 @@ class BEA(FactoredAlgorithm):
     def run(self):
         # Is a query specified?
         FactoredAlgorithm.is_query_set(self)
-        # No query variables in the elimination order
+        # Eliminate query variables from the elimination order
         self._remove_query_variables_from_elimination_order()
         # Initialize the bucket cache
         self._initialize_main_loop()
         # Running the main loop
-        for variable in self._elimination_order:
+        for variable in self._elimination_order_without_query_variables:
             pass
 
     def _copy_elimination_order(self, elimination_order):
@@ -55,10 +56,10 @@ class BEA(FactoredAlgorithm):
         self._initialize_bucket_cache(self._query)
 
     def _remove_query_variables_from_elimination_order(self):
-        self._elimination_order = list(self._elimination_order)
+        self._elimination_order_without_query_variables = list(self._elimination_order)
         for query_variable in self._query:
-            self._elimination_order.remove(query_variable)
-        self._elimination_order = tuple(self._elimination_order)
+            self._elimination_order_without_query_variables.remove(query_variable)
+        self._elimination_order_without_query_variables = tuple(self._elimination_order_without_query_variables)
 
 
 
