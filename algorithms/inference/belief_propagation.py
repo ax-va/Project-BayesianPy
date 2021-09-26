@@ -107,26 +107,22 @@ class BPA(FactoredAlgorithm):
         # Compute messages from leaves and make other initializations
         self._initialize_main_loop()
         # Running the main loop
-        while True:
+        # Stop condition: self._query_variable.incoming_messages_number == self._query_variable.factors_number
+        while self._get_running_condition():
             self._loop_passing += 1
             # Print the number of the main-loop passes
             self._print_loop()
-            # Check the stop condition
-            if self._query_variable.incoming_messages_number == self._query_variable.factors_number:
-                # Compute either the marginal or conditional probability distribution
-                self._compute_distribution()
-                self._print_stop()
-                # Break the main loop
-                break
-            else:
-                self._from_factors = self._next_factors
-                self._next_factors = []
-                self._from_variables = self._next_variables
-                self._next_variables = []
-                for from_factor in self._from_factors:
-                    self._propagate_factor_to_variable_message_not_from_leaf(from_factor)
-                for from_variable in self._from_variables:
-                    self._propagate_variable_to_factor_message_not_from_leaf(from_variable)
+            self._from_factors = self._next_factors
+            self._next_factors = []
+            self._from_variables = self._next_variables
+            self._next_variables = []
+            for from_factor in self._from_factors:
+                self._propagate_factor_to_variable_message_not_from_leaf(from_factor)
+            for from_variable in self._from_variables:
+                self._propagate_variable_to_factor_message_not_from_leaf(from_variable)
+        # Compute either the marginal or conditional probability distribution
+        self._compute_distribution()
+        self._print_stop()
 
     def _compute_distribution(self):
         # Get the incoming messages to the query
@@ -231,6 +227,9 @@ class BPA(FactoredAlgorithm):
         # to the next variable
         if factor.incoming_messages_number + 1 == factor.variables_number:
             self._next_factors.append(factor)
+
+    def _get_running_condition(self):
+        return self._query_variable.incoming_messages_number < self._query_variable.factors_number
 
     def _initialize_factor_passing(self):
         # There are no passed factors
