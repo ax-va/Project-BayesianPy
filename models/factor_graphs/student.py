@@ -53,12 +53,12 @@ class Student(FactorGraph):
         # Factors
         self._f0 = Factor(
             variables=(self._difficulty, ),
-            function=self._f_cpd_difficulty,
+            function=lambda x: self._cpd_difficulty[x],
             name='f0'
         )
         self._f1 = Factor(
             variables=(self._intelligence, ),
-            function=self._f_cpd_intelligence,
+            function=lambda x: self._cpd_intelligence[x],
             name='f1'
         )
         self._f2 = Factor(
@@ -67,7 +67,7 @@ class Student(FactorGraph):
                 self._intelligence,
                 self._grade
             ),
-            function=self._f_cpd_grade,
+            function=lambda x, y, z: self._cpd_grade[(x, y)][z],
             name='f2'
         )
         self._f3 = Factor(
@@ -75,7 +75,7 @@ class Student(FactorGraph):
                 self._intelligence,
                 self._sat
             ),
-            function=self._f_cpd_sat,
+            function=lambda x, y: self._cpd_sat[x][y],
             name='f3'
         )
         self._f4 = Factor(
@@ -83,7 +83,7 @@ class Student(FactorGraph):
                 self._grade,
                 self._letter
             ),
-            function=self._f_cpd_letter,
+            function=lambda x, y: self._cpd_letter[x][y],
             name='f4'
         )
         factors = {
@@ -94,19 +94,3 @@ class Student(FactorGraph):
             self._f4
         }
         FactorGraph.__init__(self, factors, variables)
-
-    # Factor functions
-    def _f_cpd_difficulty(self, x):
-        return self._cpd_difficulty[x]
-
-    def _f_cpd_intelligence(self, x):
-        return self._cpd_intelligence[x]
-
-    def _f_cpd_grade(self, x, y, z):
-        return self._cpd_grade[(x, y)][z]
-
-    def _f_cpd_sat(self, x, y):
-        return self._cpd_sat[x][y]
-
-    def _f_cpd_letter(self, x, y):
-        return self._cpd_letter[x][y]
