@@ -1,5 +1,5 @@
-from pyb4ml.algorithms.inference.belief_propagation import BPA
-from pyb4ml.models.factor_graphs.student import Student
+from pyb4ml.algorithms.inference import BPA
+from pyb4ml.models import Student
 
 # Test the Belief Propagation Algorithm on the Student model
 model = Student()
