@@ -118,6 +118,8 @@ class FactoredAlgorithm:
             alg_var.set_domain(mod_var.domain)
 
     def _set_evidence(self, *evidence):
+        # Remove duplicates if necessary
+        evidence = set(evidence)
         self._evidence = []
         # Setting the evidence is equivalent to reducing the domain of the variable to only one value
         for ev_var, ev_val in evidence:
@@ -125,7 +127,7 @@ class FactoredAlgorithm:
                 ev_var = self._get_algorithm_variable(ev_var)
             except ValueError:
                 self._evidence = None
-                raise ValueError(f'no variable in the model that corresponds to evidence variable {ev_var.name!r}')
+                raise ValueError(f'no model variable corresponding to evidence variable {ev_var.name!r}')
             self._check_evidence_variable_in_query(ev_var)
             self._check_evidence_variable_domain(ev_var, ev_val)
             # Set the new domain containing only one value
@@ -134,6 +136,8 @@ class FactoredAlgorithm:
         self._evidence = tuple(sorted(self._evidence, key=lambda x: x[0].name))
 
     def _set_query(self, *variables):
+        # Remove duplicates if necessary
+        variables = set(variables)
         self._query = []
         for query_var in variables:
             # Variable 'query' of interest for computing P(query) or P(query|evidence)
@@ -141,7 +145,7 @@ class FactoredAlgorithm:
                 query_var = self._get_algorithm_variable(query_var)
             except ValueError:
                 self._query = None
-                raise ValueError(f'no variable in the model that corresponds to query variable {query_var.name!r}')
+                raise ValueError(f'no model variable corresponding to query variable {query_var.name!r}')
             self._check_query_variable_in_evidence(query_var)
             self._query.append(query_var)
         self._query = tuple(sorted(self._query, key=lambda x: x.name))
