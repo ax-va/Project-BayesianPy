@@ -7,7 +7,7 @@ from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 class FactoredAlgorithm:
     def __init__(self, model: FactorGraph):
-        # Specifying the model
+        # Specify the model
         self._set_model(model)
         # Query not specified
         self._query = None
