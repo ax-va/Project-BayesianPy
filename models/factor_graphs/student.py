@@ -1,6 +1,6 @@
-from pyb4ml.modeling.factor_graph import Factor
-from pyb4ml.modeling.factor_graph import Variable
-from pyb4ml.modeling.factor_graph import FactorGraph
+from pyb4ml.modeling import Factor
+from pyb4ml.modeling import Variable
+from pyb4ml.modeling import FactorGraph
 
 
 class Student(FactorGraph):
