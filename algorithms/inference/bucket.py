@@ -39,7 +39,11 @@ class Bucket:
         function_value_dict = {}
         for free_values in free_variables_values:
             free_variables_with_values = tuple(zip(self._free_variables, free_values))
-            max_log_factor = ...
+            max_log_factor = max(
+                log_factor(tuple(zip(log_factor.variables, values)))
+                for log_factor in self._input_log_factors
+                for values in FactoredAlgorithm.evaluate_variables(log_factor.variables)
+            )
             function_value_dict[free_values] = max_log_factor + math.log(
                 math.fsum(
                     math.exp(
