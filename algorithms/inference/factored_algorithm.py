@@ -52,7 +52,7 @@ class FactoredAlgorithm:
     def is_query_set(self):
         # Is a query specified?
         if self._query is None:
-            raise AttributeError('no query specified')
+            raise AttributeError('query not specified')
 
     def set_evidence(self, *evidence):
         # Refresh the domain of variables

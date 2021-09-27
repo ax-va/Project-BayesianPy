@@ -108,7 +108,7 @@ class BPA(FactoredAlgorithm):
         self._distribution = None
         # Compute messages from leaves and make other initializations
         self._initialize_main_loop()
-        # Running the main loop
+        # Run the main loop
         # Stop condition: self._query_variable.incoming_messages_number == self._query_variable.factors_number
         while self._get_running_condition():
             self._loop_passing += 1

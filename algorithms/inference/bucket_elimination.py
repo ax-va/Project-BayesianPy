@@ -17,16 +17,18 @@ class BEA(FactoredAlgorithm):
     def is_elimination_order_set(self):
         # Is an elimination order specified?
         if self._elimination_order is None:
-            raise AttributeError('no elimination order specified')
+            raise AttributeError('elimination order not specified')
 
     def run(self):
         # Is a query specified?
         FactoredAlgorithm.is_query_set(self)
         # ...
+        self.is_elimination_order_set()
+        # ...
         self._check_elimination_order_and_query()
         # Initialize the bucket cache
         self._initialize_main_loop()
-        # Running the main loop
+        # Run the main loop
         for variable in self._elimination_order:
             pass
 
