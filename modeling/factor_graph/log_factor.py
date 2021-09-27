@@ -4,9 +4,9 @@ from pyb4ml.modeling.factor_graph.factor import Factor
 
 
 def log(f):
-    def lof_f(x):
+    def log_f(x):
         return math.log(f(x))
-    return lof_f
+    return log_f
 
 
 class LogFactor(Factor):
