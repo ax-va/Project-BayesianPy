@@ -3,7 +3,6 @@ import itertools
 
 from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
-from pyb4ml.modeling.factor_graph.factorization import Factorization
 
 
 class FactoredAlgorithm:
@@ -48,12 +47,12 @@ class FactoredAlgorithm:
 
     def has_query_only_one_variable(self):
         if len(self._query) != 1:
-            raise ValueError('query contains more than one variable')
+            raise ValueError('the query contains more than one variable')
 
     def is_query_set(self):
         # Is a query specified?
         if self._query is None:
-            raise AttributeError('query not specified')
+            raise AttributeError('no query specified')
 
     def set_evidence(self, *evidence):
         # Refresh the domain of variables

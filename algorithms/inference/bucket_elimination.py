@@ -14,22 +14,23 @@ class BEA(FactoredAlgorithm):
         self._factor_cache = self._factor_graph.create_factor_cache()
         self._bucket_cache = {}
 
+    def is_elimination_order_set(self):
+        # Is an elimination order specified?
+        if self._elimination_order is None:
+            raise AttributeError('no elimination order specified')
+
     def run(self):
         # Is a query specified?
         FactoredAlgorithm.is_query_set(self)
         # ...
+        self._check_elimination_order_and_query()
         # Initialize the bucket cache
         self._initialize_main_loop()
         # Running the main loop
         for variable in self._elimination_order:
             pass
 
-    def set_query(self, query):
-        raise ValueError('The query can be set only with the variable elimination order')
-
-    def set_query_and_elimination_order(self, query, elimination_order):
-        # Set the query first
-        FactoredAlgorithm.set_query(self, query)
+    def set_elimination_order(self, elimination_order):
         # Remove duplicates if necessary
         elimination_order = set(elimination_order)
         self._elimination_order = []
@@ -42,7 +43,6 @@ class BEA(FactoredAlgorithm):
                 raise ValueError(f'no model variable corresponding to variable {elm_var.name!r} '
                                  f'in the elimination order')
             self._elimination_order.append(elm_var)
-        self._check_elimination_order_and_query()
         self._elimination_order = tuple(self._elimination_order)
 
     def _check_elimination_order_and_query(self):
