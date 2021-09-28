@@ -7,8 +7,7 @@ class Factor(Node):
         self._variables = tuple(variables)
         self._function = function
         Node.__init__(self, name)
-        for variable in self._variables:
-            variable.link_factor(self)
+        self._link_factor_to_variables()
 
     def __call__(self, *variables_with_values):
         variables_values_dict = dict(variables_with_values)
@@ -36,6 +35,10 @@ class Factor(Node):
 
     def is_leaf(self):
         return len(self._variables) == 1
+
+    def _link_factor_to_variables(self):
+        for variable in self._variables:
+            variable.link_factor(self)
 
 
 if __name__ == '__main__':

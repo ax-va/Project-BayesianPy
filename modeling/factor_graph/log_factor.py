@@ -17,3 +17,8 @@ class LogFactor(Factor):
             Factor.__init__(self, variables, function, name)
         else:
             raise ValueError('not all sufficient arguments specified')
+
+    def _link_factor_to_variables(self):
+        # Overwrite the method to avoid linking a log-factor to variables.
+        # Do nothing.
+        pass
