@@ -11,7 +11,7 @@ class Student(FactorGraph):
     Principles and Techniques", MIT Press, 2009
     """
     def __init__(self):
-        # Random variables
+        # Create random variables
         difficulty = Variable(domain={'d0', 'd1'}, name='Difficulty')
         intelligence = Variable(domain={'i0', 'i1'}, name='Intelligence')
         grade = Variable(domain={'g0', 'g1', 'g2'}, name='Grade')
@@ -25,7 +25,7 @@ class Student(FactorGraph):
             letter
         }
 
-        # Conditional probability distributions (CPDs)
+        # Create conditional probability distributions (CPDs)
         cpd_difficulty = {
             'd0': 0.6,
             'd1': 0.4
@@ -50,7 +50,7 @@ class Student(FactorGraph):
             'g2': {'l0': 0.99, 'l1': 0.01}
         }
 
-        # Factors
+        # Create factors
         f0 = Factor(
             variables=(difficulty, ),
             function=lambda x: cpd_difficulty[x],
@@ -93,4 +93,5 @@ class Student(FactorGraph):
             f3,
             f4
         }
+        # Create a factor graph from the factors and variables
         FactorGraph.__init__(self, factors, variables)
