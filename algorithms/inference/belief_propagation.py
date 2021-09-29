@@ -90,9 +90,9 @@ class BPA(FactoredAlgorithm):
             raise AttributeError('distribution not computed')
 
     def run(self, print_messages=False, print_loop_passing=False):
-        # Is a query specified?
+        # Check whether a query is specified
         FactoredAlgorithm.is_query_set(self)
-        # Has the query only one variable?
+        # Check whether the query has only one variable
         FactoredAlgorithm.has_query_only_one_variable(self)
         # Set the first variable to the query
         self._query_variable = self._query[0]

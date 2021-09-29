@@ -1,3 +1,5 @@
+from collections import deque
+
 from pyb4ml.algorithms.inference.bucket import Bucket
 from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
@@ -20,17 +22,42 @@ class BEA(FactoredAlgorithm):
             raise AttributeError('elimination order not specified')
 
     def run(self):
-        # Is a query specified?
+        # Check whether a query is specified
         FactoredAlgorithm.is_query_set(self)
-        # ...
+        # Check whether an elimination order is specified
         self.is_elimination_order_set()
-        # ...
+        # Check if the elimination order and query agree with each other
         self._check_elimination_order_and_query()
         # Initialize the bucket cache
         self._initialize_main_loop()
         # Run the main loop
-        for variable in self._elimination_order:
-            pass
+        while True:
+            if len(self._elimination_deque) > 0:
+                # Get a variable to be eliminated
+                variable = self._elimination_deque.popleft()
+                # If there are the log-factors in the output cache
+                # containing that variable, they should be added into
+                # the bucket of that variable
+                self._add_from_output_cache_to_bucket_cache(variable)
+                # Get the resulting bucket
+                bucket = self._bucket_cache[variable]
+                # Compute the output log-factor of that bucket if necessary
+                if bucket.has_log_factors():
+                    # If the bucket has no free variables, then the output log-factor is zero
+                    if bucket.has_free_variables():
+                        # Compute the output log-factor of the bucket
+                        log_factor = self._bucket_cache[variable].compute_output_log_factor()
+                        # Cache the log-factor
+                        self._output_cache[log_factor.variables] = log_factor
+            else:
+                for query_var in self._query:
+                    # If there are the log-factors in the output cache
+                    # containing the query variable, they should be added into
+                    # the bucket of the query variable
+                    self._add_from_output_cache_to_bucket_cache(query_var)
+                # All the output log-factors are distributed on the buckets
+                # that belongs to the query variables
+                break
 
     def set_elimination_order(self, elimination_order):
         # Remove duplicates if necessary
@@ -46,6 +73,13 @@ class BEA(FactoredAlgorithm):
                                  f'in the elimination order')
             self._elimination_order.append(elm_var)
         self._elimination_order = tuple(self._elimination_order)
+
+    def _add_from_output_cache_to_bucket_cache(self, variable):
+        for log_factor_variables in self._output_cache.keys():
+            if variable in log_factor_variables:
+                output_log_factor = self._output_cache[log_factor_variables]
+                self._bucket_cache[variable].add_log_factor(output_log_factor)
+                del self._output_cache[log_factor_variables]
 
     def _check_elimination_order_and_query(self):
         set_q = set(self._query)
@@ -78,6 +112,9 @@ class BEA(FactoredAlgorithm):
     def _initialize_main_loop(self):
         self._initialize_bucket_cache(self._elimination_order)
         self._initialize_bucket_cache(self._query)
+        self._elimination_deque = deque(self._elimination_order)
+        self._output_cache = {}
+
 
 
 
