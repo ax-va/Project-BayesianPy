@@ -55,8 +55,8 @@ class FactoredAlgorithm:
             raise AttributeError('query not specified')
 
     def set_evidence(self, *evidence):
-        # Refresh the domain of variables
-        self._refresh_algorithm_variables_domain()
+        # Refresh the domain of evidential variables
+        self._refresh_evidential_variables_domain_if_necessary()
         if not evidence[0]:
             self._evidence = None
         else:
@@ -111,10 +111,11 @@ class FactoredAlgorithm:
         # Make sure that the encapsulated variable is got
         return self.variables[self._model.variables.index(variable)]
 
-    def _refresh_algorithm_variables_domain(self):
-        # Refresh the domain of variables
-        for alg_var, mod_var in zip(self.variables, self._model.variables):
-            alg_var.set_domain(mod_var.domain)
+    def _refresh_evidential_variables_domain_if_necessary(self):
+        # Refresh the domains of evidential variables
+        if self._evidence is not None:
+            for ev_var, _ in self._evidence:
+                ev_var.set_domain(self._model.variables[self.variables.index(ev_var)].domain)
 
     def _set_evidence(self, *evidence):
         # Remove duplicates if necessary
