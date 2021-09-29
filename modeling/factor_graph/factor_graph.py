@@ -1,25 +1,25 @@
-from pyb4ml.modeling.factor_graph.factorization import Factorization
-
-
 class FactorGraph:
     def __init__(self, factors):
-        # Factorization
-        self._factorization = Factorization(factors)
-
-    @property
-    def factorization(self):
-        return self._factorization
+        self._factors = tuple(sorted(set(factors), key=lambda f: f.name))
+        self._variables = tuple(
+            sorted(
+                set(variable
+                    for factor in self._factors
+                    for variable in factor.variables),
+                key=lambda v: v.name
+            )
+        )
 
     @property
     def factors(self):
-        return self._factorization.factors
+        return self._factors
 
     @property
     def variables(self):
-        return self._factorization.variables
+        return self._variables
 
     def create_factor_cache(self):
-        return self._factorization.create_factor_cache()
+        return {factor.variables: factor for factor in self._factors}
     
     def get_factor(self, name):
         for factor in self.factors:
