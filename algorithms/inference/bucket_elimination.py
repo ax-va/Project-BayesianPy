@@ -30,7 +30,7 @@ class BEA(FactoredAlgorithm):
         self._check_elimination_order_and_query()
         # Initialize the bucket cache
         self._initialize_main_loop()
-        # Run the main loop
+        # Run the main loops
         for variable in self._elimination_order:
             # If there are the log-factors in the output cache
             # containing that variable, they should be added into
