@@ -79,6 +79,8 @@ class Student(FactorGraph):
             function=lambda x, y: cpd_letter[x][y],
             name='f4'
         )
+
+        # Create a factorization
         factors = {
             f0,
             f1,
@@ -86,5 +88,6 @@ class Student(FactorGraph):
             f3,
             f4
         }
+
         # Create a factor graph from the factors
         FactorGraph.__init__(self, factors)
