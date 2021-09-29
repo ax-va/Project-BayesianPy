@@ -1,7 +1,14 @@
 class Factorization:
-    def __init__(self, factors, variables):
+    def __init__(self, factors):
         self._factors = tuple(sorted(set(factors), key=lambda f: f.name))
-        self._variables = tuple(sorted(set(variables), key=lambda v: v.name))
+        self._variables = tuple(
+            sorted(
+                set(variable
+                    for factor in self._factors
+                    for variable in factor.variables),
+                key=lambda v: v.name
+            )
+        )
 
     @property
     def factors(self):

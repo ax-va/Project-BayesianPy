@@ -87,8 +87,8 @@ class FactoredAlgorithm:
                                  f'{tuple((e[0].name, e[1]) for e in self._evidence)}')
 
     def _create_algorithm_factor_graph(self):
-        # Encapsulate the factors and variables inside the algorithm
-        # Deeply copy the variables
+        # Encapsulate the factors and variables inside the algorithm.
+        # Deeply copy the variables.
         variables = tuple(copy.deepcopy(self._model.variables))
         # Unlink the factors from the variables
         for variable in variables:
@@ -101,7 +101,7 @@ class FactoredAlgorithm:
                 name=copy.deepcopy(model_factor.name)
             ) for model_factor in self._model.factors
         )
-        self._factor_graph = FactorGraph(factors, variables)
+        self._factor_graph = FactorGraph(factors)
 
     def _create_algorithm_factor_variables(self, model_factor, variables):
         return tuple(variables[self._model.variables.index(model_factor_variable)]

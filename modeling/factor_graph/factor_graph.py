@@ -2,12 +2,9 @@ from pyb4ml.modeling.factor_graph.factorization import Factorization
 
 
 class FactorGraph:
-    def __init__(self, factors, variables):
+    def __init__(self, factors):
         # Factorization
-        self._factorization = Factorization(
-            factors=factors,
-            variables=variables
-        )
+        self._factorization = Factorization(factors)
 
     @property
     def factorization(self):

@@ -17,13 +17,6 @@ class Student(FactorGraph):
         grade = Variable(domain={'g0', 'g1', 'g2'}, name='Grade')
         sat = Variable(domain={'s0', 's1'}, name='SAT')
         letter = Variable(domain={'l0', 'l1'}, name='Letter')
-        variables = {
-            difficulty,
-            intelligence,
-            grade,
-            sat,
-            letter
-        }
 
         # Create conditional probability distributions (CPDs)
         cpd_difficulty = {
@@ -93,5 +86,5 @@ class Student(FactorGraph):
             f3,
             f4
         }
-        # Create a factor graph from the factors and variables
-        FactorGraph.__init__(self, factors, variables)
+        # Create a factor graph from the factors
+        FactorGraph.__init__(self, factors)
