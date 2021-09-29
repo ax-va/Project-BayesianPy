@@ -3,7 +3,7 @@ from pyb4ml.models import Student
 
 # Test the Belief Propagation Algorithm on the Student model
 model = Student()
-algorithm = BPA(model)
+algorithm = BPA(model)  # Belief Propagation Algorithm
 
 eps = 1 / 1e12
 
