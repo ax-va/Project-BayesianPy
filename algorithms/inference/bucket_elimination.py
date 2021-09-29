@@ -36,7 +36,7 @@ class BEA(FactoredAlgorithm):
             self._add_from_output_cache_to_bucket_cache(variable)
             # Compute and cache the output log-factor
             # of the bucket of the variable
-            self._set_output_log_factor(variable)
+            self._compute_and_cache_output_log_factor(variable)
         for query_var in self._query:
             # If there are the log-factors in the output cache
             # containing the query variable, they should be added into
@@ -81,6 +81,18 @@ class BEA(FactoredAlgorithm):
             self._elimination_order = None
             raise ValueError('the elimination and query variables do not cover all the model variables')
 
+    def _compute_and_cache_output_log_factor(self, variable):
+        # Get the resulting bucket
+        bucket = self._bucket_cache[variable]
+        # Compute the output log-factor of that bucket if necessary
+        if bucket.has_log_factors():
+            # If the bucket has no free variables, then the output log-factor is zero
+            if bucket.has_free_variables():
+                # Compute the output log-factor of the bucket
+                log_factor = self._bucket_cache[variable].compute_output_log_factor()
+                # Cache the log-factor
+                self._output_cache[log_factor.variables] = log_factor
+
     def _initialize_bucket_cache(self, variables):
         for variable in variables:
             self._bucket_cache[variable] = Bucket(variable)
@@ -100,18 +112,6 @@ class BEA(FactoredAlgorithm):
         self._initialize_bucket_cache(self._elimination_order)
         self._initialize_bucket_cache(self._query)
         self._output_cache = {}
-
-    def _set_output_log_factor(self, variable):
-        # Get the resulting bucket
-        bucket = self._bucket_cache[variable]
-        # Compute the output log-factor of that bucket if necessary
-        if bucket.has_log_factors():
-            # If the bucket has no free variables, then the output log-factor is zero
-            if bucket.has_free_variables():
-                # Compute the output log-factor of the bucket
-                log_factor = self._bucket_cache[variable].compute_output_log_factor()
-                # Cache the log-factor
-                self._output_cache[log_factor.variables] = log_factor
 
 
 
