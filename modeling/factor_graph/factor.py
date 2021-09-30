@@ -1,3 +1,5 @@
+import math
+
 from pyb4ml.modeling.factor_graph.node import Node
 from pyb4ml.modeling.factor_graph.variable import Variable
 
@@ -30,7 +32,7 @@ class Factor(Node):
     def variables_number(self):
         return len(self._variables)
 
-    def filter_values(self, variables_with_values):
+    def filter_values(self, *variables_with_values):
         return tuple(var_val for var_val in variables_with_values if var_val[0] in self._variables)
 
     def is_leaf(self):
@@ -58,4 +60,8 @@ if __name__ == '__main__':
         name='f_2'
     )
     print(f2((x, True)))
+
+    t = (1, 2, 3)
+    print(max(t))
+    print(math.fsum(i for i in range(10)))
 

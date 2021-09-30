@@ -41,21 +41,21 @@ class Bucket:
             # Zip the free variables with their values
             free_variables_with_values = tuple(zip(self._free_variables, free_values))
             # Save the values of the log-factors depending on the values of the summing variable
-            log_factors = {
+            input_log_factors = {
                 value:
                     tuple(
                         log_factor(
-                            *log_factor.filter_values(free_variables_with_values), (self._variable, value)
+                            *log_factor.filter_values(*free_variables_with_values), (self._variable, value)
                         ) for log_factor in self._input_log_factors
                     ) for value in self._variable.domain
                 }
             # Get the maximum log-factor for computational stability
-            max_log_factor = max(log_factors[value] for value in self._variable.domain)
+            max_log_factor = max(max(input_log_factors[value]) for value in self._variable.domain)
             # Save the values of the function for the output log-factor
             function_value_dict[free_values] = max_log_factor + math.log(
                 math.fsum(
                     math.exp(
-                        math.fsum(log_factors[value]) - max_log_factor
+                        math.fsum(input_log_factors[value]) - max_log_factor
                     ) for value in self._variable.domain
                 )
             )
