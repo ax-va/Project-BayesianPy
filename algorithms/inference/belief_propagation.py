@@ -65,7 +65,9 @@ class BPA(FactoredAlgorithm):
         if self._distribution is not None:
             def distribution(value):
                 if value not in self._query_variable.domain:
-                    raise ValueError(f'value {value!r} not in domain {self._query_variable.domain}')
+                    raise ValueError(
+                        f'value {value!r} not in domain {self._query_variable.domain} of {self._query_variable.name!r}'
+                    )
                 return self._distribution[value]
             return distribution
         else:
@@ -134,12 +136,13 @@ class BPA(FactoredAlgorithm):
             from_nodes=self._query_variable.factors,
             to_node=self._query_variable
         )
-        # Values of the sum of the incoming messages,
-        # yet non-normalized to be the distribution
+        # Compute the function for the distribution
         nn_values = {value: math.exp(
             math.fsum(message(value) for message in factor_to_query_messages)
         ) for value in self._query_variable.domain}
-        # The probability distribution must be normalized
+        # The values of the sum of the incoming messages
+        # can be non-normalized to be the distribution.
+        # The probability distribution must be normalized.
         norm_const = math.fsum(nn_values[value] for value in self._query_variable.domain)
         # Compute the probability distribution
         self._distribution = {value: nn_values[value] / norm_const for value in self._query_variable.domain}

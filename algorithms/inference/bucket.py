@@ -48,7 +48,7 @@ class Bucket:
                             *log_factor.filter_values(free_variables_with_values), (self._variable, value)
                         ) for log_factor in self._input_log_factors
                     ) for value in self._variable.domain
-            }
+                }
             # Get the maximum log-factor for computational stability
             max_log_factor = max(log_factors[value] for value in self._variable.domain)
             # Save the values of the function for the output log-factor

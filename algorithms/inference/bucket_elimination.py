@@ -1,3 +1,5 @@
+import math
+
 from pyb4ml.algorithms.inference.bucket import Bucket
 from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
@@ -18,6 +20,29 @@ class BEA(FactoredAlgorithm):
         # Is an elimination order specified?
         if self._elimination_order is None:
             raise AttributeError('elimination order not specified')
+
+    @property
+    def pd(self):
+        """
+        Returns the probability distribution P(Q_1, ..., Q_s) or if an evidence is set then
+        P(Q_1, ..., Q_s|E_1 = e_1, ..., E_k = e_k) as a function of q_1, ..., q_s, where
+        q_1, ..., q_s are in the value domains of random variable Q_1, ..., Q_s.  The order
+        of values must correspond to the order of variables in the query.
+        """
+        if self._distribution is not None:
+            def distribution(values):
+                if len(values) != len(self._query):
+                    raise ValueError(
+                        f'Number of values {len(values)} does not match '
+                        f'the number of variables {len(self._query)} in the query'
+                    )
+                for variable, value in zip(self._query, values):
+                    if value not in variable.domain:
+                        raise ValueError(f'value {value!r} not in domain {variable.domain} of {variable.name!r}')
+                return self._distribution[values]
+            return distribution
+        else:
+            raise AttributeError('distribution not computed')
 
     def run(self):
         # Check whether a query is specified
@@ -44,7 +69,7 @@ class BEA(FactoredAlgorithm):
             self._add_from_output_cache_to_bucket_cache(query_var)
         # All the output log-factors are distributed on the buckets
         # that belongs to the query variables
-        ...
+        self._compute_distribution()
 
     def set_elimination_order(self, elimination_order):
         # Remove duplicates if necessary
@@ -92,6 +117,36 @@ class BEA(FactoredAlgorithm):
                 log_factor = self._bucket_cache[variable].compute_output_log_factor()
                 # Cache the log-factor
                 self._output_cache[log_factor.variables] = log_factor
+
+    def _compute_distribution(self):
+        # Assemble all the log-factors from the query buckets
+        log_factors = []
+        for query_variable in self._query:
+            # Assemble all the log-factors from the query buckets
+            log_factors.extend(self._bucket_cache[query_variable].input_log_factors)
+        query_variables_values = FactoredAlgorithm.evaluate_variables(self._query)
+        # Compute the function for the distribution
+        nn_values = {}
+        for query_values in query_variables_values:
+            query_variables_with_values = zip(self._query, query_values)
+            nn_values = {
+                query_values:
+                    math.exp(
+                        math.fsum(
+                            log_factor(
+                                *log_factor.filter_values(query_variables_with_values)
+                            ) for log_factor in log_factors
+                        )
+                    )
+                }
+        # The values of the sum can be non-normalized to be the distribution.
+        # The probability distribution must be normalized.
+        norm_const = math.fsum(nn_values[query_values] for query_values in query_variables_values)
+        # Compute the probability distribution
+        self._distribution = {
+            query_values:
+                nn_values[query_values] / norm_const for query_values in query_variables_values
+        }
 
     def _initialize_bucket_cache(self, variables):
         for variable in variables:
