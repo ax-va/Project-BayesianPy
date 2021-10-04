@@ -10,7 +10,7 @@ class BEA(FactoredAlgorithm):
     """
     The Bucket Elimination Algorithm works on factor graphs for random variables
     with categorical probability distributions.  That belongs to Variable Elimination
-    Algorithms.  Here, "buckets" containing factors are created according to the
+    Algorithms.  Here, "buckets" containing factors are created according to a
     variable elimination order.  Each variable corresponds to only one "bucket" and
     vice versa. Then, the variables corresponding to the "buckets" are successively
     eliminated creating new factors that are distributed over the remaining "buckets".
