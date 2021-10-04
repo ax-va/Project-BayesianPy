@@ -7,7 +7,7 @@ from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 class BPA(FactoredAlgorithm):
     """
-    The Belief Propagation Algorithm (also referred to as the Sum-Product Algorithm)
+    The Belief Propagation Algorithm (BPA) (also referred to as the Sum-Product Algorithm)
     works on factor graph trees for random variables with categorical probability
     distributions.  That belongs to Message Passing and Variable Elimination Algorithms.
     Here, the factor-to-variable and variable-to-factor messages are propagated from the
