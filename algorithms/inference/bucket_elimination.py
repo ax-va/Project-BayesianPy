@@ -8,7 +8,29 @@ from pyb4ml.modeling.factor_graph.log_factor import LogFactor
 
 class BEA(FactoredAlgorithm):
     """
-    The Bucket Elimination Algorithm
+    The Bucket Elimination Algorithm works on factor graphs for random variables
+    with categorical probability distributions.  That belongs to Variable Elimination
+    Algorithms.  Here, "buckets" containing factors are created according to the
+    variable elimination order.  One variable corresponds to one "bucket". Then, the
+    variables corresponding to the "buckets" are successively eliminated creating new
+    factors that are distributed over the remaining "buckets".  Instead of the factors,
+    the implementation uses logarithms of them for computational stability.  See,
+    for example, [1] for more details.
+
+    Computes a marginal (joint) probability distribution P(Q_1, ..., Q_s) or a
+    conditional (joint) probability distribution P(Q_1, ..., Q_s|E_1 = e_1, ...,
+    E_k = e_k), where Q_1, ..., Q_s belong to a query, i.e. random variables of interest,
+    and E_1 = e_1, ..., E_k = e_k form an evidence, i.e. observed values e_1, ..., e_k
+    of random variables E_1, ..., E_k, respectively.
+
+    Restrictions: The factors must be strictly positive because of the use of logarithms.
+    Runtime is highly dependent on the variable elimination order.
+
+    Recommended: Use the algorithm for loopy graphs or for joint distribution of
+    query, otherwise use the Belief Propagation Algorithm.
+
+    [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
+    2012
     """
     def __init__(self, model: FactorGraph):
         FactoredAlgorithm.__init__(self, model)
