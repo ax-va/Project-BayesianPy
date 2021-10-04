@@ -28,7 +28,7 @@ class BEA(FactoredAlgorithm):
     The algorithm also needs an elimination order of non-query related variables.
     Runtime is highly dependent on that variable elimination order.
 
-    Recommended: Use the algorithm for loopy graphs or for joint distribution of
+    Recommended: Use the algorithm for loopy factor graphs or for joint distribution of
     query variables, otherwise use the Belief Propagation Algorithm.
 
     [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
