@@ -23,12 +23,12 @@ class BEA(FactoredAlgorithm):
     i.e. random variables of interest, and E_1 = e_1, ..., E_k = e_k form an evidence,
     i.e. observed values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
-    Restrictions: Only works with random variables with categorical value domains.
+    Restrictions:  Only works with random variables with categorical value domains.
     The factors must be strictly positive because of the use of logarithms.
     The algorithm also needs an elimination order of non-query related variables.
     Runtime is highly dependent on that variable elimination order.
 
-    Recommended: Use the algorithm for loopy factor graphs or for joint distribution
+    Recommended:  Use the algorithm for loopy factor graphs or for joint distribution
     of query variables, otherwise use the Belief Propagation Algorithm (BPA).
 
     (c) 2021 Alexander Vasiliev.  The author does not accept any responsibility for 
