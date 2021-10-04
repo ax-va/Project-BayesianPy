@@ -17,14 +17,16 @@ class BEA(FactoredAlgorithm):
     the implementation uses logarithms of them for computational stability.  See,
     for example, [1] for more details.
 
-    Computes a marginal (joint) probability distribution P(Q_1, ..., Q_s) or a
-    conditional (joint) probability distribution P(Q_1, ..., Q_s|E_1 = e_1, ...,
-    E_k = e_k), where Q_1, ..., Q_s belong to a query, i.e. random variables of interest,
-    and E_1 = e_1, ..., E_k = e_k form an evidence, i.e. observed values e_1, ..., e_k
-    of random variables E_1, ..., E_k, respectively.
+    Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
+    or a conditional (joint if necessary) probability distribution
+    P(Q_1, ..., Q_s|E_1 = e_1, ..., E_k = e_k), where Q_1, ..., Q_s belong to a query,
+    i.e. random variables of interest, and E_1 = e_1, ..., E_k = e_k form an evidence,
+    i.e. observed values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
-    Restrictions: The factors must be strictly positive because of the use of logarithms.
-    Runtime is highly dependent on the variable elimination order.
+    Restrictions: Only works with random variables with categorical value domains.
+    The factors must be strictly positive because of the use of logarithms.
+    The algorithm also needs an elimination order of non-query related variables.
+    Runtime is highly dependent on that variable elimination order.
 
     Recommended: Use the algorithm for loopy graphs or for joint distribution of
     query, otherwise use the Belief Propagation Algorithm.
