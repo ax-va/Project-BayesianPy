@@ -61,7 +61,4 @@ if __name__ == '__main__':
     )
     print(f2((x, True)))
 
-    t = (1, 2, 3)
-    print(max(t))
-    print(math.fsum(i for i in range(10)))
 
