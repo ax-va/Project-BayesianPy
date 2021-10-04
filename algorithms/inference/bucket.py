@@ -11,6 +11,10 @@ class Bucket:
         self._free_variables = []
 
     @property
+    def free_variables(self):
+        return self._free_variables
+
+    @property
     def input_log_factors(self):
         return self._input_log_factors
 
@@ -21,9 +25,6 @@ class Bucket:
     def add_log_factor(self, log_factor):
         self._input_log_factors.append(log_factor)
 
-    def add_free_variables(self, variables):
-        self._free_variables.extend(variables)
-
     def has_log_factors(self):
         return len(self._input_log_factors) > 0
 
@@ -31,8 +32,6 @@ class Bucket:
         return len(set(self._free_variables)) > 0
 
     def compute_output_log_factor(self):
-        # Remove duplicates and sort free variables
-        self._set_free_variables()
         # Evaluate free variables
         free_variables_values = FactoredAlgorithm.evaluate_variables(self._free_variables)
         # Compute the function for the output factor
@@ -65,6 +64,9 @@ class Bucket:
             name='log_f_' + self._variable.name
         )
 
-    def _set_free_variables(self):
-        # Remove duplicates and sort free variables
+    def set_free_variables(self):
+        self._free_variables = [var
+                                for log_factor in self._input_log_factors
+                                for var in log_factor.variables
+                                if var is not self._variable]
         self._free_variables = tuple(sorted(set(self._free_variables), key=lambda x: x.name))

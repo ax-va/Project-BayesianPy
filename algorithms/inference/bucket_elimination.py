@@ -14,6 +14,7 @@ class BEA(FactoredAlgorithm):
         FactoredAlgorithm.__init__(self, model)
         self._elimination_order = None
         self._bucket_cache = {}
+        self._print_info = False
 
     def is_elimination_order_set(self):
         # Is an elimination order specified?
@@ -29,11 +30,11 @@ class BEA(FactoredAlgorithm):
         of values must correspond to the order of variables in the query.
         """
         if self._distribution is not None:
-            def distribution(values):
+            def distribution(*values):
                 if len(values) != len(self._query):
                     raise ValueError(
-                        f'Number of values {len(values)} does not match '
-                        f'the number of variables {len(self._query)} in the query'
+                        f'The Number {len(values)} of values does not match '
+                        f'the number {len(self._query)} of variables in the query'
                     )
                 for variable, value in zip(self._query, values):
                     if value not in variable.domain:
@@ -43,13 +44,15 @@ class BEA(FactoredAlgorithm):
         else:
             raise AttributeError('distribution not computed')
 
-    def run(self):
+    def run(self, print_info=False):
         # Check whether a query is specified
         FactoredAlgorithm.is_query_set(self)
         # Check whether an elimination order is specified
         self.is_elimination_order_set()
         # Check if the elimination order and query agree with each other
         self._check_elimination_order_and_query()
+        # Print the bucket information
+        self._print_info = print_info
         # Initialize the bucket cache
         self._initialize_main_loop()
         # Run the main loops
@@ -57,16 +60,16 @@ class BEA(FactoredAlgorithm):
             # If there are the log-factors in the output cache
             # containing that variable, they should be added into
             # the bucket of that variable
-            self._add_linked_log_factors_to_bucket_cache(variable)
+            self._add_computed_log_factors_to_bucket_cache(variable)
             # Compute the output log-factor
             # of the bucket of the variable
-            # and save it in its free variables
+            # and link it in its free variables
             self._compute_output_log_factor(variable)
         for query_var in self._query:
             # If there are the log-factors in the output cache
             # containing the query variable, they should be added into
             # the bucket of the query variable
-            self._add_linked_log_factors_to_bucket_cache(query_var)
+            self._add_computed_log_factors_to_bucket_cache(query_var)
         # All the output log-factors are distributed on the buckets
         # that belongs to the query variables
         self._compute_distribution()
@@ -86,13 +89,16 @@ class BEA(FactoredAlgorithm):
             self._elimination_order.append(elm_var)
         self._elimination_order = tuple(self._elimination_order)
 
-    def _add_linked_log_factors_to_bucket_cache(self, variable):
-        for log_factor in variable.linked_log_factors:
+    def _add_computed_log_factors_to_bucket_cache(self, variable):
+        bucket = self._bucket_cache[variable]
+        for log_factor in variable.computed_log_factors:
             if log_factor.not_added:
-                self._bucket_cache[variable].add_log_factor(log_factor)
+                bucket.add_log_factor(log_factor)
                 log_factor.not_added = False
-                for variable in log_factor.variables:
-                    variable.linked_log_factors.remove(log_factor)
+        #
+        self._print_bucket(bucket)
+        #
+        self._print_bucket_inputs(bucket)
 
     def _check_elimination_order_and_query(self):
         set_q = set(self._query)
@@ -114,22 +120,16 @@ class BEA(FactoredAlgorithm):
             # Assemble all the log-factors from the query buckets
             log_factors.extend(self._bucket_cache[query_variable].input_log_factors)
         query_variables_values = FactoredAlgorithm.evaluate_variables(self._query)
-        for log_factor in log_factors:
-            print(log_factor)
         # Compute the function for the distribution
         nn_values = {}
         for query_values in query_variables_values:
             query_variables_with_values = tuple(zip(self._query, query_values))
-            nn_values = {
-                query_values:
-                    math.exp(
-                        math.fsum(
-                            log_factor(
-                                *log_factor.filter_values(*query_variables_with_values)
-                            ) for log_factor in log_factors
-                        )
+            nn_values[query_values] = math.exp(
+                math.fsum(
+                    log_factor(
+                        *log_factor.filter_values(*query_variables_with_values)) for log_factor in log_factors
                     )
-                }
+                )
         # The values of the sum can be non-normalized to be the distribution.
         # The probability distribution must be normalized.
         norm_const = math.fsum(nn_values[query_values] for query_values in query_variables_values)
@@ -142,6 +142,8 @@ class BEA(FactoredAlgorithm):
     def _compute_output_log_factor(self, variable):
         # Get the variable bucket
         bucket = self._bucket_cache[variable]
+        # Set free variables
+        bucket.set_free_variables()
         # Compute the output log-factor of that bucket if necessary
         if bucket.has_log_factors():
             # If the bucket has no free variables, then the output log-factor is zero
@@ -152,21 +154,20 @@ class BEA(FactoredAlgorithm):
                 log_factor.not_added = True
                 # Link the log-factor to its variables
                 for variable in log_factor.variables:
-                    variable.linked_log_factors.append(log_factor)
+                    variable.computed_log_factors.append(log_factor)
+                #
+                self._print_bucket_outputs(log_factor)
+        #
+        self._print_bucket_free_variables(bucket)
 
     def _initialize_bucket_cache(self, variables):
         for variable in variables:
             self._bucket_cache[variable] = Bucket(variable)
-            # Fill the variable bucket with factors and free variables of an output factor
+            # Fill the variable bucket with factors
             for factor in variable.factors:
                 if factor.not_added:
                     # Add the log-factor into the bucket
                     self._bucket_cache[variable].add_log_factor(LogFactor(factor))
-                    # Add the free variables of the output log-factor into the bucket
-                    free_variables = (
-                        free_variable for free_variable in factor.variables if free_variable is not variable
-                    )
-                    self._bucket_cache[variable].add_free_variables(free_variables)
                     # The factor is now added
                     factor.not_added = False
 
@@ -182,17 +183,25 @@ class BEA(FactoredAlgorithm):
 
     def _initialize_variables(self):
         for variable in self.variables:
-            variable.linked_log_factors = []
+            variable.computed_log_factors = []
 
+    def _print_bucket(self, bucket):
+        if self._print_info:
+            print(f'Bucket {bucket.variable.name!r}:')
 
+    def _print_bucket_free_variables(self, bucket):
+        if self._print_info:
+            for free_var in bucket.free_variables:
+                print('Free variable:', free_var)
+        print()
 
+    def _print_bucket_inputs(self, bucket):
+        if self._print_info:
+            for var in bucket.input_log_factors:
+                print('Input:', var)
 
-
-
-
-
-
-
-
+    def _print_bucket_outputs(self, log_factor):
+        if self._print_info:
+            print('Output:', log_factor)
 
 

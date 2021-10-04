@@ -279,7 +279,7 @@ letter = model.get_variable('Letter')
 sat = model.get_variable('SAT')
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'), (sat, 's0'))
-algorithm.run()
+algorithm.run(print_info=True)
 pd = algorithm.pd
 algorithm.print_pd()
 assert 0.474219640643 - eps <= pd('d0') <= 0.474219640643 + eps

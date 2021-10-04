@@ -41,10 +41,8 @@ class BPA(FactoredAlgorithm):
         self._variable_to_factor_messages = {}
         # Query variable
         self._query_variable = None
-        # Whether to print propagating node-to-node messages
-        self._print_messages = False
-        # Whether to print loop passing
-        self._print_loop_passing = False
+        # Whether to print loop passing and propagating node-to-node messages
+        self._print_info = False
         self._from_factors = None
         self._next_factors = None
         self._from_variables = None
@@ -91,7 +89,7 @@ class BPA(FactoredAlgorithm):
         else:
             raise AttributeError('distribution not computed')
 
-    def run(self, print_messages=False, print_loop_passing=False):
+    def run(self, print_info=False):
         # Check whether a query is specified
         FactoredAlgorithm.is_query_set(self)
         # Check whether the query has only one variable
@@ -102,10 +100,8 @@ class BPA(FactoredAlgorithm):
         self._create_factor_to_variable_messages_cache_if_necessary()
         # The message caching is based on evidence
         self._create_variable_to_factor_messages_cache_if_necessary()
-        # Whether to print propagating messages
-        self._print_messages = print_messages
-        # Whether to print loop passing
-        self._print_loop_passing = print_loop_passing
+        # Whether to print loop passing and propagating node-to-node messages
+        self._print_info = print_info
         # Clear the distribution
         self._distribution = None
         # Compute messages from leaves and make other initializations
@@ -152,10 +148,12 @@ class BPA(FactoredAlgorithm):
         # Compute the message if necessary
         if not self._factor_to_variable_messages[self._evidence].contains(from_factor, to_variable):
             # Compute the message values
-            for value in to_variable.domain:
-                values = {value: math.log(from_factor((to_variable, value))) for value in to_variable.domain}
+            values = {value: math.log(from_factor((to_variable, value))) for value in to_variable.domain}
             # Cache the message
-            self._factor_to_variable_messages[self._evidence].cache(Message(from_factor, to_variable, values))
+            message = Message(from_factor, to_variable, values)
+            self._factor_to_variable_messages[self._evidence].cache(message)
+            # Print the message if necessary
+            self._print_message(message)
 
     def _compute_factor_to_variable_message_not_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
@@ -184,7 +182,10 @@ class BPA(FactoredAlgorithm):
                               )
                           ) for value in to_variable.domain}
             # Cache the message
-            self._factor_to_variable_messages[self._evidence].cache(Message(from_factor, to_variable, values))
+            message = Message(from_factor, to_variable, values)
+            self._factor_to_variable_messages[self._evidence].cache(message)
+            # Print the message if necessary
+            self._print_message(message)
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
@@ -192,7 +193,10 @@ class BPA(FactoredAlgorithm):
             # Compute the message values
             values = {value: 0 for value in from_variable.domain}
             # Cache the message
-            self._variable_to_factor_messages[self._evidence].cache(Message(from_variable, to_factor, values))
+            message = Message(from_variable, to_factor, values)
+            self._variable_to_factor_messages[self._evidence].cache(message)
+            # Print the message if necessary
+            self._print_message(message)
 
     def _compute_variable_to_factor_message_not_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
@@ -207,7 +211,10 @@ class BPA(FactoredAlgorithm):
                                            to_node=from_variable)
                                        ) for value in from_variable.domain}
             # Cache the message
-            self._variable_to_factor_messages[self._evidence].cache(Message(from_variable, to_factor, values))
+            message = Message(from_variable, to_factor, values)
+            self._variable_to_factor_messages[self._evidence].cache(message)
+            # Print the message if necessary
+            self._print_message(message)
 
     def _create_factor_to_variable_messages_cache_if_necessary(self):
         if self._evidence not in self._factor_to_variable_messages:
@@ -278,8 +285,6 @@ class BPA(FactoredAlgorithm):
             # then a message can be propagated from this variable
             # to the next factor
             self._extend_next_variables(to_variable)
-            # Print the message if necessary
-            self._print_message(from_factor, to_variable, self._factor_to_variable_messages[self._evidence])
 
     def _propagate_factor_to_variable_message_not_from_leaf(self, from_factor):
         # The factor-to-variable message to the only one variable that is non-passed
@@ -291,8 +296,6 @@ class BPA(FactoredAlgorithm):
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_variables(to_variable)
-        # Print the message if necessary
-        self._print_message(from_factor, to_variable, self._factor_to_variable_messages[self._evidence])
 
     def _propagate_variable_to_factor_messages_from_leaves(self):
         for from_variable in self.variable_leaves:
@@ -307,8 +310,6 @@ class BPA(FactoredAlgorithm):
             # then a message can be propagated from this factor
             # to the next variable
             self._extend_next_factors(to_factor)
-            # Print the message if necessary
-            self._print_message(from_variable, to_factor, self._variable_to_factor_messages[self._evidence])
 
     def _propagate_variable_to_factor_message_not_from_leaf(self, from_variable):
         # The variable-to-factor message to the only one factor that is non-passed
@@ -320,18 +321,15 @@ class BPA(FactoredAlgorithm):
         # then a message can be propagated from the next factor
         # to the next variable
         self._extend_next_factors(to_factor)
-        # Print the message if necessary
-        self._print_message(from_variable, to_factor, self._variable_to_factor_messages[self._evidence])
 
     def _print_loop(self):
-        if self._print_loop_passing:
+        if self._print_info:
             print('loop passing:', self._loop_passing)
             print()
 
-    def _print_message(self, from_node, to_node, messages):
+    def _print_message(self, message):
         # Print the message if necessary
-        if self._print_messages:
-            message = messages.get(from_node, to_node)
+        if self._print_info:
             print(message)
             print('logarithmic message value:')
             print(message.values)
@@ -340,5 +338,5 @@ class BPA(FactoredAlgorithm):
             print()
 
     def _print_stop(self):
-        if self._print_loop_passing:
+        if self._print_info:
             print('algorithm stopped')
