@@ -29,7 +29,7 @@ class BEA(FactoredAlgorithm):
     Runtime is highly dependent on that variable elimination order.
 
     Recommended: Use the algorithm for loopy factor graphs or for joint distribution of
-    query variables, otherwise use the Belief Propagation Algorithm.
+    query variables, otherwise use the Belief Propagation Algorithm (BPA).
 
     (c) 2021 Alexander Vasiliev. The author excludes any claims related to damage when
     using this code. You use this code at your own risk.
