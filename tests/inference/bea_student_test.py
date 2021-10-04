@@ -15,11 +15,9 @@ letter = model.get_variable('Letter')
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'), (sat, 's1'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
-
+algorithm.set_order([letter, sat, intelligence, grade])
 algorithm.run(print_info=True)
 pd = algorithm.pd
-
 assert 0.3972483414607588 - eps < pd('d0') < 0.3972483414607588 + eps
 assert 0.6027516585392411 - eps < pd('d1') < 0.6027516585392411 + eps
 

@@ -74,7 +74,7 @@ class BEA(FactoredAlgorithm):
         # that belongs to the query variables
         self._compute_distribution()
 
-    def set_elimination_order(self, elimination_order):
+    def set_order(self, elimination_order):
         # Remove duplicates if necessary
         elimination_order = set(elimination_order)
         self._elimination_order = []
