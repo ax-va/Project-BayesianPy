@@ -13,7 +13,7 @@ class BEA(FactoredAlgorithm):
     Algorithms.  Here, a bucket contains factors used to eliminate a variable summing 
     over that variable.  Due to that, a new factor is created and moved into one 
     remaining bucket.  That is repeated until the query buckets contain factors that 
-    depend only on the query variables. Instead of the factors, the implementation uses 
+    depend only on the query variables.  Instead of the factors, the implementation uses 
     logarithms of them for computational stability.  See, for example, [1] for more 
     details.
 
