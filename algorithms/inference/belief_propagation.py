@@ -23,17 +23,17 @@ class BPA(FactoredAlgorithm):
     variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e. observed 
     values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
-    Restrictions: Only works with random variables with categorical value domains, only 
+    Restrictions:  Only works with random variables with categorical value domains, only 
     works on trees (leads to dead lock on loopy graphs).  See the Bucket Elimination 
     Algorithm (BEA) for the case of loopy graphs.  The factors must be strictly positive 
     because of the use of logarithms.
     
-    Recommended: When modeling, reduce the number of random variables in each factor to 
+    Recommended:  When modeling, reduce the number of random variables in each factor to 
     speed up the inference runtime.  To reduce the number of variables in factors, you can, 
     for example, increase the number of variables and factors in a model.
 
-    (c) 2021 Alexander Vasiliev. The author excludes any claims related to damage when
-    using this code. You use this code at your own risk.
+    (c) 2021 Alexander Vasiliev.  The author does not accept any responsibility for 
+
 
     References:
 
