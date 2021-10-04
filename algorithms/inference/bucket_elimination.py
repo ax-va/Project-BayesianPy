@@ -12,7 +12,7 @@ class BEA(FactoredAlgorithm):
     with categorical probability distributions.  That belongs to Variable Elimination
     Algorithms.  Here, "buckets" containing factors are created according to a
     variable elimination order.  Each variable corresponds to only one "bucket" and
-    vice versa. Then, the variables corresponding to the "buckets" are successively
+    vice versa.  Then, the variables corresponding to the "buckets" are successively
     eliminated creating new factors that are distributed over the remaining "buckets".
     Instead of the factors, the implementation uses logarithms of them for computational
     stability.  See, for example, [1] for more details.
