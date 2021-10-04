@@ -13,9 +13,11 @@ grade = model.get_variable('Grade')
 sat = model.get_variable('SAT')
 letter = model.get_variable('Letter')
 
+# Test conditional distributions
+
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'), (sat, 's0'))
-algorithm.set_order([letter, sat, intelligence, grade])
+algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -24,7 +26,7 @@ assert 0.5257803593569642 - eps <= pd('d1') <= 0.5257803593569642 + eps
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'), (sat, 's1'))
-algorithm.set_order([letter, sat, intelligence, grade])
+algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -33,7 +35,7 @@ assert 0.6027516585392411 - eps <= pd('d1') <= 0.6027516585392411 + eps
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'), (sat, 's0'))
-algorithm.set_order([letter, sat, intelligence, grade])
+algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -42,7 +44,7 @@ assert 0.22628580586976843 - eps <= pd('d1') <= 0.22628580586976843 + eps
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'), (sat, 's1'))
-algorithm.set_order([letter, sat, intelligence, grade])
+algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -51,7 +53,7 @@ assert 0.32094405060706443 - eps <= pd('d1') <= 0.32094405060706443 + eps
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'))
-algorithm.set_order([letter, sat, intelligence, grade])
+algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -60,7 +62,7 @@ assert 0.5377121913580247 - eps <= pd('d1') <= 0.5377121913580247 + eps
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'))
-algorithm.set_order([letter, sat, intelligence, grade])
+algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -69,7 +71,7 @@ assert 0.26356860746591926 - eps <= pd('d1') <= 0.26356860746591926 + eps
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((sat, 's0'))
-algorithm.set_order([letter, sat, intelligence, grade])
+algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -78,7 +80,7 @@ assert 0.4 - eps <= pd('d1') <= 0.4 + eps
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((sat, 's1'))
-algorithm.set_order([letter, sat, intelligence, grade])
+algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -87,7 +89,7 @@ assert 0.4 - eps <= pd('d1') <= 0.4 + eps
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l0'), (sat, 's0'))
-algorithm.set_order([difficulty, letter, sat, intelligence])
+algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -97,7 +99,7 @@ assert 0.5978192518421124 - eps <= pd('g2') <= 0.5978192518421124 + eps
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l0'), (sat, 's1'))
-algorithm.set_order([difficulty, letter, sat, intelligence])
+algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -107,7 +109,7 @@ assert 0.29655226422851777 - eps <= pd('g2') <= 0.29655226422851777 + eps
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l1'), (sat, 's0'))
-algorithm.set_order([difficulty, letter, sat, intelligence])
+algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -117,7 +119,7 @@ assert 0.005111591622796632 - eps <= pd('g2') <= 0.005111591622796632 + eps
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l1'), (sat, 's1'))
-algorithm.set_order([difficulty, letter, sat, intelligence])
+algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -127,7 +129,7 @@ assert 0.0006832705885505288 - eps <= pd('g2') <= 0.0006832705885505288 + eps
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l0'), (sat, 's0'))
-algorithm.set_order([difficulty, letter, sat, intelligence])
+algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -137,7 +139,7 @@ assert 0.8552238805970149 - eps <= pd('g2') <= 0.8552238805970149 + eps
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l0'), (sat, 's1'))
-algorithm.set_order([difficulty, letter, sat, intelligence])
+algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -147,7 +149,7 @@ assert 0.6174193548387096 - eps <= pd('g2') <= 0.6174193548387096 + eps
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l1'), (sat, 's0'))
-algorithm.set_order([difficulty, letter, sat, intelligence])
+algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
@@ -157,10 +159,32 @@ assert 0.027721335268505072 - eps < pd('g2') < 0.027721335268505072 + eps
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l1'), (sat, 's1'))
-algorithm.set_order([difficulty, letter, sat, intelligence])
+algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 # The values for the assertions are obtained using the BPA
 assert 0.690236220472441 - eps <= pd('g0') <= 0.690236220472441 + eps
 assert 0.30519685039370076 - eps <= pd('g1') <= 0.30519685039370076 + eps
 assert 0.004566929133858268 - eps <= pd('g2') <= 0.004566929133858268 + eps
+
+# Test marginal joint distributions
+
+algorithm.set_query(difficulty, intelligence)
+algorithm.set_evidence(None)
+algorithm.set_elimination_order([letter, sat, grade])
+algorithm.run()
+pd = algorithm.pd
+# P(d,i) = P(d) * P(i)
+# =>
+# P(d0,i0) = P(d0) * P(i0)
+# = 0.6 * 0.7 = 0.42
+# P(d0,i1) = P(d0) * P(i1)
+# = 0.6 * 0.3 = 0.18
+# P(d1,i0) = P(d1) * P(i0)
+# = 0.4 * 0.7 = 0.28
+# P(d1,i1) = P(d1) * P(i1)
+# = 0.4 * 0.3 = 0.12
+assert 0.42 - eps <= pd('d0', 'i0') <= 0.42 + eps
+assert 0.18 - eps <= pd('d0', 'i1') <= 0.18 + eps
+assert 0.28 - eps <= pd('d1', 'i0') <= 0.28 + eps
+assert 0.12 - eps <= pd('d1', 'i1') <= 0.12 + eps

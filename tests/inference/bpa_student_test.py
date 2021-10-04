@@ -8,6 +8,7 @@ algorithm = BPA(model)  # Belief Propagation Algorithm
 eps = 1 / 1e12
 
 # Test marginal distributions
+
 for query in model.variables:
     algorithm.set_query(query)
     algorithm.run()
@@ -70,6 +71,7 @@ for query in model.variables:
         assert 0.502336 - eps <= pd('l1') <= 0.502336 + eps
 
 # Test conditional distributions
+
 # P(d,l0,s0) = P(d) * (
 # P(i0) * P(s0|i0) * (P(g0|d,i0) * P(l0|g0) + P(g1|d,i0) * P(l0|g1) + P(g2|d,i0) * P(l0|g2)) +
 # P(i1) * P(s0|i1) * (P(g0|d,i1) * P(l0|g0) + P(g1|d,i1) * P(l0|g1) + P(g2|d,i1) * P(l0|g2)))
@@ -248,6 +250,7 @@ assert 0.4 - eps <= pd('d1') <= 0.4 + eps
 # algorithm.set_query(sat)
 
 # Test marginal distributions again
+
 algorithm.set_evidence(None)
 for query in model.variables:
     algorithm.set_query(query)
@@ -274,6 +277,7 @@ for query in model.variables:
 algorithm.clear_cached_messages()
 
 # Test conditional distributions again
+
 difficulty = model.get_variable('Difficulty')
 letter = model.get_variable('Letter')
 sat = model.get_variable('SAT')

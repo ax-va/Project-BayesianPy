@@ -92,6 +92,8 @@ class BPA(FactoredAlgorithm):
     def run(self, print_info=False):
         # Check whether a query is specified
         FactoredAlgorithm.is_query_set(self)
+        # Check whether the query and evidence variables are disjoint
+        self._check_query_and_evidence()
         # Check whether the query has only one variable
         FactoredAlgorithm.has_query_only_one_variable(self)
         # Set the first variable to the query

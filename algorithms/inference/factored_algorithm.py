@@ -73,11 +73,9 @@ class FactoredAlgorithm:
             self._evidence = None
             raise ValueError(f'value {ev_val!r} is not in the domain {ev_var.domain} of variable {ev_var.name!r}')
 
-    def _check_evidence_variable_in_query(self, ev_var):
-        if self._query is not None:
-            if ev_var in self._query:
-                self._evidence = None
-                raise ValueError(f'evidence variable {ev_var.name!r} is in query {tuple(q.name for q in self._query)}')
+    def _check_query_and_evidence(self):
+        for query_var in self._query:
+            self._check_query_variable_in_evidence(query_var)
 
     def _check_query_variable_in_evidence(self, query_var):
         if self._evidence is not None:
@@ -128,7 +126,6 @@ class FactoredAlgorithm:
             except ValueError:
                 self._evidence = None
                 raise ValueError(f'no model variable corresponding to evidence variable {ev_var.name!r}')
-            self._check_evidence_variable_in_query(ev_var)
             self._check_evidence_variable_domain(ev_var, ev_val)
             # Set the new domain containing only one value
             ev_var.set_domain({ev_val})
@@ -146,7 +143,6 @@ class FactoredAlgorithm:
             except ValueError:
                 self._query = None
                 raise ValueError(f'no model variable corresponding to query variable {query_var.name!r}')
-            self._check_query_variable_in_evidence(query_var)
             self._query.append(query_var)
         self._query = tuple(sorted(self._query, key=lambda x: x.name))
 

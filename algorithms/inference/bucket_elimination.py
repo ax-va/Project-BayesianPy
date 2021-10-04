@@ -47,10 +47,12 @@ class BEA(FactoredAlgorithm):
     def run(self, print_info=False):
         # Check whether a query is specified
         FactoredAlgorithm.is_query_set(self)
+        # Check whether the query and evidence variables are disjoint
+        self._check_query_and_evidence()
         # Check whether an elimination order is specified
         self.is_elimination_order_set()
         # Check if the elimination order and query agree with each other
-        self._check_elimination_order_and_query()
+        self._check_query_and_elimination_order()
         # Print the bucket information
         self._print_info = print_info
         # Initialize the bucket cache
@@ -74,7 +76,7 @@ class BEA(FactoredAlgorithm):
         # that belongs to the query variables
         self._compute_distribution()
 
-    def set_order(self, elimination_order):
+    def set_elimination_order(self, elimination_order):
         # Remove duplicates if necessary
         elimination_order = set(elimination_order)
         self._elimination_order = []
@@ -100,7 +102,7 @@ class BEA(FactoredAlgorithm):
         #
         self._print_bucket_inputs(bucket)
 
-    def _check_elimination_order_and_query(self):
+    def _check_query_and_elimination_order(self):
         set_q = set(self._query)
         set_o = set(self._elimination_order)
         set_m = set(self.variables)
