@@ -31,6 +31,11 @@ class BEA(FactoredAlgorithm):
     Recommended: Use the algorithm for loopy factor graphs or for joint distribution of
     query variables, otherwise use the Belief Propagation Algorithm.
 
+    (c) Alexander Vasiliev, 2021. The author excludes any claims related to damage when
+    using the code. You use the code at your own risk.
+
+    References:
+
     [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
     """

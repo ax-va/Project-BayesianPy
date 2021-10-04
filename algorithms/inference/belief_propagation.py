@@ -30,6 +30,11 @@ class BPA(FactoredAlgorithm):
     speed up the inference runtime.  To reduce the number of variables in factors, you can, 
     for example, increase the number of variables and factors in a model.
 
+    (c) Alexander Vasiliev, 2021. The author excludes any claims related to damage when
+    using the code. You use the code at your own risk.
+
+    References:
+
     [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
     """
