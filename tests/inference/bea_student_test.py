@@ -74,7 +74,9 @@ algorithm.set_evidence((sat, 's0'))
 algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
-# The values for the assertions are obtained using the BPA
+# The trail Difficulty - Grade - Intelligence - SAT
+# is not active given the empty set of observed variables
+# because neither Grade nor Letter is observed
 assert 0.6 - eps <= pd('d0') <= 0.6 + eps
 assert 0.4 - eps <= pd('d1') <= 0.4 + eps
 
@@ -83,7 +85,9 @@ algorithm.set_evidence((sat, 's1'))
 algorithm.set_elimination_order([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
-# The values for the assertions are obtained using the BPA
+# The trail Difficulty - Grade - Intelligence - SAT
+# is not active given the empty set of observed variables
+# because neither Grade nor Letter is observed
 assert 0.6 - eps <= pd('d0') <= 0.6 + eps
 assert 0.4 - eps <= pd('d1') <= 0.4 + eps
 
