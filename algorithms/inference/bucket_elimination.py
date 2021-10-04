@@ -193,7 +193,7 @@ class BEA(FactoredAlgorithm):
         if self._print_info:
             for free_var in bucket.free_variables:
                 print('Free variable:', free_var)
-        print()
+            print()
 
     def _print_bucket_inputs(self, bucket):
         if self._print_info:

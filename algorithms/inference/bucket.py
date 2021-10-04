@@ -29,7 +29,7 @@ class Bucket:
         return len(self._input_log_factors) > 0
 
     def has_free_variables(self):
-        return len(set(self._free_variables)) > 0
+        return len(self._free_variables) > 0
 
     def compute_output_log_factor(self):
         # Evaluate free variables
