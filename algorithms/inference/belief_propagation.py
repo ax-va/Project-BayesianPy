@@ -12,7 +12,7 @@ class BPA(FactoredAlgorithm):
     distributions.  That belongs to Message Passing and Variable Elimination Algorithms.
     Here, the factor-to-variable and variable-to-factor messages are propagated from the
     leaves across the tree to the query variable.  That can be considered as the successive 
-    elimination of the factors and variables in the factor graph.  This implementation 
+    elimination of the factors and variables in the factor graph tree.  This implementation 
     encourages reuse of the algorithm by caching already computed messages given an 
     evidence or no evidence.  Instead of the messages, the implementation uses logarithms 
     of them for computational stability.  See, for example, [1] for more details.
