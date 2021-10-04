@@ -29,7 +29,7 @@ class BEA(FactoredAlgorithm):
     Runtime is highly dependent on that variable elimination order.
 
     Recommended: Use the algorithm for loopy graphs or for joint distribution of
-    query, otherwise use the Belief Propagation Algorithm.
+    query variables, otherwise use the Belief Propagation Algorithm.
 
     [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
