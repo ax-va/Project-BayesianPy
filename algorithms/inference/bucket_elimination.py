@@ -10,12 +10,12 @@ class BEA(FactoredAlgorithm):
     """
     The Bucket Elimination Algorithm (BEA) works on factor graphs for random variables
     with categorical probability distributions.  That belongs to Variable Elimination
-    Algorithms.  Here, "buckets" contain factors to eliminate variables.  Each variable 
-    corresponds to only one "bucket" and vice versa.  Then, the variables corresponding
-    to the "buckets" are successively eliminated creating new factors that are distributed
-    over the remaining "buckets".  Instead of the factors, the implementation uses 
-    logarithms of them for computational stability.  See, for example, [1] for more 
-    details.
+    Algorithms.  Here, "buckets" contain factors used to eliminate variables.  Each 
+    variable corresponds to only one "bucket" and vice versa.  Then, the variables 
+    corresponding to the "buckets" are successively eliminated creating new factors 
+    that are distributed over the remaining "buckets".  Instead of the factors, the 
+    implementation uses logarithms of them for computational stability.  See, for example, 
+    [1] for more details.
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution
