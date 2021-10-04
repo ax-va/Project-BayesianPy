@@ -8,7 +8,7 @@ from pyb4ml.modeling.factor_graph.log_factor import LogFactor
 
 class BEA(FactoredAlgorithm):
     """
-    The Bucket Elimination Algorithm works on factor graphs for random variables
+    The Bucket Elimination Algorithm (BEA) works on factor graphs for random variables
     with categorical probability distributions.  That belongs to Variable Elimination
     Algorithms.  Here, "buckets" containing factors are created according to a
     variable elimination order.  Each variable corresponds to only one "bucket" and
