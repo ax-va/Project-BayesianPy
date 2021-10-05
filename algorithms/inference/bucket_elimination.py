@@ -66,8 +66,8 @@ class BEA(FactoredAlgorithm):
         """
         Returns the probability distribution P(Q_1, ..., Q_s) or if an evidence is set then
         P(Q_1, ..., Q_s|E_1 = e_1, ..., E_k = e_k) as a function of q_1, ..., q_s, where
-        q_1, ..., q_s are in the value domains of random variable Q_1, ..., Q_s.  The order
-        of values must correspond to the order of variables in the query.
+        q_1, ..., q_s are in the value domains of random variable Q_1, ..., Q_s, respectively.  
+        The order of values must correspond to the order of variables in the query.
         """
         if self._distribution is not None:
             def distribution(*values):
