@@ -15,9 +15,8 @@ from pyb4ml.modeling import Variable
 
 class Student(FactorGraph):
     """
-    Implements the Student model that is a Bayesian network with tabular probability 
-    distributions and without loops in the graph.  See [1, page 53] for more details.  See also 
-    "student.pdf" or "student.odp".
+    Implements the Student model [1, page 53] that is a Bayesian network with tabular probability 
+    distributions and without loops in the graph.  See also "student.pdf" or "student.odp".
     
     References:
 
