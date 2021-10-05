@@ -7,7 +7,6 @@ code at your own risk.
 
 (c) 2021 Alexander Vasiliev
 """
-
 from pyb4ml.modeling import Factor
 from pyb4ml.modeling import FactorGraph
 from pyb4ml.modeling import Variable
