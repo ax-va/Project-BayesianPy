@@ -2,7 +2,7 @@
 """
 The module contains the class of the Student model.
 
-The author does not accept any responsibility for damage when using this code.  You use this 
+The author is not responsible for any damage caused by the use of this code.  You use this 
 code at your own risk.
 
 (c) 2021 Alexander Vasiliev
