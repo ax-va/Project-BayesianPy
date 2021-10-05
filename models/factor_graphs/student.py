@@ -1,8 +1,7 @@
- 
 """
 The module contains the class of the Student model.
 
-Attension:  The author is not responsible for any damage that can be caused by the use 
+Attention:  The author is not responsible for any damage that can be caused by the use
 of this code.  You use this code at your own risk.  Any claim against the author is 
 legally void.  By using this code, you agree to the terms imposed by the author.
 
