@@ -10,4 +10,4 @@ and the following probabilistic graphical models:
 
 See the use of algorithms in the tests.
 
-(c) 2021 Alexander Vasiliev
+© 2021 Alexander Vasiliev
