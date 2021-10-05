@@ -3,7 +3,7 @@
 The module contains the class of the Belief Propagation Algorithm.
 
 The author is not responsible for any damage caused by the use of this code.  You use this 
-code at your own risk.
+code at your own risk.  By using this code, you agree to the terms imposed by the author. 
 
 (c) 2021 Alexander Vasiliev
 """
