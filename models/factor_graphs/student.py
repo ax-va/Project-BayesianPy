@@ -1,3 +1,13 @@
+ 
+"""
+The module contains the class of the Student model.
+
+The author does not accept any responsibility for damage when using this code.  You use this 
+code at your own risk.
+
+(c) 2021 Alexander Vasiliev
+"""
+
 from pyb4ml.modeling import Factor
 from pyb4ml.modeling import FactorGraph
 from pyb4ml.modeling import Variable
@@ -5,10 +15,14 @@ from pyb4ml.modeling import Variable
 
 class Student(FactorGraph):
     """
-    The Student model [1, page 53]. See also "student.pdf" or "student.odp".
+    Implements the Student model that is a Bayesian network with tabular probability 
+    distributions and without loops in the graph.  See [1, page 53] for more details.  See also 
+    "student.pdf" or "student.odp".
+    
+    References:
 
-    [1] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models:
-    Principles and Techniques", MIT Press, 2009
+    [1] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and 
+    Techniques", MIT Press, 2009
     """
     def __init__(self):
         # Create random variables
