@@ -6,7 +6,7 @@ At the moment, the collection contains the following inference algorithms:
 - Bucket Elimination Algorithm (BEA) (pb4ml/algorithms/inference/bucket_elimination.py)
 
 and the following probabilistic graphical models:
-- Bayesian network "Student" (pb4ml/models/factor_graphs/student.py)
+- Bayesian network "Student" in factor graph representation (pb4ml/models/factor_graphs/student.py)
 
 See the use of algorithms in the tests.
 
