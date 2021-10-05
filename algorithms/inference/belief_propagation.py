@@ -6,8 +6,8 @@ The author is not responsible for any damage caused by the use of this code.  Yo
 code at your own risk.  By using this code, you agree to the terms imposed by the author.
 
 Der Autor haftet nicht für Schäden, die durch die Verwendung dieses Codes entstehen.  Sie 
-verwenden das Code auf eigene Gefahr.  Durch die Verwendung dieses Codes stimmen Sie den vom 
-Autor auferlegten Bedingungen zu.
+verwenden dieses Code auf eigene Gefahr.  Durch die Verwendung dieses Codes stimmen Sie den 
+vom Autor auferlegten Bedingungen zu.
 
 (c) 2021 Alexander Vasiliev
 """
