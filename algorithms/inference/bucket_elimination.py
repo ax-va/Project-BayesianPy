@@ -10,7 +10,7 @@ entstehen können.  Sie verwenden dieses Code auf eigene Gefahr.  Jegliche Anspr
 gegen den Autor sind rechtlich nichtig.  Durch die Verwendung dieses Codes stimmen 
 Sie den vom Autor auferlegten Bedingungen zu.
 
-(c) 2021 Alexander Vasiliev
+© 2021 Alexander Vasiliev
 """
 import math
 
