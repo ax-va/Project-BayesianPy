@@ -1,3 +1,11 @@
+"""
+The module contains the class of the Bucket Elimination Algorithm.
+
+The author does not accept any responsibility for damage when using this code.  
+You use this code at your own risk.
+
+(c)  Alexander Vasiliev
+"""
 import math
 
 from pyb4ml.algorithms.inference.bucket import Bucket
@@ -31,8 +39,10 @@ class BEA(FactoredAlgorithm):
     Recommended:  Use the algorithm for loopy factor graphs or for joint distribution of 
     query variables, otherwise use the Belief Propagation Algorithm (BPA).
 
-    (c) 2021 Alexander Vasiliev.  The author does not accept any responsibility for damage 
-    when using this code.  You use this code at your own risk.
+    The author does not accept any responsibility for damage when using this code.  You use 
+    this code at your own risk.
+    
+    (c) 2021 Alexander Vasiliev 
     
     References:
 
