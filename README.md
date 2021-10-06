@@ -14,4 +14,5 @@ See the use of algorithms in the tests.
 © 2021 Alexander Vasiliev
 
 References:
+
 [2] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and Techniques", MIT Press, 2009
