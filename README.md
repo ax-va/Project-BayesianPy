@@ -6,9 +6,12 @@ At the moment, the collection contains the following inference algorithms:
 - Bucket Elimination Algorithm (BEA) (pb4ml/algorithms/inference/bucket_elimination.py)
 
 and the following probabilistic models in factor graph representation:
-- Bayesian network "Student" (pb4ml/models/factor_graphs/student.py)
-- Markov network "Misconception" (pb4ml/models/factor_graphs/misconception.py)
+- Bayesian network "Student" [2] (pb4ml/models/factor_graphs/student.py)
+- Markov network "Misconception" [2] (pb4ml/models/factor_graphs/misconception.py)
 
 See the use of algorithms in the tests.
 
 © 2021 Alexander Vasiliev
+
+References:
+[2] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and Techniques", MIT Press, 2009
