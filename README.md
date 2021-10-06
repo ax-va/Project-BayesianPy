@@ -14,5 +14,5 @@ See the use of algorithms in the tests.
 © 2021 Alexander Vasiliev
 
 References:
-[1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press, 2012
+[1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press, 2012;
 [2] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and Techniques", MIT Press, 2009
