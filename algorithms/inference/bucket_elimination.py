@@ -33,7 +33,7 @@ class BEA(FactoredAlgorithm):
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution
-    P(Q_1, ..., Q_s|E_1 = e_1, ..., E_k = e_k), where Q_1, ..., Q_s belong to a query,
+    P(Q_1, ..., Q_s | E_1 = e_1, ..., E_k = e_k), where Q_1, ..., Q_s belong to a query,
     i.e. random variables of interest, and E_1 = e_1, ..., E_k = e_k form an evidence,
     i.e. observed values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
@@ -52,37 +52,15 @@ class BEA(FactoredAlgorithm):
     """
     def __init__(self, model: FactorGraph):
         FactoredAlgorithm.__init__(self, model)
+        self._computed_log_factors = None
+        self._bucket_cache = None
         self._elimination_order = None
-        self._bucket_cache = {}
-        self._print_info = False
+        self._print_info = None
 
     def is_elimination_order_set(self):
         # Is an elimination order specified?
         if self._elimination_order is None:
             raise AttributeError('elimination order not specified')
-
-    @property
-    def pd(self):
-        """
-        Returns the probability distribution P(Q_1, ..., Q_s) or if an evidence is set then
-        P(Q_1, ..., Q_s|E_1 = e_1, ..., E_k = e_k) as a function of q_1, ..., q_s, where
-        q_1, ..., q_s are in the value domains of random variable Q_1, ..., Q_s, respectively.  
-        The order of values must correspond to the order of variables in the query.
-        """
-        if self._distribution is not None:
-            def distribution(*values):
-                if len(values) != len(self._query):
-                    raise ValueError(
-                        f'The Number {len(values)} of values does not match '
-                        f'the number {len(self._query)} of variables in the query'
-                    )
-                for variable, value in zip(self._query, values):
-                    if value not in variable.domain:
-                        raise ValueError(f'value {value!r} not in domain {variable.domain} of {variable.name!r}')
-                return self._distribution[values]
-            return distribution
-        else:
-            raise AttributeError('distribution not computed')
 
     def run(self, print_info=False):
         # Check whether a query is specified
@@ -133,13 +111,16 @@ class BEA(FactoredAlgorithm):
 
     def _add_computed_log_factors_to_bucket_cache(self, variable):
         bucket = self._bucket_cache[variable]
-        for log_factor in variable.computed_log_factors:
-            if log_factor.not_added:
+        remaining_log_factors = []
+        for log_factor in self._computed_log_factors:
+            if variable in log_factor.variables:
                 bucket.add_log_factor(log_factor)
-                log_factor.not_added = False
-        #
+            else:
+                remaining_log_factors.append(log_factor)
+        self._computed_log_factors = remaining_log_factors
+        # Print the bucket variable if necessary
         self._print_bucket(bucket)
-        #
+        # Print the bucket input log-factors if necessary
         self._print_bucket_inputs(bucket)
 
     def _check_query_and_elimination_order(self):
@@ -192,14 +173,11 @@ class BEA(FactoredAlgorithm):
             if bucket.has_free_variables():
                 # Compute the output log-factor of the bucket
                 log_factor = self._bucket_cache[variable].compute_output_log_factor()
-                # The log-factor is not added into a bucket
-                log_factor.not_added = True
-                # Link the log-factor to its variables
-                for variable in log_factor.variables:
-                    variable.computed_log_factors.append(log_factor)
-                #
+                # Save the log-factor in the buffer
+                self._computed_log_factors.append(log_factor)
+                # Print the output log-factor if necessary
                 self._print_bucket_outputs(log_factor)
-        #
+        # Print the free variables if necessary
         self._print_bucket_free_variables(bucket)
 
     def _initialize_bucket_cache(self, variables):
@@ -219,13 +197,10 @@ class BEA(FactoredAlgorithm):
 
     def _initialize_main_loop(self):
         self._initialize_factors()
-        self._initialize_variables()
+        self._bucket_cache = {}
         self._initialize_bucket_cache(self._elimination_order)
         self._initialize_bucket_cache(self._query)
-
-    def _initialize_variables(self):
-        for variable in self.variables:
-            variable.computed_log_factors = []
+        self._computed_log_factors = []
 
     def _print_bucket(self, bucket):
         if self._print_info:

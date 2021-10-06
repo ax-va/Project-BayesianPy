@@ -34,7 +34,7 @@ class BPA(FactoredAlgorithm):
     example, [1] for more details.
     
     Computes a marginal probability distribution P(Q) or a conditional probability 
-    distribution P(Q|E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random 
+    distribution P(Q | E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random
     variable of interest, and E_1 = e_1, ..., E_k = e_k form an evidence, i.e. observed 
     values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
@@ -61,7 +61,8 @@ class BPA(FactoredAlgorithm):
         # Query variable
         self._query_variable = None
         # Whether to print loop passing and propagating node-to-node messages
-        self._print_info = False
+        self._print_info = None
+        # Temporary buffers
         self._from_factors = None
         self._next_factors = None
         self._from_variables = None
@@ -72,41 +73,11 @@ class BPA(FactoredAlgorithm):
         from_node.passed = True
         to_node.incoming_messages_number += 1
 
-    @property
-    def pd(self):
-        """
-        Returns the probability distribution P(Q) or if an evidence is set then
-        P(Q|E_1 = e_1, ..., E_k = e_k) as a function of q, where q is in the value
-        domain of random variable Q
-        """
-        if self._distribution is not None:
-            def distribution(value):
-                if value not in self._query_variable.domain:
-                    raise ValueError(
-                        f'value {value!r} not in domain {self._query_variable.domain} of {self._query_variable.name!r}'
-                    )
-                return self._distribution[value]
-            return distribution
-        else:
-            raise AttributeError('distribution not computed')
-
     def clear_cached_messages(self):
         del self._factor_to_variable_messages
         del self._variable_to_factor_messages
         self._factor_to_variable_messages = {}
         self._variable_to_factor_messages = {}
-
-    def print_pd(self):
-        if self._distribution is not None:
-            if self._evidence is None:
-                for value in self._query_variable.domain:
-                    print(f'P({self._query_variable}={value!r})={self.pd(value)}')
-            else:
-                ev_str = '|' + ', '.join(f'{ev_var.name}={ev_val!r}' for ev_var, ev_val in self._evidence) + ')'
-                for value in self._query_variable.domain:
-                    print(f'P({self._query_variable}={value!r}{ev_str}={self.pd(value)}')
-        else:
-            raise AttributeError('distribution not computed')
 
     def run(self, print_info=False):
         # Check whether a query is specified
@@ -162,7 +133,7 @@ class BPA(FactoredAlgorithm):
         # The probability distribution must be normalized.
         norm_const = math.fsum(nn_values[value] for value in self._query_variable.domain)
         # Compute the probability distribution
-        self._distribution = {value: nn_values[value] / norm_const for value in self._query_variable.domain}
+        self._distribution = {(value, ): nn_values[value] / norm_const for value in self._query_variable.domain}
         self._query_variable.passed = True
 
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):

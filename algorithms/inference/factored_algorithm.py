@@ -34,6 +34,29 @@ class FactoredAlgorithm:
         return self._factor_graph.factors
 
     @property
+    def pd(self):
+        """
+        Returns the probability distribution P(Q_1, ..., Q_s) or if an evidence is set then
+        P(Q_1, ..., Q_s | E_1 = e_1, ..., E_k = e_k) as a function of q_1, ..., q_s, where
+        q_1, ..., q_s are in the value domains of random variable Q_1, ..., Q_s, respectively.
+        The order of values must correspond to the order of variables in the query.
+        """
+        if self._distribution is not None:
+            def distribution(*values):
+                if len(values) != len(self._query):
+                    raise ValueError(
+                        f'The number {len(values)} of values does not match '
+                        f'the number {len(self._query)} of variables in the query'
+                    )
+                for variable, value in zip(self._query, values):
+                    if value not in variable.domain:
+                        raise ValueError(f'value {value!r} not in domain {variable.domain} of {variable.name!r}')
+                return self._distribution[values]
+            return distribution
+        else:
+            raise AttributeError('distribution not computed')
+
+    @property
     def query(self):
         return self._query
 
@@ -53,6 +76,20 @@ class FactoredAlgorithm:
         # Is a query specified?
         if self._query is None:
             raise AttributeError('query not specified')
+
+    def print_pd(self):
+        if self._distribution is not None:
+            evaluated_query = FactoredAlgorithm.evaluate_variables(self._query)
+            ev_str = '' \
+                if self._evidence is None \
+                else ' | ' + ', '.join(f'{ev_var.name} = {ev_val!r}' for ev_var, ev_val in self._evidence)
+            for values in evaluated_query:
+                query_str = 'P(' + ', '.join(f'{var.name} = {val!r}' for var, val in zip(self._query, values))
+                value_str = str(self.pd(*values))
+                equal_str = ') = '
+                print(query_str + ev_str + equal_str + value_str)
+        else:
+            raise AttributeError('distribution not computed')
 
     def set_evidence(self, *evidence):
         # Refresh the domain of evidential variables
