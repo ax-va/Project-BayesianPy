@@ -29,7 +29,9 @@ class BEA(FactoredAlgorithm):
     that, a new factor is created and moved into one remaining bucket.  That is repeated
     until the query buckets contain factors that depend only on the query variables.  
     Instead of the factors, the implementation uses logarithms of them for computational
-    stability.  See, for example, [1] for more details.
+    stability.  See, for example, [1] for more details.  This also needs an elimination
+    order of non-query related variables.  Runtime is highly dependent on that variable
+    elimination order.  The query and elimination variables must be disjoint.
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution
@@ -39,8 +41,6 @@ class BEA(FactoredAlgorithm):
 
     Restrictions:  Only works with random variables with categorical value domains.
     The factors must be strictly positive because of the use of logarithms.
-    The algorithm also needs an elimination order of non-query related variables.
-    Runtime is highly dependent on that variable elimination order.
 
     Recommended:  Use the algorithm for loopy factor graphs or for joint distribution of 
     query variables, otherwise use the Belief Propagation Algorithm (BPA).
