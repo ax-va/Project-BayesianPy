@@ -5,7 +5,7 @@ from pyb4ml.models import Student
 model = Student()
 algorithm = BPA(model)  # Belief Propagation Algorithm
 
-eps = 1 / 1e12
+eps = 1e-12
 
 # Test marginal distributions
 

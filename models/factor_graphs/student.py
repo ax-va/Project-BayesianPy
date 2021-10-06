@@ -12,9 +12,7 @@ Sie den vom Autor auferlegten Bedingungen zu.
 
 © 2021 Alexander Vasiliev
 """
-from pyb4ml.modeling import Factor
-from pyb4ml.modeling import FactorGraph
-from pyb4ml.modeling import Variable
+from pyb4ml.modeling import Factor, FactorGraph, Variable
 
 
 class Student(FactorGraph):
@@ -64,12 +62,12 @@ class Student(FactorGraph):
         # Create factors
         f0 = Factor(
             variables=(difficulty, ),
-            function=lambda x: cpd_difficulty[x],
+            function=lambda d: cpd_difficulty[d],
             name='f0'
         )
         f1 = Factor(
             variables=(intelligence, ),
-            function=lambda x: cpd_intelligence[x],
+            function=lambda i: cpd_intelligence[i],
             name='f1'
         )
         f2 = Factor(
@@ -78,7 +76,7 @@ class Student(FactorGraph):
                 intelligence,
                 grade
             ),
-            function=lambda x, y, z: cpd_grade[(x, y)][z],
+            function=lambda d, i, g: cpd_grade[(d, i)][g],
             name='f2'
         )
         f3 = Factor(
@@ -86,7 +84,7 @@ class Student(FactorGraph):
                 intelligence,
                 sat
             ),
-            function=lambda x, y: cpd_sat[x][y],
+            function=lambda i, s: cpd_sat[i][s],
             name='f3'
         )
         f4 = Factor(
@@ -94,7 +92,7 @@ class Student(FactorGraph):
                 grade,
                 letter
             ),
-            function=lambda x, y: cpd_letter[x][y],
+            function=lambda g, l: cpd_letter[g][l],
             name='f4'
         )
 

@@ -3,15 +3,15 @@ from pyb4ml.models import Student
 
 # Test the Bucket Elimination Algorithm on the Student model
 model = Student()
-algorithm = BEA(model)  # Bucket Elimination Algorithm
-
-eps = 1 / 1e12
-
 difficulty = model.get_variable('Difficulty')
 intelligence = model.get_variable('Intelligence')
 grade = model.get_variable('Grade')
 sat = model.get_variable('SAT')
 letter = model.get_variable('Letter')
+
+algorithm = BEA(model)  # Bucket Elimination Algorithm
+
+eps = 1e-12
 
 # Test conditional distributions
 
