@@ -7,6 +7,7 @@ At the moment, the collection contains the following inference algorithms:
 
 and the following probabilistic models in factor graph representation:
 - Bayesian network "Student" (pb4ml/models/factor_graphs/student.py)
+- Markov network "Misconception" (pb4ml/models/factor_graphs/misconception.py)
 
 See the use of algorithms in the tests.
 
