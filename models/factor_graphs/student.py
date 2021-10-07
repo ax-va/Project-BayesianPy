@@ -12,7 +12,8 @@ Sie den vom Autor auferlegten Bedingungen zu.
 
 © 2021 Alexander Vasiliev
 """
-from pyb4ml.modeling import Factor, FactorGraph, Variable
+from pyb4ml.modeling import Factor, FactorGraph
+from pyb4ml.modeling.categorical.variable import Variable
 
 
 class Student(FactorGraph):
