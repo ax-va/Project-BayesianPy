@@ -1,7 +1,5 @@
-import math
-
-from pyb4ml.modeling.factor_graph.node import Node
-from pyb4ml.modeling.factor_graph.variable import Variable
+from pyb4ml.modeling.graph.node import Node
+from pyb4ml.modeling.categorical.variable import Variable
 
 
 class Factor(Node):
