@@ -1,5 +1,4 @@
 from pyb4ml.modeling.graph.node import Node
-from pyb4ml.modeling.categorical.variable import Variable
 
 
 class Factor(Node):
@@ -42,6 +41,7 @@ class Factor(Node):
 
 
 if __name__ == '__main__':
+    from pyb4ml.modeling.categorical.variable import Variable
     x = Variable(domain={False, True}, name='X')
     y = Variable(domain={False, True}, name='Y')
     z = Variable(domain={False, True}, name='Z')
