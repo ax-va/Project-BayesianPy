@@ -40,8 +40,8 @@ class BPA(FactoredAlgorithm):
 
     Restrictions:  Only works with random variables with categorical value domains, only 
     works on trees (leads to dead lock on loopy graphs).  See the Bucket Elimination 
-    Algorithm (BEA) for the case of loopy graphs.  The factors must be strictly positive 
-    because of the use of logarithms.
+    Algorithm (BEA) for the case of loopy graphs or joint distribution of query variables.  
+    The factors must be strictly positive because of the use of logarithms.
     
     Recommended:  When modeling, reduce the number of random variables in each factor to 
     speed up the inference runtime.  To reduce the number of variables in factors, you can, 
