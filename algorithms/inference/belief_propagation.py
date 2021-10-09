@@ -16,7 +16,7 @@ Sie den vom Autor auferlegten Bedingungen zu.
 import math
 
 from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
-from pyb4ml.algorithms.inference.factor_graph_messages import Message, Messages
+from pyb4ml.algorithms.inference.factor_tree_messages import Message, Messages
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
