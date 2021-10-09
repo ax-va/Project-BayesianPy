@@ -91,8 +91,8 @@ class FactoredAlgorithm:
     def set_evidence(self, *evidence):
         """
         Sets the evidence. For example,
-        algorithm.set_evidence((difficulty, 'd0'), (intelligence, 'i1')) sets the
-        evidential values 'd0' and 'i1' to the random variables Difficulty and
+        algorithm.set_evidence((difficulty, 'd0'), (intelligence, 'i1')) assigns the
+        evidential values 'd0' and 'i1' for the random variables Difficulty and
         Intelligence, respectively.
 
         In fact, the domain of a variable is reduced to one evidential value.
