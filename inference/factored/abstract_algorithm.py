@@ -7,7 +7,8 @@ from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 class FactoredAlgorithm:
     """
-    This is an abstract class of a factored algorithm that real algorithms inherit
+    This is an abstract class of a factored algorithm that real factored algorithms
+    inherit
     """
     def __init__(self, model: FactorGraph):
         # Specify the model, sets self._factor_graph
