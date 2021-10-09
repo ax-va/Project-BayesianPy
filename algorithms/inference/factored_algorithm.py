@@ -146,6 +146,17 @@ class FactoredAlgorithm:
         if self._query is None:
             raise AttributeError('query not specified')
 
+    def _print_start(self):
+        if self._print_info:
+            print('*' * 40)
+            print(f'{self._name} started')
+
+    def _print_stop(self):
+        if self._print_info:
+            print()
+            print(f'{self._name} stopped')
+            print('*' * 40)
+
     def _refresh_evidential_variables_domain_if_necessary(self):
         # Refresh the domains of evidential variables
         if self._evidence is not None:

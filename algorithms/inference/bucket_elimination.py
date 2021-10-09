@@ -60,6 +60,7 @@ class BEA(FactoredAlgorithm):
         self._bucket_cache = None
         self._elimination_order = None
         self._print_info = None
+        self._name = 'BEA'
 
     @property
     def elimination_order(self):
@@ -76,6 +77,10 @@ class BEA(FactoredAlgorithm):
         self._check_query_and_elimination_order()
         # Print the bucket information
         self._print_info = print_info
+        # Clear the distribution
+        self._distribution = None
+        # Print info if necessary
+        FactoredAlgorithm._print_start(self)
         # Initialize the bucket cache
         self._initialize_main_loop()
         # Run the main loops
@@ -96,6 +101,8 @@ class BEA(FactoredAlgorithm):
         # All the output log-factors are distributed on the buckets
         # that belongs to the query variables
         self._compute_distribution()
+        # Print info if necessary
+        FactoredAlgorithm._print_stop(self)
 
     def set_elimination_order(self, elimination_order):
         # Check whether the elimination order has duplicates
@@ -212,6 +219,7 @@ class BEA(FactoredAlgorithm):
             raise AttributeError('elimination order not specified')
 
     def _print_bucket(self, bucket):
+        print()
         if self._print_info:
             print(f'Bucket {bucket.variable.name!r}:')
 
@@ -219,7 +227,6 @@ class BEA(FactoredAlgorithm):
         if self._print_info:
             for free_var in bucket.free_variables:
                 print('Free variable:', free_var)
-            print()
 
     def _print_bucket_inputs(self, bucket):
         if self._print_info:

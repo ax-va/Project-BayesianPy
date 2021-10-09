@@ -67,6 +67,7 @@ class BPA(FactoredAlgorithm):
         self._next_factors = None
         self._from_variables = None
         self._next_variables = None
+        self._name = 'BPA'
 
     @staticmethod
     def _update_passing(from_node, to_node):
@@ -96,6 +97,8 @@ class BPA(FactoredAlgorithm):
         self._print_info = print_info
         # Clear the distribution
         self._distribution = None
+        # Print info if necessary
+        FactoredAlgorithm._print_start(self)
         # Compute messages from leaves and make other initializations
         self._initialize_main_loop()
         # Run the main loop
@@ -116,7 +119,8 @@ class BPA(FactoredAlgorithm):
         # Propagation stopped
         # Compute either the marginal or conditional probability distribution
         self._compute_distribution()
-        self._print_stop()
+        # Print info if necessary
+        FactoredAlgorithm._print_stop(self)
 
     def _compute_distribution(self):
         # Get the incoming messages to the query
@@ -316,6 +320,7 @@ class BPA(FactoredAlgorithm):
 
     def _print_loop(self):
         if self._print_info:
+            print()
             print('loop passing:', self._loop_passing)
             print()
 
@@ -327,8 +332,3 @@ class BPA(FactoredAlgorithm):
             print(message.values)
             print('message values:')
             print({key: math.exp(value) for key, value in message.values.items()})
-            print()
-
-    def _print_stop(self):
-        if self._print_info:
-            print('algorithm stopped')
