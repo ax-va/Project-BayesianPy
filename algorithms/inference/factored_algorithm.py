@@ -138,7 +138,7 @@ class FactoredAlgorithm:
         return self.variables[self._model.variables.index(variable)]
 
     def _has_query_only_one_variable(self):
-        if len(self._query) != 1:
+        if len(self._query) > 1:
             raise ValueError('the query contains more than one variable')
 
     def _is_query_set(self):
