@@ -271,7 +271,7 @@ class BPA(FactoredAlgorithm):
             variable.incoming_messages_number = 0
 
     def _propagate_factor_to_variable_messages_from_leaves(self):
-        for from_factor in self.factor_leaves:
+        for from_factor in self._factor_graph.factor_leaves:
             # The leaf factor has only one variable
             to_variable = from_factor.variables[0]
             self._compute_factor_to_variable_message_from_leaf(from_factor, to_variable)
@@ -294,7 +294,7 @@ class BPA(FactoredAlgorithm):
         self._extend_next_variables(to_variable)
 
     def _propagate_variable_to_factor_messages_from_leaves(self):
-        for from_variable in self.variable_leaves:
+        for from_variable in self._factor_graph.variable_leaves:
             if from_variable is self._query_variable:
                 continue
             # The leaf variable has only one factor

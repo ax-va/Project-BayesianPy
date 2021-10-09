@@ -10,7 +10,7 @@ class FactoredAlgorithm:
     This is an abstract class of a factored algorithm that real algorithms inherit
     """
     def __init__(self, model: FactorGraph):
-        # Specify the model
+        # Specify the model, sets self._factor_graph
         self._set_model(model)
         # Query not specified
         self._query = None
@@ -26,11 +26,10 @@ class FactoredAlgorithm:
 
     @property
     def evidence(self):
+        """
+        Returns the evidence as the attribute of the algorithm
+        """
         return self._evidence
-
-    @property
-    def factor_leaves(self):
-        return tuple(factor for factor in self.factors if factor.is_leaf())
 
     @property
     def factors(self):
@@ -42,7 +41,11 @@ class FactoredAlgorithm:
         Returns the probability distribution P(Q_1, ..., Q_s) or if an evidence is set then
         P(Q_1, ..., Q_s | E_1 = e_1, ..., E_k = e_k) as a function of q_1, ..., q_s, where
         q_1, ..., q_s are in the value domains of random variable Q_1, ..., Q_s, respectively.
-        The order of values must correspond to the order of variables in the query.
+
+        The order of values must correspond to the order of variables in the query.  For example,
+        if algorithm.set_query(difficulty, intelligence) sets the random variables 'Difficulty'
+        and 'Intelligence' as the query, then algorithm.pd('d0', 'i1') returns a probability
+        corresponding to Difficulty = 'd0' and Intelligence = 'i1'.
         """
         if self._distribution is not None:
             def distribution(*values):
@@ -64,14 +67,13 @@ class FactoredAlgorithm:
         return self._query
 
     @property
-    def variable_leaves(self):
-        return tuple(variable for variable in self.variables if variable.is_non_isolated_leaf())
-
-    @property
     def variables(self):
         return self._factor_graph.variables
 
     def print_pd(self):
+        """
+        Prints the complete probability distribution of the query variables
+        """
         if self._distribution is not None:
             evaluated_query = FactoredAlgorithm.evaluate_variables(self._query)
             ev_str = '' \
@@ -86,6 +88,13 @@ class FactoredAlgorithm:
             raise AttributeError('distribution not computed')
 
     def set_evidence(self, *evidence):
+        """
+        Sets the evidence. For example,
+        algorithm.set_evidence((difficulty, 'd0'), (intelligence, 'i1')) sets the
+        evidential values 'd0' and 'i1' to the random variables 'Difficulty' and
+        'Intelligence', respectively.  In fact, the domain of a variable is reduced to
+        one evidential value.
+        """
         # Refresh the domain of evidential variables
         self._refresh_evidential_variables_domain_if_necessary()
         if not evidence[0]:
@@ -94,6 +103,13 @@ class FactoredAlgorithm:
             self._set_evidence(*evidence)
     
     def set_query(self, *variables):
+        """
+        Sets the query. For example, algorithm.set_query(difficulty, intelligence)
+        sets the random variables 'Difficulty' and 'Intelligence' as the query. The values of
+        variables in a computed probability distribution must have the same order. For example,
+        algorithm.pd('d0', 'i1') returns a probability corresponding to Difficulty = 'd0' and
+        Intelligence = 'i1'.
+        """
         if not variables[0]:
             self._query = None
         else:

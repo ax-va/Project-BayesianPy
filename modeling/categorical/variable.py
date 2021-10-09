@@ -23,11 +23,8 @@ class Variable(Node):
     def factors_number(self):
         return len(self._linked_factors)
 
-    def is_isolated_leaf(self):
-        return len(self._linked_factors) == 0
-
-    def is_non_isolated_leaf(self):
-        return len(self._linked_factors) == 1
+    def is_leaf(self):
+        return 0 <= len(self._linked_factors) <= 1
 
     def link_factor(self, factor):
         self._linked_factors.append(factor)

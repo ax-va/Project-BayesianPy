@@ -15,8 +15,16 @@ class FactorGraph:
         return self._factors
 
     @property
+    def factor_leaves(self):
+        return tuple(factor for factor in self._factors if factor.is_leaf())
+
+    @property
     def variables(self):
         return self._variables
+
+    @property
+    def variable_leaves(self):
+        return tuple(variable for variable in self._variables if variable.is_leaf())
 
     def create_factor_cache(self):
         return {factor.variables: factor for factor in self._factors}
