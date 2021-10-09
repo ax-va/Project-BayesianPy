@@ -29,9 +29,10 @@ class BPA(FactoredAlgorithm):
     messages are propagated from the leaves across the tree to the query variable.  That 
     can be considered as the successive elimination of the factors and variables in the 
     factor graph tree.  This implementation encourages reuse of the algorithm by caching 
-    already computed messages given an evidence or no evidence.  Instead of the messages,
-    the implementation uses logarithms of them for computational stability.  See, for 
-    example, [1] for more details.
+    already computed messages given an evidence or no evidence.  Thus, they are computed 
+    only once, which is dynamic programming, and are used in the next BPA runs.  Instead of 
+    the messages, the implementation uses logarithms of them for computational stability.  
+    See, for example, [1] for more details.
     
     Computes a marginal probability distribution P(Q) or a conditional probability 
     distribution P(Q | E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random
