@@ -444,7 +444,7 @@ assert 0.3066506683217608 / (1 + eps) <= pd('d1', 'i1') <= 0.3066506683217608 * 
 algorithm.set_query(letter, sat)
 algorithm.set_evidence(None)
 algorithm.set_elimination_order([difficulty, intelligence, grade])
-algorithm.run()
+algorithm.run(print_info=True)
 pd = algorithm.pd
 algorithm.print_pd()
 # P(l,s) =

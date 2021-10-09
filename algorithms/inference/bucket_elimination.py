@@ -61,18 +61,17 @@ class BEA(FactoredAlgorithm):
         self._elimination_order = None
         self._print_info = None
 
-    def is_elimination_order_set(self):
-        # Is an elimination order specified?
-        if self._elimination_order is None:
-            raise AttributeError('elimination order not specified')
+    @property
+    def elimination_order(self):
+        return self._elimination_order
 
     def run(self, print_info=False):
         # Check whether a query is specified
-        FactoredAlgorithm.is_query_set(self)
+        FactoredAlgorithm._is_query_set(self)
         # Check whether the query and evidence variables are disjoint
-        self._check_query_and_evidence()
+        FactoredAlgorithm._check_query_and_evidence(self)
         # Check whether an elimination order is specified
-        self.is_elimination_order_set()
+        self._is_elimination_order_set()
         # Check if the elimination order and query agree with each other
         self._check_query_and_elimination_order()
         # Print the bucket information
@@ -99,8 +98,9 @@ class BEA(FactoredAlgorithm):
         self._compute_distribution()
 
     def set_elimination_order(self, elimination_order):
-        # Remove duplicates if necessary
-        elimination_order = set(elimination_order)
+        # Check whether the elimination order has duplicates
+        if len(elimination_order) != len(set(elimination_order)):
+            raise ValueError(f'The elimination order must not contain duplicates')
         self._elimination_order = []
         # Setting the elimination order
         for elm_var in elimination_order:
@@ -126,19 +126,6 @@ class BEA(FactoredAlgorithm):
         self._print_bucket(bucket)
         # Print the bucket input log-factors if necessary
         self._print_bucket_inputs(bucket)
-
-    def _check_query_and_elimination_order(self):
-        set_q = set(self._query)
-        set_o = set(self._elimination_order)
-        set_m = set(self.variables)
-        if not set_q.isdisjoint(set_o):
-            self._query = None
-            self._elimination_order = None
-            raise ValueError('the elimination and query variables must be disjoint')
-        if set_q.union(set_o) != set_m:
-            self._query = None
-            self._elimination_order = None
-            raise ValueError('the elimination and query variables do not cover all the model variables')
 
     def _compute_distribution(self):
         # Assemble all the log-factors from the query buckets
@@ -184,6 +171,19 @@ class BEA(FactoredAlgorithm):
         # Print the free variables if necessary
         self._print_bucket_free_variables(bucket)
 
+    def _check_query_and_elimination_order(self):
+        set_q = set(self._query)
+        set_o = set(self._elimination_order)
+        set_m = set(self.variables)
+        if not set_q.isdisjoint(set_o):
+            self._query = None
+            self._elimination_order = None
+            raise ValueError('the elimination and query variables must be disjoint')
+        if set_q.union(set_o) != set_m:
+            self._query = None
+            self._elimination_order = None
+            raise ValueError('the elimination and query variables do not cover all the model variables')
+
     def _initialize_bucket_cache(self, variables):
         for variable in variables:
             self._bucket_cache[variable] = Bucket(variable)
@@ -206,6 +206,11 @@ class BEA(FactoredAlgorithm):
         self._initialize_bucket_cache(self._query)
         self._computed_log_factors = []
 
+    def _is_elimination_order_set(self):
+        # Is an elimination order specified?
+        if self._elimination_order is None:
+            raise AttributeError('elimination order not specified')
+
     def _print_bucket(self, bucket):
         if self._print_info:
             print(f'Bucket {bucket.variable.name!r}:')
@@ -224,5 +229,3 @@ class BEA(FactoredAlgorithm):
     def _print_bucket_outputs(self, log_factor):
         if self._print_info:
             print('Output:', log_factor)
-
-

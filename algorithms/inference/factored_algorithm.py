@@ -68,15 +68,6 @@ class FactoredAlgorithm:
     def variables(self):
         return self._factor_graph.variables
 
-    def has_query_only_one_variable(self):
-        if len(self._query) != 1:
-            raise ValueError('the query contains more than one variable')
-
-    def is_query_set(self):
-        # Is a query specified?
-        if self._query is None:
-            raise AttributeError('query not specified')
-
     def print_pd(self):
         if self._distribution is not None:
             evaluated_query = FactoredAlgorithm.evaluate_variables(self._query)
@@ -146,6 +137,15 @@ class FactoredAlgorithm:
         # Make sure that the encapsulated variable is got
         return self.variables[self._model.variables.index(variable)]
 
+    def _has_query_only_one_variable(self):
+        if len(self._query) != 1:
+            raise ValueError('the query contains more than one variable')
+
+    def _is_query_set(self):
+        # Is a query specified?
+        if self._query is None:
+            raise AttributeError('query not specified')
+
     def _refresh_evidential_variables_domain_if_necessary(self):
         # Refresh the domains of evidential variables
         if self._evidence is not None:
@@ -153,8 +153,9 @@ class FactoredAlgorithm:
                 ev_var.set_domain(self._model.variables[self.variables.index(ev_var)].domain)
 
     def _set_evidence(self, *evidence):
-        # Remove duplicates if necessary
-        evidence = set(evidence)
+        # Check whether the query has duplicates
+        if len(evidence) != len(set(evidence)):
+            raise ValueError(f'The evidence must not contain duplicates')
         self._evidence = []
         # Setting the evidence is equivalent to reducing the domain of the variable to only one value
         for ev_var, ev_val in evidence:
@@ -170,8 +171,9 @@ class FactoredAlgorithm:
         self._evidence = tuple(sorted(self._evidence, key=lambda x: x[0].name))
 
     def _set_query(self, *variables):
-        # Remove duplicates if necessary
-        variables = set(variables)
+        # Check whether the query has duplicates
+        if len(variables) != len(set(variables)):
+            raise ValueError(f'The query must not contain duplicates')
         self._query = []
         for query_var in variables:
             # Variable 'query' of interest for computing P(query) or P(query|evidence)
