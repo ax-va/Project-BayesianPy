@@ -1,4 +1,4 @@
-from pyb4ml.algorithms import BPA
+from pyb4ml.inference import BPA
 from pyb4ml.models import Student
 
 # Test the Belief Propagation Algorithm on the Student model

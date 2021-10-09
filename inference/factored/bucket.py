@@ -1,6 +1,6 @@
 import math
 
-from pyb4ml.algorithms.inference.factored_algorithm import FactoredAlgorithm
+from pyb4ml.inference.factored.algorithm import FactoredAlgorithm
 from pyb4ml.modeling.factor_graph.log_factor import LogFactor
 
 

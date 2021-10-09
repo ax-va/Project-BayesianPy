@@ -1,4 +1,4 @@
-from pyb4ml.algorithms import BEA
+from pyb4ml.inference import BEA
 from pyb4ml.models import Student
 
 # Test the Bucket Elimination Algorithm on the Student model
