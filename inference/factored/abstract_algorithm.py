@@ -43,8 +43,8 @@ class FactoredAlgorithm:
         q_1, ..., q_s are in the value domains of random variable Q_1, ..., Q_s, respectively.
 
         The order of values must correspond to the order of variables in the query.  For example,
-        if algorithm.set_query(difficulty, intelligence) sets the random variables 'Difficulty'
-        and 'Intelligence' as the query, then algorithm.pd('d0', 'i1') returns a probability
+        if algorithm.set_query(difficulty, intelligence) sets the random variables Difficulty
+        and Intelligence as the query, then algorithm.pd('d0', 'i1') returns a probability
         corresponding to Difficulty = 'd0' and Intelligence = 'i1'.
         """
         if self._distribution is not None:
@@ -91,9 +91,12 @@ class FactoredAlgorithm:
         """
         Sets the evidence. For example,
         algorithm.set_evidence((difficulty, 'd0'), (intelligence, 'i1')) sets the
-        evidential values 'd0' and 'i1' to the random variables 'Difficulty' and
-        'Intelligence', respectively.  In fact, the domain of a variable is reduced to
-        one evidential value.
+        evidential values 'd0' and 'i1' to the random variables Difficulty and
+        Intelligence, respectively.
+
+        In fact, the domain of a variable is reduced to one evidential value.
+        The variable is encapsulated in the algorithm and does not change the
+        corresponding model variable.
         """
         # Refresh the domain of evidential variables
         self._refresh_evidential_variables_domain_if_necessary()
@@ -105,7 +108,7 @@ class FactoredAlgorithm:
     def set_query(self, *variables):
         """
         Sets the query. For example, algorithm.set_query(difficulty, intelligence)
-        sets the random variables 'Difficulty' and 'Intelligence' as the query. The values of
+        sets the random variables Difficulty and Intelligence as the query. The values of
         variables in a computed probability distribution must have the same order. For example,
         algorithm.pd('d0', 'i1') returns a probability corresponding to Difficulty = 'd0' and
         Intelligence = 'i1'.
