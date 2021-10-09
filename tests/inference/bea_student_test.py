@@ -22,8 +22,8 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.4742196406430358 - eps <= pd('d0') <= 0.4742196406430358 + eps
-assert 0.5257803593569642 - eps <= pd('d1') <= 0.5257803593569642 + eps
+assert 0.4742196406430358 / (1 + eps) <= pd('d0') <= 0.4742196406430358 * (1 + eps)
+assert 0.5257803593569642 / (1 + eps) <= pd('d1') <= 0.5257803593569642 * (1 + eps)
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'), (sat, 's1'))
@@ -32,8 +32,8 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.3972483414607588 - eps <= pd('d0') <= 0.3972483414607588 + eps
-assert 0.6027516585392411 - eps <= pd('d1') <= 0.6027516585392411 + eps
+assert 0.3972483414607588 / (1 + eps) <= pd('d0') <= 0.3972483414607588 * (1 + eps)
+assert 0.6027516585392411 / (1 + eps) <= pd('d1') <= 0.6027516585392411 * (1 + eps)
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'), (sat, 's0'))
@@ -42,8 +42,8 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.7737141941302315 - eps <= pd('d0') <= 0.7737141941302315 + eps
-assert 0.22628580586976843 - eps <= pd('d1') <= 0.22628580586976843 + eps
+assert 0.7737141941302315 / (1 + eps) <= pd('d0') <= 0.7737141941302315 * (1 + eps)
+assert 0.22628580586976843 / (1 + eps) <= pd('d1') <= 0.22628580586976843 * (1 + eps)
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'), (sat, 's1'))
@@ -52,8 +52,8 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.6790559493929356 - eps <= pd('d0') <= 0.6790559493929356 + eps
-assert 0.32094405060706443 - eps <= pd('d1') <= 0.32094405060706443 + eps
+assert 0.6790559493929356 / (1 + eps) <= pd('d0') <= 0.6790559493929356 * (1 + eps)
+assert 0.32094405060706443 / (1 + eps) <= pd('d1') <= 0.32094405060706443 * (1 + eps)
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'))
@@ -62,8 +62,8 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.4622878086419753 - eps <= pd('d0') <= 0.4622878086419753 + eps
-assert 0.5377121913580247 - eps <= pd('d1') <= 0.5377121913580247 + eps
+assert 0.4622878086419753 / (1 + eps) <= pd('d0') <= 0.4622878086419753 * (1 + eps)
+assert 0.5377121913580247 / (1 + eps) <= pd('d1') <= 0.5377121913580247 * (1 + eps)
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'))
@@ -72,8 +72,8 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.7364313925340807 - eps <= pd('d0') <= 0.7364313925340807 + eps
-assert 0.26356860746591926 - eps <= pd('d1') <= 0.26356860746591926 + eps
+assert 0.7364313925340807 / (1 + eps) <= pd('d0') <= 0.7364313925340807 * (1 + eps)
+assert 0.26356860746591926 / (1 + eps) <= pd('d1') <= 0.26356860746591926 * (1 + eps)
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((sat, 's0'))
@@ -84,8 +84,8 @@ algorithm.print_pd()
 # The trail Difficulty - Grade - Intelligence - SAT
 # is not active given the empty set of observed variables
 # because neither Grade nor Letter is observed
-assert 0.6 - eps <= pd('d0') <= 0.6 + eps
-assert 0.4 - eps <= pd('d1') <= 0.4 + eps
+assert 0.6 / (1 + eps) <= pd('d0') <= 0.6 * (1 + eps)
+assert 0.4 / (1 + eps) <= pd('d1') <= 0.4 * (1 + eps)
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((sat, 's1'))
@@ -96,8 +96,8 @@ algorithm.print_pd()
 # The trail Difficulty - Grade - Intelligence - SAT
 # is not active given the empty set of observed variables
 # because neither Grade nor Letter is observed
-assert 0.6 - eps <= pd('d0') <= 0.6 + eps
-assert 0.4 - eps <= pd('d1') <= 0.4 + eps
+assert 0.6 / (1 + eps) <= pd('d0') <= 0.6 * (1 + eps)
+assert 0.4 / (1 + eps) <= pd('d1') <= 0.4 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l0'), (sat, 's0'))
@@ -106,9 +106,9 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.07627202787313875 - eps <= pd('g0') <= 0.07627202787313875 + eps
-assert 0.32590872028474893 - eps <= pd('g1') <= 0.32590872028474893 + eps
-assert 0.5978192518421124 - eps <= pd('g2') <= 0.5978192518421124 + eps
+assert 0.07627202787313875 / (1 + eps) <= pd('g0') <= 0.07627202787313875 * (1 + eps)
+assert 0.32590872028474893 / (1 + eps) <= pd('g1') <= 0.32590872028474893 * (1 + eps)
+assert 0.5978192518421124 / (1 + eps) <= pd('g2') <= 0.5978192518421124 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l0'), (sat, 's1'))
@@ -117,9 +117,9 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.4434481273371577 - eps <= pd('g0') <= 0.4434481273371577 + eps
-assert 0.2599996084343245 - eps <= pd('g1') <= 0.2599996084343245 + eps
-assert 0.29655226422851777 - eps <= pd('g2') <= 0.29655226422851777 + eps
+assert 0.4434481273371577 / (1 + eps) <= pd('g0') <= 0.4434481273371577 * (1 + eps)
+assert 0.2599996084343245 / (1 + eps) <= pd('g1') <= 0.2599996084343245 * (1 + eps)
+assert 0.29655226422851777 / (1 + eps) <= pd('g2') <= 0.29655226422851777 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l1'), (sat, 's0'))
@@ -128,9 +128,9 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.5810710656407828 - eps <= pd('g0') <= 0.5810710656407828 + eps
-assert 0.4138173427364206 - eps <= pd('g1') <= 0.4138173427364206 + eps
-assert 0.005111591622796632 - eps <= pd('g2') <= 0.005111591622796632 + eps
+assert 0.5810710656407828 / (1 + eps) <= pd('g0') <= 0.5810710656407828 * (1 + eps)
+assert 0.4138173427364206 / (1 + eps) <= pd('g1') <= 0.4138173427364206 * (1 + eps)
+assert 0.005111591622796632 / (1 + eps) <= pd('g2') <= 0.005111591622796632 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l1'), (sat, 's1'))
@@ -139,9 +139,9 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.9103575782746748 - eps <= pd('g0') <= 0.9103575782746748 + eps
-assert 0.08895915113677469 - eps <= pd('g1') <= 0.08895915113677469 + eps
-assert 0.0006832705885505288 - eps <= pd('g2') <= 0.0006832705885505288 + eps
+assert 0.9103575782746748 / (1 + eps) <= pd('g0') <= 0.9103575782746748 * (1 + eps)
+assert 0.08895915113677469 / (1 + eps) <= pd('g1') <= 0.08895915113677469 * (1 + eps)
+assert 0.0006832705885505288 / (1 + eps) <= pd('g2') <= 0.0006832705885505288 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l0'), (sat, 's0'))
@@ -150,9 +150,9 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.011442786069651743 - eps <= pd('g0') <= 0.011442786069651743 + eps
-assert 0.13333333333333333 - eps <= pd('g1') <= 0.13333333333333333 + eps
-assert 0.8552238805970149 - eps <= pd('g2') <= 0.8552238805970149 + eps
+assert 0.011442786069651743 / (1 + eps) <= pd('g0') <= 0.011442786069651743 * (1 + eps)
+assert 0.13333333333333333 / (1 + eps) <= pd('g1') <= 0.13333333333333333 * (1 + eps)
+assert 0.8552238805970149 / (1 + eps) <= pd('g2') <= 0.8552238805970149 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l0'), (sat, 's1'))
@@ -161,9 +161,9 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.10473118279569894 - eps <= pd('g0') <= 0.10473118279569894 + eps
-assert 0.2778494623655915 - eps <= pd('g1') <= 0.2778494623655915 + eps
-assert 0.6174193548387096 - eps <= pd('g2') <= 0.6174193548387096 + eps
+assert 0.10473118279569894 / (1 + eps) <= pd('g0') <= 0.10473118279569894 * (1 + eps)
+assert 0.2778494623655915 / (1 + eps) <= pd('g1') <= 0.2778494623655915 * (1 + eps)
+assert 0.6174193548387096 / (1 + eps) <= pd('g2') <= 0.6174193548387096 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l1'), (sat, 's0'))
@@ -172,9 +172,9 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.33047895500725694 - eps < pd('g0') < 0.33047895500725694 + eps
-assert 0.641799709724238 - eps < pd('g1') < 0.641799709724238 + eps
-assert 0.027721335268505072 - eps < pd('g2') < 0.027721335268505072 + eps
+assert 0.33047895500725694 / (1 + eps) <= pd('g0') <= 0.33047895500725694 * (1 + eps)
+assert 0.641799709724238 / (1 + eps) <= pd('g1') <= 0.641799709724238 * (1 + eps)
+assert 0.027721335268505072 / (1 + eps) <= pd('g2') <= 0.027721335268505072 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l1'), (sat, 's1'))
@@ -183,9 +183,9 @@ algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
 # The values for the assertions are obtained using the BPA
-assert 0.690236220472441 - eps <= pd('g0') <= 0.690236220472441 + eps
-assert 0.30519685039370076 - eps <= pd('g1') <= 0.30519685039370076 + eps
-assert 0.004566929133858268 - eps <= pd('g2') <= 0.004566929133858268 + eps
+assert 0.690236220472441 / (1 + eps) <= pd('g0') <= 0.690236220472441 * (1 + eps)
+assert 0.30519685039370076 / (1 + eps) <= pd('g1') <= 0.30519685039370076 * (1 + eps)
+assert 0.004566929133858268 / (1 + eps) <= pd('g2') <= 0.004566929133858268 * (1 + eps)
 
 # Test marginal joint distributions
 
@@ -205,10 +205,10 @@ algorithm.print_pd()
 # = 0.4 * 0.7 = 0.28
 # P(d1,i1) = P(d1) * P(i1)
 # = 0.4 * 0.3 = 0.12
-assert 0.42 - eps <= pd('d0', 'i0') <= 0.42 + eps
-assert 0.18 - eps <= pd('d0', 'i1') <= 0.18 + eps
-assert 0.28 - eps <= pd('d1', 'i0') <= 0.28 + eps
-assert 0.12 - eps <= pd('d1', 'i1') <= 0.12 + eps
+assert 0.42 / (1 + eps) <= pd('d0', 'i0') <= 0.42 * (1 + eps)
+assert 0.18 / (1 + eps) <= pd('d0', 'i1') <= 0.18 * (1 + eps)
+assert 0.28 / (1 + eps) <= pd('d1', 'i0') <= 0.28 * (1 + eps)
+assert 0.12 / (1 + eps) <= pd('d1', 'i1') <= 0.12 * (1 + eps)
 
 # Test conditional joint distributions
 
@@ -264,10 +264,10 @@ algorithm.print_pd()
 #
 # P(d1,i1|s0,l0) = P(d1,i1,s0,l0) / P(s0,l0)
 # = 0.008832 / 0.4205178 = 0.021002678126823642
-assert 0.4620803209757114 - eps <= pd('d0', 'i0') <= 0.4620803209757114 + eps
-assert 0.012139319667324426 - eps <= pd('d0', 'i1') <= 0.012139319667324426 + eps
-assert 0.5047776812301406 - eps <= pd('d1', 'i0') <= 0.5047776812301406 + eps
-assert 0.021002678126823642 - eps <= pd('d1', 'i1') <= 0.021002678126823642 + eps
+assert 0.4620803209757114 / (1 + eps) <= pd('d0', 'i0') <= 0.4620803209757114 * (1 + eps)
+assert 0.012139319667324426 / (1 + eps) <= pd('d0', 'i1') <= 0.012139319667324426 * (1 + eps)
+assert 0.5047776812301406 / (1 + eps) <= pd('d1', 'i0') <= 0.5047776812301406 * (1 + eps)
+assert 0.021002678126823642 / (1 + eps) <= pd('d1', 'i1') <= 0.021002678126823642 * (1 + eps)
 
 algorithm.set_query(difficulty, intelligence)
 algorithm.set_evidence((letter, 'l0'), (sat, 's1'))
@@ -321,10 +321,10 @@ algorithm.print_pd()
 #
 # P(d1,i1|s1,l0) = P(d1,i1,s1,l0) / P(s1,l0)
 # = 0.035328 / 0.0771462 = 0.4579357116747163
-assert 0.13256647767485633 - eps <= pd('d0', 'i0') <= 0.13256647767485633 + eps
-assert 0.2646818637859026 - eps <= pd('d0', 'i1') <= 0.2646818637859026 + eps
-assert 0.14481594686452476 - eps <= pd('d1', 'i0') <= 0.14481594686452476 + eps
-assert 0.4579357116747163 - eps <= pd('d1', 'i1') <= 0.4579357116747163 + eps
+assert 0.13256647767485633 / (1 + eps) <= pd('d0', 'i0') <= 0.13256647767485633 * (1 + eps)
+assert 0.2646818637859026 / (1 + eps) <= pd('d0', 'i1') <= 0.2646818637859026 * (1 + eps)
+assert 0.14481594686452476 / (1 + eps) <= pd('d1', 'i0') <= 0.14481594686452476 * (1 + eps)
+assert 0.4579357116747163 / (1 + eps) <= pd('d1', 'i1') <= 0.4579357116747163 * (1 + eps)
 
 algorithm.set_query(difficulty, intelligence)
 algorithm.set_evidence((letter, 'l1'), (sat, 's0'))
@@ -378,10 +378,10 @@ algorithm.print_pd()
 #
 # P(d1,i1|s0,l1) = P(d1,i1,s0,l1) / P(s0,l1)
 # = 0.015168 / 0.3044822 = 0.04981571993371041
-assert 0.6722461937019636 - eps <= pd('d0', 'i0') <= 0.6722461937019636 + eps
-assert 0.10146800042826806 - eps <= pd('d0', 'i1') <= 0.10146800042826806 + eps
-assert 0.176470085936058 - eps <= pd('d1', 'i0') <= 0.176470085936058 + eps
-assert 0.04981571993371041 - eps <= pd('d1', 'i1') <= 0.04981571993371041 + eps
+assert 0.6722461937019636 / (1 + eps) <= pd('d0', 'i0') <= 0.6722461937019636 * (1 + eps)
+assert 0.10146800042826806 / (1 + eps) <= pd('d0', 'i1') <= 0.10146800042826806 * (1 + eps)
+assert 0.176470085936058 / (1 + eps) <= pd('d1', 'i0') <= 0.176470085936058 * (1 + eps)
+assert 0.04981571993371041 / (1 + eps) <= pd('d1', 'i1') <= 0.04981571993371041 * (1 + eps)
 
 algorithm.set_query(difficulty, intelligence)
 algorithm.set_evidence((letter, 'l1'), (sat, 's1'))
@@ -435,10 +435,10 @@ algorithm.print_pd()
 #
 # P(d1,i1|s1,l1) = P(d1,i1,s1,l1) / P(s1,l1)
 # = 0.060672 / 0.1978538 = 0.3066506683217608
-assert 0.0544492953888174 - eps <= pd('d0', 'i0') <= 0.0544492953888174 + eps
-assert 0.6246066540041182 - eps <= pd('d0', 'i1') <= 0.6246066540041182 + eps
-assert 0.014293382285303592 - eps <= pd('d1', 'i0') <= 0.0142933822853035928 + eps
-assert 0.3066506683217608 - eps <= pd('d1', 'i1') <= 0.3066506683217608 + eps
+assert 0.0544492953888174 / (1 + eps) <= pd('d0', 'i0') <= 0.0544492953888174 * (1 + eps)
+assert 0.6246066540041182 / (1 + eps) <= pd('d0', 'i1') <= 0.6246066540041182 * (1 + eps)
+assert 0.014293382285303592 / (1 + eps) <= pd('d1', 'i0') <= 0.0142933822853035928 * (1 + eps)
+assert 0.3066506683217608 / (1 + eps) <= pd('d1', 'i1') <= 0.3066506683217608 * (1 + eps)
 
 # Test marginal joint probability distributions again
 algorithm.set_query(letter, sat)
@@ -556,8 +556,7 @@ algorithm.print_pd()
 # + 0.5 * 0.4 * 0.3 * 0.8 * 0.9
 # + 0.3 * 0.4 * 0.3 * 0.8 * 0.6
 # + 0.2 * 0.4 * 0.3 * 0.8 * 0.01 = 0.1978538
-assert 0.4205178 - eps <= pd('l0', 's0') <= 0.4205178 + eps
-assert 0.0771462 - eps <= pd('l0', 's1') <= 0.0771462 + eps
-assert 0.3044822 - eps <= pd('l1', 's0') <= 0.3044822 + eps
-assert 0.1978538 - eps <= pd('l1', 's1') <= 0.1978538 + eps
-
+assert 0.4205178 / (1 + eps) <= pd('l0', 's0') <= 0.4205178 * (1 + eps)
+assert 0.0771462 / (1 + eps) <= pd('l0', 's1') <= 0.0771462 * (1 + eps)
+assert 0.3044822 / (1 + eps) <= pd('l1', 's0') <= 0.3044822 * (1 + eps)
+assert 0.1978538 / (1 + eps) <= pd('l1', 's1') <= 0.1978538 * (1 + eps)
