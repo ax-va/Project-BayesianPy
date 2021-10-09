@@ -8,7 +8,7 @@ class Message:
         return self._values[value]
 
     def __str__(self):
-        return f'Message({self._from_node} -> {self._to_node})'
+        return f'Message: {self._from_node} -> {self._to_node}'
 
     @property
     def from_node(self):

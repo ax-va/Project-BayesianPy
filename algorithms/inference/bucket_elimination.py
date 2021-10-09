@@ -219,9 +219,9 @@ class BEA(FactoredAlgorithm):
             raise AttributeError('elimination order not specified')
 
     def _print_bucket(self, bucket):
-        print()
         if self._print_info:
-            print(f'Bucket {bucket.variable.name!r}:')
+            print()
+            print(f'Bucket: {bucket.variable.name}')
 
     def _print_bucket_free_variables(self, bucket):
         if self._print_info:
