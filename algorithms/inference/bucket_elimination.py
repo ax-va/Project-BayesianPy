@@ -30,8 +30,12 @@ class BEA(FactoredAlgorithm):
     until the query buckets contain factors that depend only on the query variables.  
     Instead of the factors, the implementation uses logarithms of them for computational
     stability.  See, for example, [1] for more details.  This also needs an elimination
-    order of non-query related variables.  Runtime is highly dependent on that variable
-    elimination order.  The query and elimination variables must be disjoint.
+    order of nonquery variables.  Runtime is highly dependent on that variable elimination
+    order.  The query and elimination variables must be disjoint.  Dynamic programming here
+    means that a new factor is computed only once in any run.  But in the next BEA run,
+    new factors are recomputed, since the possibly changed query changes the elimination 
+    order.  As a result, the order of computing the factors can also be changed and the 
+    factors computed in the previous run cannot be reused.
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution

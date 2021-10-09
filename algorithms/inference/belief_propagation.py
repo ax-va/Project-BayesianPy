@@ -22,16 +22,16 @@ from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 class BPA(FactoredAlgorithm):
     """
-    This implementation of the Belief Propagation Algorithm (BPA) (also referred to as
-    the Sum-Product Algorithm) works on factor graph trees for random variables with
-    categorical probability distributions.  That algorithm belongs to Message Passing and 
-    Variable Elimination Algorithms.  There, the factor-to-variable and variable-to-factor
-    messages are propagated from the leaves across the tree to the query variable.  That 
-    can be considered as the successive elimination of the factors and variables in the 
-    factor graph tree.  This implementation encourages reuse of the algorithm by caching 
-    already computed messages given an evidence or no evidence.  Instead of the messages,
-    the implementation uses logarithms of them for computational stability.  See, for 
-    example, [1] for more details.
+    This implementation of the Belief Propagation Algorithm (BPA) works on factor graph
+    trees for random variables with categorical probability distributions.  That algorithm 
+    belongs to Message Passing and Variable Elimination Algorithms.  There, the 
+    factor-to-variable and variable-to-factor messages are propagated from the leaves across
+    the tree to the query variable.  That can be considered as the successive elimination
+    of the factors and variables in the factor graph tree.  This implementation encourages
+    reuse of the algorithm by caching already computed messages given an evidence or no 
+    evidence.  Thus, they are computed only once, which is dynamic programming, and are used
+    in the next BPA runs.  Instead of the messages, the implementation uses logarithms of 
+    them for computational stability.  See, for example, [1] for more details.
     
     Computes a marginal probability distribution P(Q) or a conditional probability 
     distribution P(Q | E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random
