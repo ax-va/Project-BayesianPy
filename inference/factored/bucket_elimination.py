@@ -15,7 +15,7 @@ Sie den vom Autor auferlegten Bedingungen zu.
 import math
 
 from pyb4ml.inference.factored.bucket import Bucket
-from pyb4ml.inference.factored.algorithm import FactoredAlgorithm
+from pyb4ml.inference.factored.abstract_algorithm import FactoredAlgorithm
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 from pyb4ml.modeling.factor_graph.log_factor import LogFactor
 
