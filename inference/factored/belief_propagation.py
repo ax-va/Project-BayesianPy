@@ -17,7 +17,7 @@ import math
 
 from pyb4ml.inference.factored.abstract_algorithm import FactoredAlgorithm
 from pyb4ml.inference.factored.factor_tree_messages import Message, Messages
-from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
+from pyb4ml.modeling.factor_graph.model import FactorGraph
 
 
 class BPA(FactoredAlgorithm):
