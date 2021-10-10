@@ -96,8 +96,8 @@ class FactoredAlgorithm:
         Intelligence, respectively.
 
         In fact, the domain of a variable is reduced to one evidential value.
-        The variable is encapsulated in the algorithm and does not change the
-        domain of the corresponding model variable.
+        The variable is encapsulated in the algorithm and the domain of the 
+        corresponding model variable is not changed.
         """
         # Refresh the domain of evidential variables
         self._refresh_evidential_variables_domain_if_necessary()
