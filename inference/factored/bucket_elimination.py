@@ -74,9 +74,9 @@ class BEA(FactoredAlgorithm):
         # Check whether the query and evidence variables are disjoint
         FactoredAlgorithm._check_query_and_evidence(self)
         # Check whether an elimination order is specified
-        self._is_elimination_order_set()
+        self._is_elimination_ordering_set()
         # Check if the elimination order and query agree with each other
-        self._check_query_and_elimination_order()
+        self._check_query_and_elimination_variables()
         # Print the bucket information
         self._print_info = print_info
         # Clear the distribution
@@ -111,7 +111,7 @@ class BEA(FactoredAlgorithm):
         if len(ordering) != len(set(ordering)):
             raise ValueError(f'The elimination order must not contain duplicates')
         self._elimination_ordering = []
-        # Setting the elimination order
+        # Setting the elimination ordering
         for elm_var in ordering:
             try:
                 elm_var = FactoredAlgorithm._get_algorithm_variable(self, elm_var)
@@ -180,7 +180,7 @@ class BEA(FactoredAlgorithm):
         # Print the free variables if necessary
         self._print_bucket_free_variables(bucket)
 
-    def _check_query_and_elimination_order(self):
+    def _check_query_and_elimination_variables(self):
         set_q = set(self._query)
         set_o = set(self._elimination_ordering)
         set_m = set(self.variables)
@@ -215,10 +215,10 @@ class BEA(FactoredAlgorithm):
         self._initialize_bucket_cache(self._query)
         self._computed_log_factors = []
 
-    def _is_elimination_order_set(self):
-        # Is an elimination order specified?
+    def _is_elimination_ordering_set(self):
+        # Is an elimination ordering specified?
         if self._elimination_ordering is None:
-            raise AttributeError('elimination order not specified')
+            raise AttributeError('elimination ordering not specified')
 
     def _print_bucket(self, bucket):
         if self._print_info:
