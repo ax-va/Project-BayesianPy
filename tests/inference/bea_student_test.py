@@ -17,7 +17,7 @@ eps = 1e-12
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'), (sat, 's0'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
+algorithm.set_ordering([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -27,7 +27,7 @@ assert 0.5257803593569642 / (1 + eps) <= pd('d1') <= 0.5257803593569642 * (1 + e
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'), (sat, 's1'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
+algorithm.set_ordering([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -37,7 +37,7 @@ assert 0.6027516585392411 / (1 + eps) <= pd('d1') <= 0.6027516585392411 * (1 + e
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'), (sat, 's0'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
+algorithm.set_ordering([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -47,7 +47,7 @@ assert 0.22628580586976843 / (1 + eps) <= pd('d1') <= 0.22628580586976843 * (1 +
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'), (sat, 's1'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
+algorithm.set_ordering([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -57,7 +57,7 @@ assert 0.32094405060706443 / (1 + eps) <= pd('d1') <= 0.32094405060706443 * (1 +
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l0'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
+algorithm.set_ordering([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -67,7 +67,7 @@ assert 0.5377121913580247 / (1 + eps) <= pd('d1') <= 0.5377121913580247 * (1 + e
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((letter, 'l1'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
+algorithm.set_ordering([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -77,7 +77,7 @@ assert 0.26356860746591926 / (1 + eps) <= pd('d1') <= 0.26356860746591926 * (1 +
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((sat, 's0'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
+algorithm.set_ordering([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -89,7 +89,7 @@ assert 0.4 / (1 + eps) <= pd('d1') <= 0.4 * (1 + eps)
 
 algorithm.set_query(difficulty)
 algorithm.set_evidence((sat, 's1'))
-algorithm.set_elimination_order([letter, sat, intelligence, grade])
+algorithm.set_ordering([letter, sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -101,7 +101,7 @@ assert 0.4 / (1 + eps) <= pd('d1') <= 0.4 * (1 + eps)
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l0'), (sat, 's0'))
-algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
+algorithm.set_ordering([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -112,7 +112,7 @@ assert 0.5978192518421124 / (1 + eps) <= pd('g2') <= 0.5978192518421124 * (1 + e
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l0'), (sat, 's1'))
-algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
+algorithm.set_ordering([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -123,7 +123,7 @@ assert 0.29655226422851777 / (1 + eps) <= pd('g2') <= 0.29655226422851777 * (1 +
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l1'), (sat, 's0'))
-algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
+algorithm.set_ordering([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -134,7 +134,7 @@ assert 0.005111591622796632 / (1 + eps) <= pd('g2') <= 0.005111591622796632 * (1
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd0'), (letter, 'l1'), (sat, 's1'))
-algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
+algorithm.set_ordering([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -145,7 +145,7 @@ assert 0.0006832705885505288 / (1 + eps) <= pd('g2') <= 0.0006832705885505288 * 
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l0'), (sat, 's0'))
-algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
+algorithm.set_ordering([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -156,7 +156,7 @@ assert 0.8552238805970149 / (1 + eps) <= pd('g2') <= 0.8552238805970149 * (1 + e
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l0'), (sat, 's1'))
-algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
+algorithm.set_ordering([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -167,7 +167,7 @@ assert 0.6174193548387096 / (1 + eps) <= pd('g2') <= 0.6174193548387096 * (1 + e
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l1'), (sat, 's0'))
-algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
+algorithm.set_ordering([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -178,7 +178,7 @@ assert 0.027721335268505072 / (1 + eps) <= pd('g2') <= 0.027721335268505072 * (1
 
 algorithm.set_query(grade)
 algorithm.set_evidence((difficulty, 'd1'), (letter, 'l1'), (sat, 's1'))
-algorithm.set_elimination_order([difficulty, letter, sat, intelligence])
+algorithm.set_ordering([difficulty, letter, sat, intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -191,7 +191,7 @@ assert 0.004566929133858268 / (1 + eps) <= pd('g2') <= 0.004566929133858268 * (1
 
 algorithm.set_query(difficulty, intelligence)
 algorithm.set_evidence(None)
-algorithm.set_elimination_order([letter, sat, grade])
+algorithm.set_ordering([letter, sat, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -214,7 +214,7 @@ assert 0.12 / (1 + eps) <= pd('d1', 'i1') <= 0.12 * (1 + eps)
 
 algorithm.set_query(difficulty, intelligence)
 algorithm.set_evidence((letter, 'l0'), (sat, 's0'))
-algorithm.set_elimination_order([letter, sat, grade])
+algorithm.set_ordering([letter, sat, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -271,7 +271,7 @@ assert 0.021002678126823642 / (1 + eps) <= pd('d1', 'i1') <= 0.02100267812682364
 
 algorithm.set_query(difficulty, intelligence)
 algorithm.set_evidence((letter, 'l0'), (sat, 's1'))
-algorithm.set_elimination_order([letter, sat, grade])
+algorithm.set_ordering([letter, sat, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -328,7 +328,7 @@ assert 0.4579357116747163 / (1 + eps) <= pd('d1', 'i1') <= 0.4579357116747163 * 
 
 algorithm.set_query(difficulty, intelligence)
 algorithm.set_evidence((letter, 'l1'), (sat, 's0'))
-algorithm.set_elimination_order([letter, sat, grade])
+algorithm.set_ordering([letter, sat, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -385,7 +385,7 @@ assert 0.04981571993371041 / (1 + eps) <= pd('d1', 'i1') <= 0.04981571993371041 
 
 algorithm.set_query(difficulty, intelligence)
 algorithm.set_evidence((letter, 'l1'), (sat, 's1'))
-algorithm.set_elimination_order([letter, sat, grade])
+algorithm.set_ordering([letter, sat, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
@@ -443,7 +443,7 @@ assert 0.3066506683217608 / (1 + eps) <= pd('d1', 'i1') <= 0.3066506683217608 * 
 # Test marginal joint probability distributions again
 algorithm.set_query(letter, sat)
 algorithm.set_evidence(None)
-algorithm.set_elimination_order([difficulty, intelligence, grade])
+algorithm.set_ordering([difficulty, intelligence, grade])
 algorithm.run(print_info=True)
 pd = algorithm.pd
 algorithm.print_pd()

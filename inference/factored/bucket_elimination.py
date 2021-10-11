@@ -30,12 +30,13 @@ class BEA(FactoredAlgorithm):
     until the query buckets contain factors that depend only on the query variables.  
     Instead of the factors, the implementation uses logarithms of them for computational
     stability.  See, for example, [1] for more details.  This also needs an elimination
-    order of nonquery variables.  Runtime is highly dependent on that variable elimination
-    order.  The query and elimination variables must be disjoint.  Dynamic programming here
-    means that a new factor is computed only once in any run.  But in the next BEA run,
-    new factors are recomputed, since the possibly changed query changes the elimination 
-    order.  As a result, the order of computing the factors can also be changed and the 
-    factors computed in the previous run cannot be reused.
+    ordering of non-query variables.  Runtime is highly dependent on that variable
+    elimination ordering, namely on the domain cardinality of free variables in a bucket
+    that can be different for different orderings.  Dynamic programming here means that a
+    new factor is computed only once in any run.  But in the next BEA run, new factors are
+    recomputed, since the possibly changed query also changes the elimination ordering.
+    As a result, the ordering of computing the factors can also be changed and the factors
+    computed in the previous run cannot be reused.
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution
@@ -44,7 +45,8 @@ class BEA(FactoredAlgorithm):
     i.e. observed values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
     Restrictions:  Only works with random variables with categorical value domains.
-    The factors must be strictly positive because of the use of logarithms.
+    The factors must be strictly positive because of the use of logarithms.  The query and
+    elimination variables must be disjoint.
 
     Recommended:  Use the algorithm for loopy factor graphs or for joint distribution of 
     query variables, otherwise use the Belief Propagation Algorithm (BPA).
@@ -58,13 +60,13 @@ class BEA(FactoredAlgorithm):
         FactoredAlgorithm.__init__(self, model)
         self._computed_log_factors = None
         self._bucket_cache = None
-        self._elimination_order = None
+        self._elimination_ordering = None
         self._print_info = None
         self._name = 'BEA'
 
     @property
-    def elimination_order(self):
-        return self._elimination_order
+    def ordering(self):
+        return self._elimination_ordering
 
     def run(self, print_info=False):
         # Check whether a query is specified
@@ -84,7 +86,7 @@ class BEA(FactoredAlgorithm):
         # Initialize the bucket cache
         self._initialize_main_loop()
         # Run the main loops
-        for variable in self._elimination_order:
+        for variable in self._elimination_ordering:
             # If there are the log-factors in the output cache
             # containing that variable, they should be added into
             # the bucket of that variable
@@ -104,21 +106,21 @@ class BEA(FactoredAlgorithm):
         # Print info if necessary
         FactoredAlgorithm._print_stop(self)
 
-    def set_elimination_order(self, elimination_order):
-        # Check whether the elimination order has duplicates
-        if len(elimination_order) != len(set(elimination_order)):
+    def set_ordering(self, ordering):
+        # Check whether the elimination ordering has duplicates
+        if len(ordering) != len(set(ordering)):
             raise ValueError(f'The elimination order must not contain duplicates')
-        self._elimination_order = []
+        self._elimination_ordering = []
         # Setting the elimination order
-        for elm_var in elimination_order:
+        for elm_var in ordering:
             try:
                 elm_var = FactoredAlgorithm._get_algorithm_variable(self, elm_var)
             except ValueError:
-                self._elimination_order = None
+                self._elimination_ordering = None
                 raise ValueError(f'no model variable corresponding to variable {elm_var.name!r} '
                                  f'in the elimination order')
-            self._elimination_order.append(elm_var)
-        self._elimination_order = tuple(self._elimination_order)
+            self._elimination_ordering.append(elm_var)
+        self._elimination_ordering = tuple(self._elimination_ordering)
 
     def _add_computed_log_factors_to_bucket_cache(self, variable):
         bucket = self._bucket_cache[variable]
@@ -180,15 +182,15 @@ class BEA(FactoredAlgorithm):
 
     def _check_query_and_elimination_order(self):
         set_q = set(self._query)
-        set_o = set(self._elimination_order)
+        set_o = set(self._elimination_ordering)
         set_m = set(self.variables)
         if not set_q.isdisjoint(set_o):
             self._query = None
-            self._elimination_order = None
+            self._elimination_ordering = None
             raise ValueError('the elimination and query variables must be disjoint')
         if set_q.union(set_o) != set_m:
             self._query = None
-            self._elimination_order = None
+            self._elimination_ordering = None
             raise ValueError('the elimination and query variables do not cover all the model variables')
 
     def _initialize_bucket_cache(self, variables):
@@ -209,13 +211,13 @@ class BEA(FactoredAlgorithm):
     def _initialize_main_loop(self):
         self._initialize_factors()
         self._bucket_cache = {}
-        self._initialize_bucket_cache(self._elimination_order)
+        self._initialize_bucket_cache(self._elimination_ordering)
         self._initialize_bucket_cache(self._query)
         self._computed_log_factors = []
 
     def _is_elimination_order_set(self):
         # Is an elimination order specified?
-        if self._elimination_order is None:
+        if self._elimination_ordering is None:
             raise AttributeError('elimination order not specified')
 
     def _print_bucket(self, bucket):
