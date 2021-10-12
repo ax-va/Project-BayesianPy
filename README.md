@@ -1,7 +1,7 @@
 # PyB4ML
 PyB4ML is a collection of algorithms and models written in Python for probabilistic programming. The main focus of the package is on Bayesian reasoning by using Bayesian and Markov networks. 
 
-At the moment, the collection contains the following algorithms and models.
+The collection contains the following algorithms and models.
 
 Factored inference related algorithms:
 - Belief Propagation Algorithm (BPA) [1] for inference in trees (pb4ml/inference/factored/belief_propagation.py)
