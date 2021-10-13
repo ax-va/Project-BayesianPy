@@ -34,7 +34,7 @@ class GOA:
         self._ordering = []
         self._not_ordered = {variable: cost_function(variable) for variable in self._non_query_variables}
         while len(self._not_ordered) > 0:
-            elimination_variable = self._select_variable
+            elimination_variable = self._select_variable...
 
     def set_query(self, query):
         self._query = query
