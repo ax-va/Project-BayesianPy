@@ -1,11 +1,11 @@
-from pyb4ml.modeling.graph.node import Node
+from pyb4ml.modeling.common.named_element import NamedElement
 
 
-class Factor(Node):
+class Factor(NamedElement):
     def __init__(self, variables, function=None, name=None):
         self._variables = tuple(variables)
         self._function = function
-        Node.__init__(self, name)
+        NamedElement.__init__(self, name)
         self._link_factor_to_variables()
 
     def __call__(self, *variables_with_values):
@@ -58,5 +58,3 @@ if __name__ == '__main__':
         name='f_2'
     )
     print(f2((x, True)))
-
-

@@ -1,4 +1,4 @@
-class Node:
+class NamedElement:
     def __init__(self, name):
         self._name = name if name is not None else str(id(self))
 

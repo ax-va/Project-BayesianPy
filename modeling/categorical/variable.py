@@ -1,11 +1,11 @@
-from pyb4ml.modeling.graph.node import Node
+from pyb4ml.modeling.common.named_element import NamedElement
 
 
-class Variable(Node):
+class Variable(NamedElement):
     def __init__(self, domain=None, name=None):
         self._domain = tuple(sorted(set(domain))) if domain is not None else None
         self._linked_factors = []
-        Node.__init__(self, name)
+        NamedElement.__init__(self, name)
 
     @property
     def domain(self):

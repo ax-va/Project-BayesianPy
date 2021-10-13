@@ -2,7 +2,7 @@ import copy
 import itertools
 
 from pyb4ml.modeling.factor_graph.factor import Factor
-from pyb4ml.modeling.factor_graph.model import FactorGraph
+from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
 class FactoredAlgorithm:
@@ -24,6 +24,21 @@ class FactoredAlgorithm:
     def evaluate_variables(variables):
         domains = (variable.domain for variable in variables)
         return tuple(itertools.product(*domains))
+
+    @staticmethod
+    def split_evidential_and_non_evidential_variables(variables, without_variables=()):
+        """
+        Splits evidential and non-evidential variables ignoring without_variables
+        """
+        evidential_variables = []
+        non_evidential_variables = []
+        for variable in variables:
+            if variable not in without_variables:
+                if len(variable.domain) == 1:
+                    evidential_variables.append(variable)
+                else:
+                    non_evidential_variables.append(variable)
+        return evidential_variables, non_evidential_variables
 
     @property
     def evidence(self):

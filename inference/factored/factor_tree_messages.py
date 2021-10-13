@@ -43,4 +43,4 @@ class Messages:
         return self._messages[(from_node, to_node)]
 
     def get_from_nodes_to_node(self, from_nodes, to_node):
-        return tuple(self._messages[(from_node, to_node)] for from_node in from_nodes)
+        return list(self._messages[(from_node, to_node)] for from_node in from_nodes)

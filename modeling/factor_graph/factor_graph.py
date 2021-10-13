@@ -3,10 +3,11 @@ class FactorGraph:
         self._factors = tuple(sorted(set(factors), key=lambda f: f.name))
         self._variables = tuple(
             sorted(
-                set(variable
+                set(
+                    variable
                     for factor in self._factors
-                    for variable in factor.variables),
-                key=lambda v: v.name
+                    for variable in factor.variables
+                ), key=lambda v: v.name
             )
         )
 

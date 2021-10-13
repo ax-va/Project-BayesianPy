@@ -15,8 +15,8 @@ Sie den vom Autor auferlegten Bedingungen zu.
 import math
 
 from pyb4ml.inference.factored.bucket import Bucket
-from pyb4ml.inference.factored.abstract_algorithm import FactoredAlgorithm
-from pyb4ml.modeling.factor_graph.model import FactorGraph
+from pyb4ml.inference.factored.factored_algorithm import FactoredAlgorithm
+from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 from pyb4ml.modeling.factor_graph.log_factor import LogFactor
 
 
@@ -118,7 +118,7 @@ class BEA(FactoredAlgorithm):
             except ValueError:
                 self._elimination_ordering = None
                 raise ValueError(f'no model variable corresponding to variable {elm_var.name!r} '
-                                 f'in the elimination order')
+                                 f'in the elimination ordering')
             self._elimination_ordering.append(elm_var)
         self._elimination_ordering = tuple(self._elimination_ordering)
 

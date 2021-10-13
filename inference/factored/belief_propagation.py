@@ -15,9 +15,9 @@ Sie den vom Autor auferlegten Bedingungen zu.
 """
 import math
 
-from pyb4ml.inference.factored.abstract_algorithm import FactoredAlgorithm
+from pyb4ml.inference.factored.factored_algorithm import FactoredAlgorithm
 from pyb4ml.inference.factored.factor_tree_messages import Message, Messages
-from pyb4ml.modeling.factor_graph.model import FactorGraph
+from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
 class BPA(FactoredAlgorithm):
@@ -154,27 +154,49 @@ class BPA(FactoredAlgorithm):
     def _compute_factor_to_variable_message_not_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
         if not self._factor_to_variable_messages[self._evidence].contains(from_factor, to_variable):
-            from_variables = tuple(variable for variable in from_factor.variables if variable is not to_variable)
-            # Get the incoming messages not from to_variable to from_factor
-            # from_factor was previously to_factor
-            messages = self._variable_to_factor_messages[self._evidence].get_from_nodes_to_node(
-                from_nodes=from_variables,
+            # Split evidential and non-evidential variables
+            from_evidential_variables, from_non_evidential_variables = \
+                FactoredAlgorithm.split_evidential_and_non_evidential_variables(
+                    variables=from_factor.variables,
+                    without_variables=(to_variable, )
+                )
+            # Get the incoming evidential messages
+            evidential_messages = self._variable_to_factor_messages[self._evidence].get_from_nodes_to_node(
+                from_nodes=from_evidential_variables,
                 to_node=from_factor
             )
-            # Used to reduce computational instability
-            max_message = max(message(value) for message in messages for value in message.from_node.domain)
-            # Cross product of the domains of from_variables
-            evaluated_from_variables_values = FactoredAlgorithm.evaluate_variables(from_variables)
+            # Get the incoming non-evidential messages
+            non_evidential_messages = self._variable_to_factor_messages[self._evidence].get_from_nodes_to_node(
+                from_nodes=from_non_evidential_variables,
+                to_node=from_factor
+            )
+            # Use to reduce computational instability
+            max_message = \
+                max(message(value) for message in non_evidential_messages for value in message.from_node.domain) \
+                if len(non_evidential_messages) > 0 else 0
+            # Sum out the evidential messages separately
+            from_evidential_variables_values = tuple(variable.domain[0] for variable in from_evidential_variables)
+            evidential_variables_with_values = tuple(zip(from_evidential_variables, from_evidential_variables_values))
+            evidential_messages_sum = math.fsum(msg(val) for msg, val
+                                                in zip(evidential_messages, from_evidential_variables_values))
+            # Cross product of domains
+            evaluated_non_evidential_variables_values = \
+                FactoredAlgorithm.evaluate_variables(from_non_evidential_variables)
             # Compute the message values
-            values = {value: max_message + math.log(
+            values = {value: evidential_messages_sum + max_message + math.log(
                               math.fsum(
-                                  from_factor(*zip(from_variables, from_variables_values), (to_variable, value))
+                                  from_factor(
+                                      *zip(from_non_evidential_variables, non_evidential_variables_values),
+                                      *evidential_variables_with_values,
+                                      (to_variable, value)
+                                  )
                                   * math.exp(
                                       math.fsum(
-                                          msg(val) for msg, val in zip(messages, from_variables_values)
+                                          msg(val) for msg, val
+                                          in zip(non_evidential_messages, non_evidential_variables_values)
                                       ) - max_message
                                   )
-                                  for from_variables_values in evaluated_from_variables_values
+                                  for non_evidential_variables_values in evaluated_non_evidential_variables_values
                               )
                           ) for value in to_variable.domain}
             # Cache the message
