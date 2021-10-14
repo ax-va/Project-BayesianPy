@@ -1,7 +1,7 @@
 from pyb4ml.inference.factored.factored_algorithm import FactoredAlgorithm
 
 
-def _min_fill(variable):
+def _get_cost(variable):
     cost = 0
     var_neighbors = variable.neighbors
     length = len(var_neighbors)
@@ -12,7 +12,7 @@ def _min_fill(variable):
     return cost
 
 
-def _weighted_min_fill(variable):
+def _get_weighted_cost(variable):
     cost = 0
     var_neighbors = variable.neighbors
     length = len(var_neighbors)
@@ -28,8 +28,8 @@ class GOA(FactoredAlgorithm):
     Greedy ordering algorithm
     """
     _cost_functions = {
-        'min-fill': _min_fill,
-        'weighted-min-fill': _weighted_min_fill
+        'min-fill': _get_cost,
+        'weighted-min-fill': _get_weighted_cost
     }
 
     def __init__(self, model):
