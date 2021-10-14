@@ -52,6 +52,11 @@ class FactoredAlgorithm:
         return self._factor_graph.factors
 
     @property
+    def non_query_variables(self):
+        return tuple(variable for variable in self.variables if variable not in self._query) \
+            if self._query is not None else self.variables
+
+    @property
     def pd(self):
         """
         Returns the probability distribution P(Q_1, ..., Q_s) or if an evidence is set then
