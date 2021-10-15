@@ -61,49 +61,49 @@ class Student(FactorGraph):
         }
 
         # Create factors
-        f0 = Factor(
+        f_d = Factor(
             variables=(difficulty, ),
             function=lambda d: cpd_difficulty[d],
-            name='f0'
+            name='f_d'
         )
-        f1 = Factor(
+        f_i = Factor(
             variables=(intelligence, ),
             function=lambda i: cpd_intelligence[i],
-            name='f1'
+            name='f_i'
         )
-        f2 = Factor(
+        f_dig = Factor(
             variables=(
                 difficulty,
                 intelligence,
                 grade
             ),
             function=lambda d, i, g: cpd_grade[(d, i)][g],
-            name='f2'
+            name='f_dig'
         )
-        f3 = Factor(
+        f_is = Factor(
             variables=(
                 intelligence,
                 sat
             ),
             function=lambda i, s: cpd_sat[i][s],
-            name='f3'
+            name='f_is'
         )
-        f4 = Factor(
+        f_gl = Factor(
             variables=(
                 grade,
                 letter
             ),
             function=lambda g, l: cpd_letter[g][l],
-            name='f4'
+            name='f_gl'
         )
 
         # Create a factorization
         factors = {
-            f0,
-            f1,
-            f2,
-            f3,
-            f4
+            f_d,
+            f_i,
+            f_dig,
+            f_is,
+            f_gl
         }
 
         # Create a factor graph from the factors
