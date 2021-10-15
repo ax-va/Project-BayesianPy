@@ -40,7 +40,7 @@ class GO(FactoredAlgorithm):
         self._cost_function = None
         self._cost = None
         self._print_info = None
-        self._name = 'Greedy Ordering Algorithm'
+        self._name = 'Greedy Ordering'
 
     @staticmethod
     def _link_neighbors(variable):
