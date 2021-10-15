@@ -1,5 +1,5 @@
 # PyB4ML
-PyB4ML is a collection of algorithms and models written in Python for probabilistic programming. The main focus of the package is on Bayesian reasoning by using Bayesian and Markov networks. 
+PyB4ML is a collection of algorithms and models written in Python for probabilistic programming. The main focus of the package is on Bayesian reasoning by using Bayesian or Markov networks. 
 
 The collection contains the following algorithms and models.
 
