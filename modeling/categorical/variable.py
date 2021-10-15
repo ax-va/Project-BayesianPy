@@ -41,4 +41,5 @@ class Variable(NamedElement):
         self._linked_factors.remove(factor)
 
     def unlink_factors(self):
+        del self._linked_factors
         self._linked_factors = []
