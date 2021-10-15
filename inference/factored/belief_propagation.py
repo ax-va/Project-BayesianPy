@@ -67,7 +67,7 @@ class BPA(FactoredAlgorithm):
         self._next_factors = None
         self._from_variables = None
         self._next_variables = None
-        self._name = 'BPA'
+        self._name = 'Belief Propagation Algorithm'
 
     @staticmethod
     def _update_passing(from_node, to_node):

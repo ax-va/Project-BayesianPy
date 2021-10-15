@@ -62,7 +62,7 @@ class BEA(FactoredAlgorithm):
         self._bucket_cache = None
         self._elimination_ordering = None
         self._print_info = None
-        self._name = 'BEA'
+        self._name = 'Bucket Elimination Algorithm'
 
     @property
     def ordering(self):

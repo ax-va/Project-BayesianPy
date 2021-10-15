@@ -1,4 +1,4 @@
-from pyb4ml.modeling import Factor
+from pyb4ml.modeling import Factor, FactorGraph
 from pyb4ml.modeling.categorical.variable import Variable
 from pyb4ml.models import Student
 
@@ -12,6 +12,12 @@ class ExtendedStudent(Student):
         grade = self.get_variable('Grade')
         sat = self.get_variable('SAT')
         letter = self.get_variable('Letter')
+
+        # Get existing factors
+        f_i = self.get_factor('f_i')
+        f_dig = self.get_factor('f_dig')
+        f_is = self.get_factor('f_is')
+        f_gl = self.get_factor('f_gl')
 
         # Create extending random variables
         coherence = Variable(domain={'c0', 'c1', 'c2'}, name='Coherence')
@@ -66,12 +72,26 @@ class ExtendedStudent(Student):
             name='f_gjh'
         )
 
-        # Replace f_d by f_cd
-        self.replace_factors(with_names=('f_d', ), by_factors=(f_cd, ))
+        # Create a factorization
+        factors = {
+            f_c,
+            f_cd,
+            f_dig,
+            f_i,
+            f_is,
+            f_gl,
+            f_lsj,
+            f_gjh
+        }
 
-        # Extend the model factors by the new extending factors
-        self.extend_factors(by_factors=(f_c, f_lsj, f_gjh))
+        # Overwrite the factor graph by using the factors
+        FactorGraph.__init__(self, factors)
 
 
 if __name__ == '__main__':
     model = ExtendedStudent()
+    for factor in model.factors:
+        print(factor)
+
+    for variable in model.variables:
+        print(variable)
