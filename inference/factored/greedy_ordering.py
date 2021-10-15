@@ -54,6 +54,9 @@ class GO(FactoredAlgorithm):
     def ordering(self):
         return self._ordering
 
+    def print_ordering(self):
+        print([variable.name for variable in self._ordering])
+
     def run(self, cost='weighted-min-fill', print_info=False):
         self._print_info = print_info
         self._order = 0
