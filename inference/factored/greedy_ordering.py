@@ -55,16 +55,16 @@ class GO(FactoredAlgorithm):
         return self._ordering
 
     def print_ordering(self):
-        print([variable.name for variable in self._ordering])
+        print('VE ordering: ' + ', '.join(variable.name for variable in self._ordering))
 
     def run(self, cost='weighted-min-fill', print_info=False):
         self._print_info = print_info
         self._order = 0
         self._cost = cost
         self._cost_function = GO._cost_functions[self._cost]
-        self._set_neighbors()
         self._ordering = []
         self._not_ordered = list(variable for variable in self.non_query_variables)
+        self._set_neighbors()
         self._print_start()
         while len(self._not_ordered) > 0:
             elm_var = self._eliminate_min_cost_variable()
