@@ -23,9 +23,9 @@ def _get_weighted_fill_cost(variable):
     return cost_sum
 
 
-class GOA(FactoredAlgorithm):
+class GO(FactoredAlgorithm):
     """
-    Greedy ordering algorithm
+    Greedy ordering
     """
     _cost_functions = {
         'min-fill': _get_fill_cost,
@@ -58,7 +58,7 @@ class GOA(FactoredAlgorithm):
         self._print_info = print_info
         self._order = 0
         self._cost = cost
-        self._cost_function = GOA._cost_functions[self._cost]
+        self._cost_function = GO._cost_functions[self._cost]
         self._set_neighbors()
         self._ordering = []
         self._not_ordered = list(variable for variable in self.non_query_variables)
@@ -66,7 +66,7 @@ class GOA(FactoredAlgorithm):
         while len(self._not_ordered) > 0:
             elm_var = self._eliminate_min_cost_variable()
             self._ordering.append(elm_var)
-            GOA._link_neighbors(elm_var)
+            GO._link_neighbors(elm_var)
             self._order += 1
         self._print_stop()
 

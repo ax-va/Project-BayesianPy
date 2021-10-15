@@ -20,9 +20,9 @@ from pyb4ml.inference.factored.factor_tree_messages import Message, Messages
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 
-class BPA(FactoredAlgorithm):
+class BP(FactoredAlgorithm):
     """
-    This implementation of the Belief Propagation Algorithm (BPA) works on factor graph
+    This implementation of the Belief Propagation (BP) algorithm works on factor graph
     trees for random variables with categorical probability distributions.  That algorithm 
     belongs to Message Passing and Variable Elimination Algorithms.  There, the 
     factor-to-variable and variable-to-factor messages are propagated from the leaves across
@@ -39,8 +39,8 @@ class BPA(FactoredAlgorithm):
     values e_1, ..., e_k of random variables E_1, ..., E_k, respectively.
 
     Restrictions:  Only works with random variables with categorical value domains, only 
-    works on trees (leads to dead lock on loopy graphs).  See the Bucket Elimination 
-    Algorithm (BEA) for the case of loopy graphs or joint distribution of query variables.  
+    works on trees (leads to dead lock on loopy graphs).  See the Bucket Elimination (BE)
+    algorithm for the case of loopy graphs or joint distribution of query variables.
     The factors must be strictly positive because of the use of logarithms.
     
     Recommended:  When modeling, reduce the number of random variables in each factor to 
@@ -67,7 +67,7 @@ class BPA(FactoredAlgorithm):
         self._next_factors = None
         self._from_variables = None
         self._next_variables = None
-        self._name = 'Belief Propagation Algorithm'
+        self._name = 'Belief Propagation'
 
     @staticmethod
     def _update_passing(from_node, to_node):

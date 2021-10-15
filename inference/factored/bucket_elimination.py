@@ -20,9 +20,9 @@ from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 from pyb4ml.modeling.factor_graph.log_factor import LogFactor
 
 
-class BEA(FactoredAlgorithm):
+class BE(FactoredAlgorithm):
     """
-    This implementation of the Bucket Elimination Algorithm (BEA) works on factor graphs
+    This implementation of the Bucket Elimination (BE) algorithm works on factor graphs
     for random variables with categorical probability distributions.  That algorithm 
     belongs to Variable Elimination Algorithms.  There, a bucket contains factors used to 
     eliminate a variable by summing the product of factors over that variable.  Due to 
@@ -33,7 +33,7 @@ class BEA(FactoredAlgorithm):
     ordering of non-query variables.  Runtime is highly dependent on that variable
     elimination ordering, namely on the domain cardinality of free variables in a bucket
     that can be different for different orderings.  Dynamic programming here means that a
-    new factor is computed only once in any run.  But in the next BEA run, new factors are
+    new factor is computed only once in any run.  But in the next BE run, new factors are
     recomputed, since the possibly changed query also changes the elimination ordering.
     As a result, the ordering of computing the factors can also be changed and the factors
     computed in the previous run cannot be reused.
@@ -49,7 +49,7 @@ class BEA(FactoredAlgorithm):
     elimination variables must be disjoint.
 
     Recommended:  Use the algorithm for loopy factor graphs or for joint distribution of 
-    query variables, otherwise use the Belief Propagation Algorithm (BPA).
+    query variables, otherwise use the Belief Propagation (BP) algorithm.
     
     References:
 
@@ -62,7 +62,7 @@ class BEA(FactoredAlgorithm):
         self._bucket_cache = None
         self._elimination_ordering = None
         self._print_info = None
-        self._name = 'Bucket Elimination Algorithm'
+        self._name = 'Bucket Elimination'
 
     @property
     def ordering(self):
