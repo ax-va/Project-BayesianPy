@@ -7,13 +7,13 @@ class ExtendedStudent(Student):
     def __init__(self):
         Student.__init__(self)
 
-        # Get existing variables
+        # Get needed variables
         difficulty = self.get_variable('Difficulty')
         grade = self.get_variable('Grade')
         sat = self.get_variable('SAT')
         letter = self.get_variable('Letter')
 
-        # Get existing factors
+        # Get needed factors
         f_i = self.get_factor('f_i')
         f_dig = self.get_factor('f_dig')
         f_is = self.get_factor('f_is')
@@ -84,7 +84,7 @@ class ExtendedStudent(Student):
             f_gjh
         }
 
-        # Overwrite the factor graph by using the factors
+        # Overwrite the factor graph by the factors
         FactorGraph.__init__(self, factors)
 
 
