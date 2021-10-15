@@ -1,9 +1,9 @@
-from pyb4ml.inference import BPA
+from pyb4ml.inference import BP
 from pyb4ml.models import Student
 
 # Test the Belief Propagation Algorithm on the Student model
 model = Student()
-algorithm = BPA(model)  # Belief Propagation Algorithm
+algorithm = BP(model)  # Belief Propagation Algorithm
 
 eps = 1e-10
 

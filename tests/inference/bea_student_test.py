@@ -1,4 +1,4 @@
-from pyb4ml.inference import BEA
+from pyb4ml.inference import BE
 from pyb4ml.models import Student
 
 # Test the Bucket Elimination Algorithm on the Student model
@@ -9,7 +9,7 @@ grade = model.get_variable('Grade')
 sat = model.get_variable('SAT')
 letter = model.get_variable('Letter')
 
-algorithm = BEA(model)  # Bucket Elimination Algorithm
+algorithm = BE(model)  # Bucket Elimination Algorithm
 
 eps = 1e-12
 
