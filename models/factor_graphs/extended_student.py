@@ -92,6 +92,5 @@ if __name__ == '__main__':
     model = ExtendedStudent()
     for factor in model.factors:
         print(factor)
-
     for variable in model.variables:
         print(variable)
