@@ -4,7 +4,7 @@ PyB4ML is a collection of algorithms and models written in Python for probabilis
 The collection contains the following algorithms and models.
 
 Factored-inference-related algorithms for probabilistic graphical models:
-- Belief Propagation (BP) [1] for inference in trees (pb4ml/inference/factored/belief_propagation.py)
+- Belief Propagation (BP) [1] for efficient inference in trees (pb4ml/inference/factored/belief_propagation.py)
 - Bucket Elimination (BE) [1] for inference in loopy graphs or computing the joint probability distribution of several query variables (pb4ml/inference/factored/bucket_elimination.py)
 - Greedy Ordering (GO) [2] for finding a near-optimal variable elimination ordering by using greedy search with the cost criterion of "min-fill" or "weighted-min-fill" [2] (pb4ml/inference/factored/greedy_ordering.py)
 
