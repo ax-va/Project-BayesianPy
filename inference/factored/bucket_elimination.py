@@ -36,9 +36,9 @@ class BE(FactoredAlgorithm):
     new factor is computed only once in any run.  But in the next BE run, new factors are
     recomputed, since the possibly changed query also changes the elimination ordering.
     As a result, the ordering of computing the factors can also be changed and the factors
-    computed in the previous run cannot be reused. Moreover, although the values of 
-    evidential variables do not change the elimination ordering, they change the computed
-    factors in their buckets.
+    computed in the previous run cannot be reused. Moreover, although the different values 
+    of evidential variables do not change the elimination ordering, they also change the 
+    computed factors.
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution
