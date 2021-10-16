@@ -13,6 +13,6 @@ job = model.get_variable('Job')
 
 algorithm = GO(model)
 algorithm.set_query(job)
-algorithm.run()
+algorithm.run(cost='weighted-min-fill')
 algorithm.print_ordering()
 assert algorithm.ordering == [coherence, difficulty, happy, intelligence, grade, letter, sat]
