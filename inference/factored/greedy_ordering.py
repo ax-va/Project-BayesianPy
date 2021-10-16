@@ -52,7 +52,7 @@ class GO(FactoredAlgorithm):
 
     @property
     def ordering(self):
-        return self._ordering
+        return [self._model.get_variable(variable.name) for variable in self._ordering]
 
     def print_ordering(self):
         print('VE ordering: ' + ', '.join(variable.name for variable in self._ordering))
@@ -70,47 +70,55 @@ class GO(FactoredAlgorithm):
             elm_var = self._eliminate_min_cost_variable()
             self._ordering.append(elm_var)
             GO._link_neighbors(elm_var)
-            self._order += 1
         self._print_stop()
 
     def _eliminate_min_cost_variable(self):
         min_variable = self._not_ordered[0]
         min_cost_val = self._cost_function(min_variable)
+        self._print_first_cost(min_cost_val, min_variable)
         min_index = -1
         for index, variable in enumerate(self._not_ordered[1:len(self._not_ordered)]):
             cost_val = self._cost_function(variable)
+            self._print_cost(cost_val, variable)
             if cost_val < min_cost_val:
                 min_cost_val = cost_val
                 min_variable = variable
                 min_index = index
-
-        print()
-        self._print_variable(min_variable)
-        print('Before the elimination of the variable:')
-        for neighbor in min_variable.neighbors:
-            print('-- ' + min_variable.name + "'s neighbor: " + neighbor.name)
-            for var in neighbor.neighbors:
-                print('---- ' + neighbor.name + "'s neighbor: " + var.name)
-
+        self._print_before_elimination(min_variable)
         del self._not_ordered[min_index + 1]
         for neighbor in min_variable.neighbors:
             neighbor.neighbors.remove(min_variable)
-
-        print('After the elimination of the variable:')
-        for neighbor in min_variable.neighbors:
-            print('-- ' + min_variable.name + "'s neighbor: " + neighbor.name)
-            for var in neighbor.neighbors:
-                print('---- ' + neighbor.name + "'s neighbor: " + var.name)
-
+        self._print_after_elimination(min_variable)
         return min_variable
 
-    def _print_variable(self, variable):
+    def _print_after_elimination(self, variable):
         if self._print_info:
-            print(str(self._order) + ': ' + variable.name)
+            print('After the elimination of the variable:')
+            for neighbor in variable.neighbors:
+                print('-- ' + variable.name + "'s neighbor: " + neighbor.name)
+                for var in neighbor.neighbors:
+                    print('---- ' + neighbor.name + "'s neighbor: " + var.name)
+
+    def _print_before_elimination(self, variable):
+        if self._print_info:
+            print('\n' + str(self._order) + ': ' + variable.name)
+            self._order += 1
+            print('Before the elimination of the variable:')
+            for neighbor in variable.neighbors:
+                print('-- ' + variable.name + "'s neighbor: " + neighbor.name)
+                for var in neighbor.neighbors:
+                    print('---- ' + neighbor.name + "'s neighbor: " + var.name)
+
+    def _print_cost(self, cost, variable):
+        if self._print_info:
+            print(f'cost({variable.name}) = {cost}')
+
+    def _print_first_cost(self, cost, variable):
+        if self._print_info:
+            print(f'\ncost({variable.name}) = {cost}')
 
     def _set_neighbors(self):
         for variable in self.variables:
-            variable.neighbors = sorted(
-                set(var for factor in variable.factors for var in factor.variables if var is not variable),
-                key=lambda f: f.name
+            variable.neighbors = list(
+                set(var for factor in variable.factors for var in factor.variables if var is not variable)
             )

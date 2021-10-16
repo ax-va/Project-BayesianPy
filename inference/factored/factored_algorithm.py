@@ -11,6 +11,8 @@ class FactoredAlgorithm:
     inherit
     """
     def __init__(self, model: FactorGraph):
+        # Factor graph not specified
+        self._factor_graph = None
         # Specify the model, sets self._factor_graph
         self._set_model(model)
         # Query not specified
@@ -196,8 +198,7 @@ class FactoredAlgorithm:
 
     def _print_stop(self):
         if self._print_info:
-            print()
-            print(f'{self._name} stopped')
+            print(f'\n{self._name} stopped')
             print('*' * 40)
 
     def _refresh_evidential_variables_domain_if_necessary(self):
