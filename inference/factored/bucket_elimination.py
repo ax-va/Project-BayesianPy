@@ -38,7 +38,7 @@ class BE(FactoredAlgorithm):
     As a result, the ordering of computing the factors can also be changed and the factors
     computed in the previous run cannot be reused.  Moreover, although the different values 
     of evidential variables do not change the elimination ordering, they also change the 
-    computed factors.  All of this makes bucket caching to reuse impractical.
+    computed factors.  All of this makes bucket caching impractical to reuse.
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution
