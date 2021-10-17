@@ -13,7 +13,7 @@ Academic probabilistic models in factor graph representation:
 - Bayesian network "Student" [2] (pb4ml/models/factor_graphs/student.py)
 - Markov network "Misconception" [2] (pb4ml/models/factor_graphs/misconception.py)
 
-See the tests how to use the algorithms and models.
+See in the tests how to use the algorithms and models.
 
 © 2021 Alexander Vasiliev
 
