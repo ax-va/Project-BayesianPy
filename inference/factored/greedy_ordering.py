@@ -52,10 +52,18 @@ class GO(FactoredAlgorithm):
 
     @property
     def ordering(self):
-        return [self._model.get_variable(variable.name) for variable in self._ordering]
+        return tuple(self._model.get_variable(variable.name) for variable in self._ordering)
 
     def print_ordering(self):
-        print('VE ordering: ' + ', '.join(variable.name for variable in self._ordering))
+        if self._query is not None:
+            print('Query: ' + ', '.join(variable.name for variable in self.query))
+        else:
+            print('No query')
+        if self._evidence is not None:
+            print('Evidence: ' + ', '.join(f'{ev_var.name} = {ev_val!r}' for ev_var, ev_val in self._evidence))
+        else:
+            print('No evidence')
+        print('Elimination ordering: ' + ', '.join(variable.name for variable in self._ordering))
 
     def run(self, cost='weighted-min-fill', print_info=False):
         self._print_info = print_info
