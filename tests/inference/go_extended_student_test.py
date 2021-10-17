@@ -23,6 +23,31 @@ algorithm.print_ordering()
 assert algorithm.ordering == (happy, job, letter, sat, grade, intelligence, difficulty)
 
 algorithm.set_query(difficulty)
-algorithm.run(cost='weighted-min-fill', print_info=True)
+algorithm.run(cost='weighted-min-fill')
 algorithm.print_ordering()
-#assert algorithm.ordering == (happy, job, letter, sat, grade, intelligence, difficulty)
+assert algorithm.ordering == (coherence, happy, job, letter, sat, grade, intelligence)
+
+algorithm.set_query(intelligence)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, job, letter, grade, sat)
+
+algorithm.set_query(sat)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, intelligence, grade, job, letter)
+
+algorithm.set_query(grade)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, intelligence, job, letter, sat)
+
+algorithm.set_query(letter)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, intelligence, grade, job, sat)
+
+algorithm.set_query(happy)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, intelligence, letter, sat, grade, job)
