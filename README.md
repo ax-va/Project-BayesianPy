@@ -6,7 +6,7 @@ The collection contains the following algorithms and models.
 Factored-inference-related algorithms for probabilistic graphical models:
 - Belief Propagation (BP) [1] for efficient inference in trees (pb4ml/inference/factored/belief_propagation.py)
 - Bucket Elimination (BE) [1] for inference in loopy graphs or computing the joint probability distribution of several query variables (pb4ml/inference/factored/bucket_elimination.py)
-- Greedy Ordering (GO) [2] for finding a near-optimal variable elimination ordering (pb4ml/inference/factored/greedy_ordering.py)
+- Greedy Ordering (GO) [2] for greedy search for a near-optimal variable elimination ordering (pb4ml/inference/factored/greedy_ordering.py)
 
 Academic probabilistic models in factor graph representation:
 - Bayesian network "Extended Student" [2] (pb4ml/models/factor_graphs/extended_student.py)
