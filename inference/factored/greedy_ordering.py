@@ -52,6 +52,7 @@ class GO(FactoredAlgorithm):
         self._set_neighbors()
         self._print_start()
         while len(self._not_ordered) > 0:
+            self._print_candidates()
             elm_var = self._eliminate_min_cost_variable()
             self._ordering.append(elm_var)
             GO._link_neighbors(elm_var)
@@ -105,7 +106,7 @@ class GO(FactoredAlgorithm):
 
     def _print_after_elimination(self, variable):
         if self._print_info:
-            print('After the elimination of the variable:')
+            print('\nAfter the elimination of the variable:')
             for neighbor in variable.neighbors:
                 print('-- ' + variable.name + "'s neighbor: " + neighbor.name)
                 for var in neighbor.neighbors:
@@ -115,11 +116,15 @@ class GO(FactoredAlgorithm):
         if self._print_info:
             print(str(self._order) + ': ' + variable.name)
             self._order += 1
-            print('Before the elimination of the variable:')
+            print('\nBefore the elimination of the variable:')
             for neighbor in variable.neighbors:
                 print('-- ' + variable.name + "'s neighbor: " + neighbor.name)
                 for var in neighbor.neighbors:
                     print('---- ' + neighbor.name + "'s neighbor: " + var.name)
+
+    def _print_candidates(self):
+        if self._print_info:
+            print('\nVariable candidates to be eliminated:\n')
 
     def _print_fill_cost(self, neighbor1, neighbor2, cost):
         if self._print_info:
