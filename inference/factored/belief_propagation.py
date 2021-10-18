@@ -1,4 +1,3 @@
-
 """
 The module contains the class of the Belief Propagation Algorithm.
 

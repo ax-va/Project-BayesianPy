@@ -68,6 +68,43 @@ algorithm.print_ordering()
 assert algorithm.ordering == (coherence, difficulty, happy, intelligence, job, letter)
 
 algorithm.set_query(difficulty, happy)
-algorithm.run(cost='weighted-min-fill', print_info=True)
+algorithm.run(cost='weighted-min-fill')
 algorithm.print_ordering()
 assert algorithm.ordering == (coherence, letter, intelligence, sat, grade, job)
+
+algorithm.set_query(coherence, happy)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (letter, intelligence, sat, grade, job, difficulty)
+
+algorithm.set_query(grade, happy)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, intelligence, letter, sat, job)
+
+algorithm.set_query(coherence, grade)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (happy, job, letter, sat, intelligence, difficulty)
+
+algorithm.set_query(intelligence, letter)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, job, grade, sat)
+
+algorithm.set_query(happy, letter)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, intelligence, sat, grade, job)
+
+algorithm.set_query(coherence, difficulty, happy)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (letter, intelligence, sat, grade, job)
+
+algorithm.set_query(job)
+algorithm.set_evidence((grade, 'g0'))
+algorithm.run(cost='weighted-min-fill', print_info=True)
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, intelligence, grade, letter, sat)
+
