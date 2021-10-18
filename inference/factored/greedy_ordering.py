@@ -38,7 +38,7 @@ class GO(FactoredAlgorithm):
         var_neighbors = variable.neighbors
         for i in range(len(var_neighbors)):
             var_neighbor = var_neighbors[i]
-            var_neighbor.neighbors.extend([var for var in var_neighbors if var is not var_neighbor])
+            var_neighbor.neighbors.extend(var for var in var_neighbors if var is not var_neighbor)
             var_neighbor.neighbors = list(set(var_neighbor.neighbors))
 
     @property
