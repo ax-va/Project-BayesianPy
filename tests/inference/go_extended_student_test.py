@@ -104,7 +104,25 @@ assert algorithm.ordering == (letter, intelligence, sat, grade, job)
 
 algorithm.set_query(job)
 algorithm.set_evidence((grade, 'g0'))
-algorithm.run(cost='weighted-min-fill', print_info=True)
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, intelligence, grade, letter, sat)
+
+algorithm.set_query(job)
+algorithm.set_evidence((grade, 'g0'), (letter, 'l0'))
+algorithm.run(cost='weighted-min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, intelligence, grade, letter, sat)
+
+algorithm.set_query(job)
+algorithm.set_evidence(None)
+algorithm.run(cost='min-fill')
+algorithm.print_ordering()
+assert algorithm.ordering == (coherence, difficulty, happy, intelligence, grade, letter, sat)
+
+algorithm.set_query(job)
+algorithm.set_evidence((grade, 'g0'))
+algorithm.run(cost='min-fill', print_info=True)
 algorithm.print_ordering()
 assert algorithm.ordering == (coherence, difficulty, happy, intelligence, grade, letter, sat)
 
