@@ -25,7 +25,7 @@ class GO(FactoredAlgorithm):
 
     The query and evidence are optional.  The GO algorithm returns an elimination
     ordering as a tuple of variables, in which the first variable will be eliminated
-    first, the second variable second and so on.
+    first, the second variable second, and so on.
 
     Restrictions:  Only works with random variables with categorical value domains.
 
