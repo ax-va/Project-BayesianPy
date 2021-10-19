@@ -23,9 +23,9 @@ class GO(FactoredAlgorithm):
     cost criterion of "min-fill" or "weighted-min-fill".  See, for example, [1] for
     more details.
 
-    The query and evidence are optional.  The GO algorithm returns a variable
-    elimination ordering as a tuple, in which the first variable will be eliminated
-    first and the last variable last.
+    The query and evidence are optional.  The GO algorithm returns an elimination
+    ordering as a tuple of variables, in which the first variable will be eliminated
+    first, the second variable second and so on.
 
     Restrictions:  Only works with random variables with categorical value domains.
 
