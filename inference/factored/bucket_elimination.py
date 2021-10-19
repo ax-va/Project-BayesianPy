@@ -1,5 +1,5 @@
 """
-The module contains the class of the Bucket Elimination Algorithm.
+The module contains the class of the Bucket Elimination algorithm.
 
 Attention:  The author is not responsible for any damage that can be caused by the use
 of this code.  You use this code at your own risk.  Any claim against the author is 

@@ -1,5 +1,5 @@
 """
-The module contains the class of the Bucket Elimination Algorithm.
+The module contains the class of the Greedy Ordering algorithm.
 
 Attention:  The author is not responsible for any damage that can be caused by the use
 of this code.  You use this code at your own risk.  Any claim against the author is
@@ -17,7 +17,26 @@ from pyb4ml.inference.factored.factored_algorithm import FactoredAlgorithm
 
 class GO(FactoredAlgorithm):
     """
-    Greedy ordering
+    This implementation of the Greedy Ordering (GO) algorithm finds a near-optimal
+    variable elimination ordering that can be used later, for example, in the BE
+    algorithm.  The GO algorithm uses greedy search, in this implementation, with the
+    cost criterion of "min-fill" or "weighted-min-fill".  See, for example, [1] for
+    more details.
+
+    The query and evidence are optional.  The GO algorithm returns a variable
+    elimination ordering as a tuple, in which the first variable will be eliminated
+    first and the last variable last.
+
+    Restrictions:  Only works with random variables with categorical value domains.
+
+    Recommended:  In the case of trees, the BP algorithm automatically finds the best
+    elimination ordering.  Therefore, in that case, it is recommended to use the BP
+    algorithm instead of the bundle of the GO and BE algorithms.
+
+    References:
+
+    [1] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and
+    Techniques", MIT Press, 2009
     """
     def __init__(self, model):
         FactoredAlgorithm.__init__(self, model)

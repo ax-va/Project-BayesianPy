@@ -1,3 +1,17 @@
+"""
+The module contains the class of the Extended Student model.
+
+Attention:  The author is not responsible for any damage that can be caused by the use
+of this code.  You use this code at your own risk.  Any claim against the author is
+legally void.  By using this code, you agree to the terms imposed by the author.
+
+Achtung:  Der Autor haftet nicht für Schäden, die durch die Verwendung dieses Codes
+entstehen können.  Sie verwenden dieses Code auf eigene Gefahr.  Jegliche Ansprüche
+gegen den Autor sind rechtlich nichtig.  Durch die Verwendung dieses Codes stimmen
+Sie den vom Autor auferlegten Bedingungen zu.
+
+© 2021 Alexander Vasiliev
+"""
 from pyb4ml.modeling import Factor, FactorGraph
 from pyb4ml.modeling.categorical.variable import Variable
 from pyb4ml.models import Student
