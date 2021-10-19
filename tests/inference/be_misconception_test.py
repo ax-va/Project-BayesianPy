@@ -1,3 +1,11 @@
+import pathlib
+import sys
+
+# Get the path of the directory with pyb4ml
+pyb4ml_dir = str(pathlib.Path(__file__).parents[3])
+if pyb4ml_dir not in sys.path:
+    sys.path.insert(0, pyb4ml_dir)
+
 from pyb4ml.inference import BE
 from pyb4ml.models import Misconception
 
