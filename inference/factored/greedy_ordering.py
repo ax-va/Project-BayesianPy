@@ -19,9 +19,8 @@ class GO(FactoredAlgorithm):
     """
     This implementation of the Greedy Ordering (GO) algorithm finds a near-optimal
     variable elimination ordering that can be used later, for example, in the BE
-    algorithm.  The GO algorithm uses greedy search, in this implementation, with the
-    cost criterion of "min-fill" or "weighted-min-fill".  See, for example, [1] for
-    more details.
+    algorithm.  The GO algorithm uses greedy search, here, with the cost criterion
+    of "min-fill" or "weighted-min-fill".  See, for example, [1] for more details.
 
     The query and evidence are optional.  The GO algorithm returns an elimination
     ordering as a tuple of variables, in which the first variable will be eliminated
