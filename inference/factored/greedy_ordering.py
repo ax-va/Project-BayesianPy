@@ -24,14 +24,14 @@ class GO(FactoredAlgorithm):
     appearance of new factors.  That can be graphically represented as edges already
     existing or needed to be added between all neighbors of an eliminated node in
     a (moralized in the case of directed edges) graph.  The best ordering implies
-    that each bucket should have a cardinality of bucket's free variables as small
-    as possible so that a whole number of computational operations is as small as
+    that each bucket should have a cardinality of its free variables as small as 
+    possible so that a whole number of computational operations is as small as
     possible.  One way to build an elimination ordering close to the best one is
     to greedily remove variables such that there are additional edges needed to be
     added as few as possible.  That corresponds to the cost criterion of "min-fill".
     If the weights of the additional edges are taken into account that is, the product
     of the cardinality of edge variables, such a cost criterion is called "weighted-
-    min-fill".  These two heuristic approaches have worked surprisingly well in
+    min-fill".  Those two heuristic approaches have worked surprisingly well in
     practice.  See, for example, [1] for more details.
 
     Here, the query and evidence are optional.  The GO algorithm returns an elimination
