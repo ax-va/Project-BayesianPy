@@ -31,8 +31,8 @@ class GO(FactoredAlgorithm):
     added as few as possible.  That corresponds to the cost criterion of "min-fill".
     If the weights of the additional edges are taken into account that is, the product
     of the cardinality of edge variables, such a cost criterion is called "weighted-
-    min-fill".  Those two heuristic approaches have worked surprisingly well in
-    practice.  See, for example, [1] for more details.
+    min-fill".  Those two heuristic approaches worke surprisingly well in practice.  
+    See, for example, [1] for more details.
 
     Here, the query and evidence are optional.  The GO algorithm returns an elimination
     ordering as a tuple of variables, in which the first variable will be eliminated
