@@ -29,7 +29,7 @@ class GO(FactoredAlgorithm):
     possible.  One way to build an elimination ordering close to the best one is
     to greedily remove variables such that there are additional edges needed to be
     added as few as possible.  That corresponds to the cost criterion of "min-fill".
-    If the weights of the additional edges, i.e. the product of the cardinality 
+    If the weights of the additional edges, i.e. the products of the cardinality 
     of edge variables, are taken into account such a cost criterion is called 
     "weighted-min-fill".  Those two heuristic approaches often work surprisingly well
     in practice.  See, for example, [1] for more details.
