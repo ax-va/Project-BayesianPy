@@ -20,9 +20,21 @@ class GO(FactoredAlgorithm):
     This implementation of the Greedy Ordering (GO) algorithm finds a near-optimal
     variable elimination ordering that can be used later, for example, in the BE
     algorithm.  The GO algorithm uses greedy search, here, with the cost criterion
-    of "min-fill" or "weighted-min-fill".  See, for example, [1] for more details.
+    of "min-fill" or "weighted-min-fill".  Eliminating variables leads to the
+    appearance of new factors.  That can be graphically represented as edges already
+    existing or needed to be added between all neighbors of an eliminated node in
+    a (moralized in the case of direct edges) graph.  The best ordering implies
+    that each bucket should have a cardinality of bucket's free variables as small
+    as possible so that a whole number of computational operations is as small as
+    possible.  One way to build an elimination ordering close to the best one is
+    to remove variables such that there are additional edges needed to be added as
+    few as possible.  That corresponds to the cost criterion of "min-fill".  If the
+    weights of the additional edges are taken into account that is, the product of the
+    cardinality of edge variables, such a cost criterion is called "weighted-min-fill".
+    These two approaches have worked surprisingly well in practice. See, for example,
+    [1] for more details.
 
-    The query and evidence are optional.  The GO algorithm returns an elimination
+    Here, the query and evidence are optional.  The GO algorithm returns an elimination
     ordering as a tuple of variables, in which the first variable will be eliminated
     first, the second variable second, and so on.
 
