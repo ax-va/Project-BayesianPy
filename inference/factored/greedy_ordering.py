@@ -23,7 +23,7 @@ class GO(FactoredAlgorithm):
     of "min-fill" or "weighted-min-fill".  Eliminating variables leads to the
     appearance of new factors.  That can be graphically represented as edges already
     existing or needed to be added between all neighbors of an eliminated node in
-    a (moralized in the case of direct edges) graph.  The best ordering implies
+    a (moralized in the case of directed edges) graph.  The best ordering implies
     that each bucket should have a cardinality of bucket's free variables as small
     as possible so that a whole number of computational operations is as small as
     possible.  One way to build an elimination ordering close to the best one is
