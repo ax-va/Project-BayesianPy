@@ -25,7 +25,7 @@ class GO(FactoredAlgorithm):
     existing or needed to be added between all neighbors of an eliminated node in
     a (moralized in the case of directed edges) graph.  The best ordering implies
     that each bucket should have a cardinality of its free variables as small as 
-    possible so that a whole number of computational operations is as small as
+    possible so that a whole number of computational operations is also as small as
     possible.  One way to build an elimination ordering close to the best one is
     to greedily remove variables such that there are additional edges needed to be
     added as few as possible.  That corresponds to the cost criterion of "min-fill".
