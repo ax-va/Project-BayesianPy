@@ -8,7 +8,7 @@ if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
 from pyb4ml.inference.factored.greedy_ordering import GO
-from pyb4ml.models.factor_graphs.extended_student import ExtendedStudent
+from pyb4ml.models import ExtendedStudent
 
 model = ExtendedStudent()
 coherence = model.get_variable('Coherence')
