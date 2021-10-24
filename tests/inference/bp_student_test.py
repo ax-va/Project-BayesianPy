@@ -1,11 +1,11 @@
 import pathlib
 import sys
 
-# Get the project directory
-project_dir = str(pathlib.Path(__file__).resolve().parent.parent.parent)
-# Add the project directory into sys.path if necessary
-if project_dir not in sys.path:
-    sys.path.insert(0, project_dir)
+# Get the package directory
+package_dir = str(pathlib.Path(__file__).resolve().parent.parent.parent)
+# Add the package directory into sys.path if necessary
+if package_dir not in sys.path:
+    sys.path.insert(0, package_dir)
 
 from pyb4ml.inference import BP
 from pyb4ml.models import Student
