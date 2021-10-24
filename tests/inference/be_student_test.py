@@ -1,11 +1,10 @@
-import pathlib
-import sys
-
-# Get the path of the directory with pyb4ml
-pyb4ml_dir = str(pathlib.Path(__file__).parents[3])
-if pyb4ml_dir not in sys.path:
-    # Add the path of the directory with pyb4ml
-    sys.path.insert(0, pyb4ml_dir)
+if __name__ == '__main__':
+    import sys
+    # Add the path of '..\\pyb4ml' to sys.path
+    # in the case of executing from '..\\pyb4ml\\tests\\inference'.
+    # Otherwise, the package 'pyb4ml' will not be found.
+    if '..\\' not in sys.path:
+        sys.path.insert(0, '..\\')
 
 from pyb4ml.inference import BE
 from pyb4ml.models import Student
