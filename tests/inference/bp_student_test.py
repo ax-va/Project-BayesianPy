@@ -1,10 +1,11 @@
-if __name__ == '__main__':
-    import sys
-    # Add the path of '..\\pyb4ml' to sys.path
-    # in the case of executing from '..\\pyb4ml\\tests\\inference'.
-    # Otherwise, the package 'pyb4ml' will not be found.
-    if '..\\' not in sys.path:
-        sys.path.insert(0, '..\\')
+import pathlib
+import sys
+
+# Get the project directory
+project_dir = str(pathlib.Path(__file__).resolve().parent.parent.parent)
+# Add the project directory into sys.path if necessary
+if project_dir not in sys.path:
+    sys.path.insert(0, project_dir)
 
 from pyb4ml.inference import BP
 from pyb4ml.models import Student
