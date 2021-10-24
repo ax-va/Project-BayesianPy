@@ -1,4 +1,3 @@
-import pathlib
 if __name__ == '__main__':
     import sys
     # Add the path of '..\\pyb4ml' to sys.path
