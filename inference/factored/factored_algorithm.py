@@ -241,11 +241,9 @@ class FactoredAlgorithm:
 
     def _set_model(self, model: FactorGraph):
         self._outer_model = model
-        self._inner_to_outer_factors = {}
+        # Create algorithm variables (inner variables)
         self._inner_to_outer_variables = {}
-        self._outer_to_inner_factors = {}
         self._outer_to_inner_variables = {}
-        # Create and bind algorithm variables (inner variables)
         for outer_variable in self._outer_model.variables:
             inner_variable = Variable(
                 domain=outer_variable.domain,
@@ -253,7 +251,9 @@ class FactoredAlgorithm:
             )
             self._inner_to_outer_variables[inner_variable] = outer_variable
             self._outer_to_inner_variables[outer_variable] = inner_variable
-        # Create and bind algorithm factors (outer factors)
+        # Create algorithm factors (inner factors)
+        self._inner_to_outer_factors = {}
+        self._outer_to_inner_factors = {}
         for outer_factor in self._outer_model.factors:
             inner_factor = Factor(
                 variables=tuple(self._outer_to_inner_variables[outer_var] for outer_var in outer_factor.variables),
