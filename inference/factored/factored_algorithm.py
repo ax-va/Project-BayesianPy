@@ -1,6 +1,7 @@
 import copy
 import itertools
 
+from pyb4ml.modeling.categorical.variable import Variable
 from pyb4ml.modeling.factor_graph.factor import Factor
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
@@ -11,8 +12,10 @@ class FactoredAlgorithm:
     inherit
     """
     def __init__(self, model: FactorGraph):
-        # Factor graph not specified
-        self._factor_graph = None
+        # Inner model not specified
+        self._inner_model = None
+        # Outer model not specified
+        self._outer_model = None
         # Specify the model, sets self._factor_graph
         self._set_model(model)
         # Query not specified
@@ -36,11 +39,11 @@ class FactoredAlgorithm:
         non_evidential_variables = []
         for variable in variables:
             if variable not in without_variables:
-                if len(variable.domain) == 1:
+                if variable.is_evidential():
                     evidential_variables.append(variable)
                 else:
                     non_evidential_variables.append(variable)
-        return evidential_variables, non_evidential_variables
+        return tuple(evidential_variables), tuple(non_evidential_variables)
 
     @property
     def evidence(self):
@@ -51,7 +54,9 @@ class FactoredAlgorithm:
 
     @property
     def factors(self):
-        return self._factor_graph.factors
+        if self._factors is None:
+            self._factors = list(self._factor_graph.factors)
+        return self._factors
 
     @property
     def non_query_variables(self):
@@ -122,7 +127,7 @@ class FactoredAlgorithm:
         corresponding model variable is not changed.
         """
         # Refresh the domain of evidential variables
-        self._refresh_evidential_variables_domain_if_necessary()
+        self._refresh_evidential_variables()
         if not evidence[0]:
             self._evidence = None
         else:
@@ -141,23 +146,15 @@ class FactoredAlgorithm:
         else:
             self._set_query(*variables)
 
-    def _check_evidence_variable_domain(self, ev_var, ev_val):
-        if ev_val not in ev_var.domain:
-            self._evidence = None
-            raise ValueError(f'value {ev_val!r} is not in the domain {ev_var.domain} of variable {ev_var.name!r}')
-
     def _check_query_and_evidence(self):
-        for query_var in self._query:
-            self._check_query_variable_in_evidence(query_var)
-
-    def _check_query_variable_in_evidence(self, query_var):
         if self._evidence is not None:
-            if query_var in (e[0] for e in self._evidence):
-                self._query = None
-                raise ValueError(f'query variable {query_var.name!r} is in evidence '
-                                 f'{tuple((e[0].name, e[1]) for e in self._evidence)}')
+            query_set = set(self._query)
+            evidence_set = set(ev_var for ev_var, _ in self._evidence)
+            if query_set.intersection(evidence_set) != set():
+                raise ValueError(f'query variables {set(query_var.name for query_var in query_set)} '
+                                 f' and evidential variables {set(ev_var.name for ev_var in evidence_set)}'
+                                 f' are not disjoint')
 
-    def _create_algorithm_factor_graph(self):
         # Encapsulate the factors and variables inside the algorithm.
         # Deeply copy the variables.
         variables = tuple(copy.deepcopy(self._model.variables))
@@ -201,16 +198,14 @@ class FactoredAlgorithm:
             print(f'\n{self._name} stopped')
             print('*' * 40)
 
-    def _refresh_evidential_variables_domain_if_necessary(self):
-        # Refresh the domains of evidential variables
+    def _refresh_evidential_variables(self):
+        # Refresh the domains of evidential variables and refresh evidential factors
         if self._evidence is not None:
             for ev_var, _ in self._evidence:
                 ev_var.set_domain(self._model.variables[self.variables.index(ev_var)].domain)
 
     def _set_evidence(self, *evidence):
-        # Check whether the query has duplicates
-        if len(evidence) != len(set(evidence)):
-            raise ValueError(f'The evidence must not contain duplicates')
+
         self._evidence = []
         # Setting the evidence is equivalent to reducing the domain of the variable to only one value
         for ev_var, ev_val in evidence:
@@ -218,8 +213,12 @@ class FactoredAlgorithm:
                 ev_var = self._get_algorithm_variable(ev_var)
             except ValueError:
                 self._evidence = None
-                raise ValueError(f'no model variable corresponding to evidence variable {ev_var.name!r}')
-            self._check_evidence_variable_domain(ev_var, ev_val)
+                raise ValueError(f'no model variable corresponding to evidence variable {ev_var.name}')
+            try:
+                ev_var.check_value(ev_val)
+            except ValueError as exc:
+                self._evidence = None
+                raise exc
             # Set the new domain containing only one value
             ev_var.set_domain({ev_val})
             self._evidence.append((ev_var, ev_val))
@@ -236,13 +235,32 @@ class FactoredAlgorithm:
                 query_var = self._get_algorithm_variable(query_var)
             except ValueError:
                 self._query = None
-                raise ValueError(f'no model variable corresponding to query variable {query_var.name!r}')
+                raise ValueError(f'no model variable corresponding to query variable {query_var.name}')
             self._query.append(query_var)
         self._query = tuple(sorted(self._query, key=lambda x: x.name))
 
     def _set_model(self, model: FactorGraph):
-        # Save the model
-        self._model = model
-        # Encapsulate the factors and variables inside the algorithm by using factorization.
-        # Create self._factorization.
-        self._create_algorithm_factor_graph()
+        self._outer_model = model
+        self._inner_to_outer_factors = {}
+        self._inner_to_outer_variables = {}
+        self._outer_to_inner_factors = {}
+        self._outer_to_inner_variables = {}
+        # Create and bind algorithm variables (inner variables)
+        for outer_variable in self._outer_model.variables:
+            inner_variable = Variable(
+                domain=outer_variable.domain,
+                name=copy.deepcopy(outer_variable.name)
+            )
+            self._inner_to_outer_variables[inner_variable] = outer_variable
+            self._outer_to_inner_variables[outer_variable] = inner_variable
+        # Create and bind algorithm factors (outer factors)
+        for outer_factor in self._outer_model.factors:
+            inner_factor = Factor(
+                variables=tuple(self._outer_to_inner_variables[outer_var] for outer_var in outer_factor.variables),
+                function=copy.deepcopy(outer_factor.function),
+                name=copy.deepcopy(outer_factor.name)
+            )
+            self._inner_to_outer_factors[inner_factor] = outer_factor
+            self._outer_to_inner_factors[outer_factor] = inner_factor
+        # Create an algorithm model (an inner model)
+        self._inner_model = FactorGraph(factors=self._inner_to_outer_factors.keys())

@@ -16,6 +16,7 @@ import math
 
 from pyb4ml.inference.factored.bucket import Bucket
 from pyb4ml.inference.factored.factored_algorithm import FactoredAlgorithm
+from pyb4ml.modeling import Factor
 from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 from pyb4ml.modeling.factor_graph.log_factor import LogFactor
 
@@ -107,6 +108,17 @@ class BE(FactoredAlgorithm):
         self._compute_distribution()
         # Print info if necessary
         FactoredAlgorithm._print_stop(self)
+        
+    def set_evidence(self, *evidence):
+        FactoredAlgorithm.set_evidence(*evidence)
+        for index, factor in enumerate(self.factors):
+            evidential_variables, non_evidential_variables = \
+                FactoredAlgorithm.split_evidential_and_non_evidential_variables(factor.variables)
+            self.factors[index] = Factor(
+                variables=non_evidential_variables,
+                function=self.factors[index]
+            )
+
 
     def set_ordering(self, ordering):
         # Check whether the elimination ordering has duplicates

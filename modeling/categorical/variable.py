@@ -23,6 +23,19 @@ class Variable(NamedElement):
     def factors_number(self):
         return len(self._linked_factors)
 
+    def check_value(self, value):
+        if self.is_value_illegal(value):
+            raise ValueError(f'variable {self.name} cannot have a value of {value}')
+
+    def is_evidential(self):
+        return len(self._domain) == 1
+
+    def is_value_illegal(self, value):
+        return value not in self._domain
+
+    def is_value_legal(self, value):
+        return value in self._domain
+
     def is_leaf(self):
         return 0 <= len(self._linked_factors) <= 1
 
@@ -31,15 +44,3 @@ class Variable(NamedElement):
 
     def set_domain(self, domain):
         self._domain = tuple(sorted(set(domain)))
-
-    def unlink_factor(self, factor):
-        if factor not in self._linked_factors:
-            raise ValueError(
-                f'factor {factor.name!r} not in the factors '
-                f'{tuple(factor.name for factor in self._linked_factors)} linked to the variable'
-            )
-        self._linked_factors.remove(factor)
-
-    def unlink_factors(self):
-        del self._linked_factors
-        self._linked_factors = []

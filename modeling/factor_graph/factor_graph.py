@@ -40,7 +40,7 @@ class FactorGraph:
         try:
             return self._factor_dict[name]
         except KeyError:
-            raise AttributeError(f'factor {name!r} not found')
+            raise AttributeError(f'factor {name} not found')
 
     def get_variable(self, name):
         if self._variable_dict is None:
@@ -48,7 +48,7 @@ class FactorGraph:
         try:
             return self._variable_dict[name]
         except KeyError:
-            raise AttributeError(f'variable {name!r} not found')
+            raise AttributeError(f'variable {name} not found')
 
     def _set_factor_dict(self):
         self._factor_dict = {factor.name: factor for factor in self._factors}
