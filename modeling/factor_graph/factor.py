@@ -59,3 +59,4 @@ if __name__ == '__main__':
         name='f_2'
     )
     print(f2((x, True)))
+

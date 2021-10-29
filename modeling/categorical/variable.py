@@ -1,3 +1,5 @@
+import itertools
+
 from pyb4ml.modeling.common.named_element import NamedElement
 
 
@@ -7,13 +9,29 @@ class Variable(NamedElement):
         self._linked_factors = []
         NamedElement.__init__(self, name)
 
+    @staticmethod
+    def evaluate_variables(variables):
+        domains = (variable.domain for variable in variables)
+        return tuple(itertools.product(*domains))
+
+    @staticmethod
+    def split_evidential_and_non_evidential_variables(variables, without_variables=()):
+        """
+        Splits evidential and non-evidential variables ignoring without_variables
+        """
+        evidential_variables = []
+        non_evidential_variables = []
+        for variable in variables:
+            if variable not in without_variables:
+                if variable.is_evidential():
+                    evidential_variables.append(variable)
+                else:
+                    non_evidential_variables.append(variable)
+        return tuple(evidential_variables), tuple(non_evidential_variables)
+
     @property
     def domain(self):
         return self._domain
-
-    @property
-    def domain_size(self):
-        return len(self._domain)
 
     @property
     def factors(self):
@@ -25,7 +43,7 @@ class Variable(NamedElement):
 
     def check_value(self, value):
         if self.is_value_illegal(value):
-            raise ValueError(f'variable {self.name} cannot have a value of {value}')
+            raise ValueError(f'variable {self.name} cannot have the value of {value}')
 
     def is_evidential(self):
         return len(self._domain) == 1

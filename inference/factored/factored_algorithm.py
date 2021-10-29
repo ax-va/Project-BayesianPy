@@ -1,5 +1,4 @@
 import copy
-import itertools
 
 from pyb4ml.modeling.categorical.variable import Variable
 from pyb4ml.modeling.factor_graph.factor import Factor
@@ -19,33 +18,28 @@ class FactoredAlgorithm:
         # Specify the model, sets self._factor_graph
         self._set_model(model)
         # Query not specified
-        self._query = None
+        self._query = ()
         # Evidence not specified
         self._evidence = {}
-        # Reduced factors not specified
-        self._reduced_factors = []
         # Probability distribution P(query) or P(query|evidence) of interest
         self._distribution = None
 
-    @staticmethod
-    def evaluate_variables(variables):
-        domains = (variable.domain for variable in variables)
-        return tuple(itertools.product(*domains))
-
-    @staticmethod
-    def split_evidential_and_non_evidential_variables(variables, without_variables=()):
+    @property
+    def eliminating_variables(self):
         """
-        Splits evidential and non-evidential variables ignoring without_variables
+        Returns non-query and non-evidential variables
         """
-        evidential_variables = []
-        non_evidential_variables = []
-        for variable in variables:
-            if variable not in without_variables:
-                if variable.is_evidential():
-                    evidential_variables.append(variable)
-                else:
-                    non_evidential_variables.append(variable)
-        return tuple(evidential_variables), tuple(non_evidential_variables)
+        if self._query:
+            if self._evidence:
+                return tuple(variable for variable in self.variables
+                             if variable not in self._query and variable not in self._evidence.keys())
+            else:
+                return tuple(variable for variable in self.variables if variable not in self._query)
+        else:
+            if self._evidence:
+                return tuple(variable for variable in self.variables if variable not in self._evidence.keys())
+            else:
+                return self.variables
 
     @property
     def evidence(self):
@@ -56,14 +50,7 @@ class FactoredAlgorithm:
 
     @property
     def factors(self):
-        if self._factors is None:
-            self._factors = list(self._factor_graph.factors)
-        return self._factors
-
-    @property
-    def non_query_variables(self):
-        return tuple(variable for variable in self.variables if variable not in self._query) \
-            if self._query is not None else self.variables
+        return self._inner_model.factors
 
     @property
     def pd(self):
@@ -81,12 +68,12 @@ class FactoredAlgorithm:
             def distribution(*values):
                 if len(values) != len(self._query):
                     raise ValueError(
-                        f'The number {len(values)} of values does not match '
-                        f'the number {len(self._query)} of variables in the query'
+                        f'the number {len(values)} of given values does not match '
+                        f'the number {len(self._query)} of query variables'
                     )
                 for variable, value in zip(self._query, values):
                     if value not in variable.domain:
-                        raise ValueError(f'value {value!r} not in domain {variable.domain} of {variable.name!r}')
+                        raise ValueError(f'value {value!r} not in domain {variable.domain} of {variable.name}')
                 return self._distribution[values]
             return distribution
         else:
@@ -98,22 +85,21 @@ class FactoredAlgorithm:
 
     @property
     def variables(self):
-        return self._factor_graph.variables
+        return self._inner_model.variables
 
     def print_pd(self):
         """
         Prints the complete probability distribution of the query variables
         """
         if self._distribution is not None:
-            evaluated_query = FactoredAlgorithm.evaluate_variables(self._query)
-            ev_str = '' \
-                if self._evidence is None \
-                else ' | ' + ', '.join(f'{ev_var.name} = {ev_val!r}' for ev_var, ev_val in self._evidence)
-            for values in evaluated_query:
+            evidence_str = ' | ' + ', '.join(f'{var.name} = {val!r}' for var, val in self._evidence.items()) \
+                if self._evidence \
+                else ''
+            for values in Variable.evaluate_variables(self._query):
                 query_str = 'P(' + ', '.join(f'{var.name} = {val!r}' for var, val in zip(self._query, values))
                 value_str = str(self.pd(*values))
                 equal_str = ') = '
-                print(query_str + ev_str + equal_str + value_str)
+                print(query_str + evidence_str + equal_str + value_str)
         else:
             raise AttributeError('distribution not computed')
 
@@ -128,12 +114,12 @@ class FactoredAlgorithm:
         The variable is encapsulated in the algorithm and the domain of the 
         corresponding model variable is not changed.
         """
-        # Refresh the domain of evidential variables
-        self._refresh_evidential_variables()
-        if not evidence[0]:
-            self._evidence = None
-        else:
+        # ...
+        self._delete_evidence()
+        if evidence[0]:
             self._set_evidence(*evidence)
+        else:
+            self._evidence = {}
     
     def set_query(self, *variables):
         """
@@ -143,51 +129,34 @@ class FactoredAlgorithm:
         algorithm.pd('d0', 'i1') returns a probability corresponding to Difficulty = 'd0' and
         Intelligence = 'i1'.
         """
-        if not variables[0]:
-            self._query = None
-        else:
+        if variables[0]:
             self._set_query(*variables)
+        else:
+            self._query = ()
 
     def _check_query_and_evidence(self):
-        if self._evidence is not None:
+        if self._evidence:
             query_set = set(self._query)
-            evidence_set = set(ev_var for ev_var, _ in self._evidence)
+            evidence_set = set(self._evidence.keys())
             if query_set.intersection(evidence_set) != set():
                 raise ValueError(f'query variables {set(query_var.name for query_var in query_set)} '
-                                 f' and evidential variables {set(ev_var.name for ev_var in evidence_set)}'
-                                 f' are not disjoint')
+                                 f'and evidential variables {set(ev_var.name for ev_var in evidence_set)} '
+                                 f'must be disjoint')
 
-        # Encapsulate the factors and variables inside the algorithm.
-        # Deeply copy the variables.
-        variables = tuple(copy.deepcopy(self._model.variables))
-        # Unlink the factors from the variables
-        for variable in variables:
-            variable.unlink_factors()
-        # Create new factors
-        factors = tuple(
-            Factor(
-                variables=self._create_algorithm_factor_variables(model_factor, variables),
-                function=copy.deepcopy(model_factor.function),
-                name=copy.deepcopy(model_factor.name)
-            ) for model_factor in self._model.factors
-        )
-        self._factor_graph = FactorGraph(factors)
-
-    def _create_algorithm_factor_variables(self, model_factor, variables):
-        return tuple(variables[self._model.variables.index(model_factor_variable)]
-                     for model_factor_variable in model_factor.variables)
-
-    def _get_algorithm_variable(self, variable):
-        # Make sure that the encapsulated variable is got
-        return self.variables[self._model.variables.index(variable)]
+    def _delete_evidence(self):
+        for var in self._evidence.keys():
+            var.set_domain(self._inner_to_outer_variables[var].domain)
+        del self._evidence
+        self._evidence = {}
 
     def _has_query_only_one_variable(self):
         if len(self._query) > 1:
             raise ValueError('the query contains more than one variable')
+        if len(self._query) < 1:
+            raise ValueError('the query contains less than one variable')
 
     def _is_query_set(self):
-        # Is a query specified?
-        if self._query is None:
+        if not self._query:
             raise AttributeError('query not specified')
 
     def _print_start(self):
@@ -200,20 +169,10 @@ class FactoredAlgorithm:
             print(f'\n{self._name} stopped')
             print('*' * 40)
 
-    def _delete_evidence(self):
-        if self._evidence:
-            for var, _ in self._evidence:
-                ev_var.set_domain(self._model.variables[self.variables.index(ev_var)].domain)
-
-    def _reduce_factors(self):
-        for var in self._evidence.keys():
-            for factor in var.factors:
-                if factor not in self._reduced_factors:
-                    factor_evidence = factor.filter_values(self._evidence.items())
-                    factor.set_evidence(factor_evidence)
-
-
     def _set_evidence(self, *evidence):
+        ev_variables = tuple(var_val[0] for var_val in evidence)
+        if len(ev_variables) != len(set(ev_variables)):
+            raise ValueError(f'the evidence must not contain duplicates')
         for outer_var, val in evidence:
             try:
                 inner_var = self._outer_to_inner_variables[outer_var]
@@ -232,17 +191,19 @@ class FactoredAlgorithm:
     def _set_query(self, *variables):
         # Check whether the query has duplicates
         if len(variables) != len(set(variables)):
-            raise ValueError(f'The query must not contain duplicates')
-        self._query = []
-        for query_var in variables:
-            # Variable 'query' of interest for computing P(query) or P(query|evidence)
-            try:
-                query_var = self._get_algorithm_variable(query_var)
-            except ValueError:
-                self._query = None
-                raise ValueError(f'no model variable corresponding to query variable {query_var.name}')
-            self._query.append(query_var)
-        self._query = tuple(sorted(self._query, key=lambda x: x.name))
+            raise ValueError(f'query must not contain duplicates')
+        try:
+            self._query = tuple(
+                sorted(
+                    (self._outer_to_inner_variables[outer_var] for outer_var in variables),
+                    key=lambda x: x.name
+                )
+            )
+        except KeyError:
+            self._query = ()
+            raise ValueError(f'some query variables are not model variables')
+        except Exception:
+            raise ValueError(f'some query variables are incorrect')
 
     def _set_model(self, model: FactorGraph):
         self._outer_model = model
