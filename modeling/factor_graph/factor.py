@@ -12,8 +12,7 @@ class Factor(NamedElement):
     def __call__(self, *variables_with_values):
         var_val_dict = dict(variables_with_values)
         values = (var_val_dict[var] for var in self._variables)
-        evidential_values = {ev_var: ev_val for ev_var, ev_val in self._evidence}
-        return self._function(*values, *evidential_values)
+        return self._function(*values)
 
     def __str__(self):
         variables_names = (variable.name for variable in self._variables)
@@ -31,38 +30,15 @@ class Factor(NamedElement):
     def variables_number(self):
         return len(self._variables)
 
-    def check_evidence(self, evidence):
-        for ev_var, ev_val in evidence:
-            self.check_variable(ev_var)
-            ev_var.check_value(ev_val)
-
-    def check_variable(self, variable):
-        if variable is not self._variables:
-            if isinstance(variable, Variable):
-                raise ValueError(f'variable {variable.name} is not factor variable')
-            else:
-                raise ValueError(f'object is not a variable')
-
     def filter_values(self, *variables_with_values):
         return tuple(var_val for var_val in variables_with_values if var_val[0] in self._variables)
 
     def is_leaf(self):
         return len(self._variables) == 1
 
-    def set_evidence(self, *evidence):
-        # Check whether the evidence has duplicates
-        ev_variables = tuple(ev_var for ev_var, _ in evidence)
-        if len(ev_variables) != len(set(ev_variables)):
-            raise ValueError(f'evidence must not contain duplicates')
-        if evidence[0]:
-            self.check_evidence(evidence)
-            self._evidence = evidence
-        else:
-            self._evidence = ()
-
     def _link_factor_to_variables(self):
-        for variable in self._variables:
-            variable.link_factor(self)
+        for var in self._variables:
+            var.link_factor(self)
 
 
 if __name__ == '__main__':

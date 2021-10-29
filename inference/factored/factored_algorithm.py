@@ -21,7 +21,9 @@ class FactoredAlgorithm:
         # Query not specified
         self._query = None
         # Evidence not specified
-        self._evidence = None
+        self._evidence = {}
+        # Reduced factors not specified
+        self._reduced_factors = []
         # Probability distribution P(query) or P(query|evidence) of interest
         self._distribution = None
 
@@ -198,31 +200,34 @@ class FactoredAlgorithm:
             print(f'\n{self._name} stopped')
             print('*' * 40)
 
-    def _refresh_evidential_variables(self):
-        # Refresh the domains of evidential variables and refresh evidential factors
-        if self._evidence is not None:
-            for ev_var, _ in self._evidence:
+    def _delete_evidence(self):
+        if self._evidence:
+            for var, _ in self._evidence:
                 ev_var.set_domain(self._model.variables[self.variables.index(ev_var)].domain)
 
-    def _set_evidence(self, *evidence):
+    def _reduce_factors(self):
+        for var in self._evidence.keys():
+            for factor in var.factors:
+                if factor not in self._reduced_factors:
+                    factor_evidence = factor.filter_values(self._evidence.items())
+                    factor.set_evidence(factor_evidence)
 
-        self._evidence = []
-        # Setting the evidence is equivalent to reducing the domain of the variable to only one value
-        for ev_var, ev_val in evidence:
+
+    def _set_evidence(self, *evidence):
+        for outer_var, val in evidence:
             try:
-                ev_var = self._get_algorithm_variable(ev_var)
-            except ValueError:
-                self._evidence = None
-                raise ValueError(f'no model variable corresponding to evidence variable {ev_var.name}')
+                inner_var = self._outer_to_inner_variables[outer_var]
+            except KeyError:
+                self._evidence = {}
+                raise KeyError(f'no model variable corresponds to evidence variable {outer_var.name}')
             try:
-                ev_var.check_value(ev_val)
-            except ValueError as exc:
-                self._evidence = None
-                raise exc
+                inner_var.check_value(val)
+            except ValueError as exception:
+                self._evidence = {}
+                raise exception
             # Set the new domain containing only one value
-            ev_var.set_domain({ev_val})
-            self._evidence.append((ev_var, ev_val))
-        self._evidence = tuple(sorted(self._evidence, key=lambda x: x[0].name))
+            inner_var.set_domain({val})
+            self._evidence[inner_var] = val
 
     def _set_query(self, *variables):
         # Check whether the query has duplicates
