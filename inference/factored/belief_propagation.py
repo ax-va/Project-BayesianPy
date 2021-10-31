@@ -61,7 +61,7 @@ class BP(FactoredAlgorithm):
         # Query variable
         self._query_variable = None
         # Evidence tuple
-        self._evidence_key = ()
+        self._evidence_tuples = ()
         # Whether to print loop passing and propagating node-to-node messages
         self._print_info = None
         # Temporary buffers
@@ -126,13 +126,11 @@ class BP(FactoredAlgorithm):
 
     def set_evidence(self, *evidence):
         FactoredAlgorithm.set_evidence(self, *evidence)
-        self._evidence_key = tuple(sorted(
-                ((var, val) for var, val in self._evidence.items()),
-                key=lambda x: x[0].name))
+        self._evidence_tuples = tuple((var, var.domain[0]) for var in self._evidence)
 
     def _compute_distribution(self):
         # Get the incoming messages to the query
-        factor_to_query_messages = self._factor_to_variable_messages[self._evidence_key].get_from_nodes_to_node(
+        factor_to_query_messages = self._factor_to_variable_messages[self._evidence_tuples].get_from_nodes_to_node(
             from_nodes=self._query_variable.factors,
             to_node=self._query_variable
         )
@@ -150,18 +148,18 @@ class BP(FactoredAlgorithm):
 
     def _compute_factor_to_variable_message_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
-        if not self._factor_to_variable_messages[self._evidence_key].contains(from_factor, to_variable):
+        if not self._factor_to_variable_messages[self._evidence_tuples].contains(from_factor, to_variable):
             # Compute the message values
             values = {value: math.log(from_factor((to_variable, value))) for value in to_variable.domain}
             # Cache the message
             message = Message(from_factor, to_variable, values)
-            self._factor_to_variable_messages[self._evidence_key].cache(message)
+            self._factor_to_variable_messages[self._evidence_tuples].cache(message)
             # Print the message if necessary
             self._print_message(message)
 
     def _compute_factor_to_variable_message_not_from_leaf(self, from_factor, to_variable):
         # Compute the message if necessary
-        if not self._factor_to_variable_messages[self._evidence_key].contains(from_factor, to_variable):
+        if not self._factor_to_variable_messages[self._evidence_tuples].contains(from_factor, to_variable):
             # Split evidential and non-evidential variables
             from_evidential_variables, from_non_evidential_variables = \
                 Variable.split_evidential_and_non_evidential_variables(
@@ -169,12 +167,12 @@ class BP(FactoredAlgorithm):
                     without_variables=(to_variable, )
                 )
             # Get the incoming evidential messages
-            evidential_messages = self._variable_to_factor_messages[self._evidence_key].get_from_nodes_to_node(
+            evidential_messages = self._variable_to_factor_messages[self._evidence_tuples].get_from_nodes_to_node(
                 from_nodes=from_evidential_variables,
                 to_node=from_factor
             )
             # Get the incoming non-evidential messages
-            non_evidential_messages = self._variable_to_factor_messages[self._evidence_key].get_from_nodes_to_node(
+            non_evidential_messages = self._variable_to_factor_messages[self._evidence_tuples].get_from_nodes_to_node(
                 from_nodes=from_non_evidential_variables,
                 to_node=from_factor
             )
@@ -209,48 +207,48 @@ class BP(FactoredAlgorithm):
                           ) for value in to_variable.domain}
             # Cache the message
             message = Message(from_factor, to_variable, values)
-            self._factor_to_variable_messages[self._evidence_key].cache(message)
+            self._factor_to_variable_messages[self._evidence_tuples].cache(message)
             # Print the message if necessary
             self._print_message(message)
 
     def _compute_variable_to_factor_message_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
-        if not self._variable_to_factor_messages[self._evidence_key].contains(from_variable, to_factor):
+        if not self._variable_to_factor_messages[self._evidence_tuples].contains(from_variable, to_factor):
             # Compute the message values
             values = {value: 0 for value in from_variable.domain}
             # Cache the message
             message = Message(from_variable, to_factor, values)
-            self._variable_to_factor_messages[self._evidence_key].cache(message)
+            self._variable_to_factor_messages[self._evidence_tuples].cache(message)
             # Print the message if necessary
             self._print_message(message)
 
     def _compute_variable_to_factor_message_not_from_leaf(self, from_variable, to_factor):
         # Compute the message if necessary
-        if not self._variable_to_factor_messages[self._evidence_key].contains(from_variable, to_factor):
+        if not self._variable_to_factor_messages[self._evidence_tuples].contains(from_variable, to_factor):
             from_factors = tuple(factor for factor in from_variable.factors if factor is not to_factor)
             # Compute the message values
             # Only one non-passed factor
             # from_variable was previously to_variable
             values = {value: math.fsum(message(value) for message in
-                                       self._factor_to_variable_messages[self._evidence_key].get_from_nodes_to_node(
+                                       self._factor_to_variable_messages[self._evidence_tuples].get_from_nodes_to_node(
                                            from_nodes=from_factors,
                                            to_node=from_variable)
                                        ) for value in from_variable.domain}
             # Cache the message
             message = Message(from_variable, to_factor, values)
-            self._variable_to_factor_messages[self._evidence_key].cache(message)
+            self._variable_to_factor_messages[self._evidence_tuples].cache(message)
             # Print the message if necessary
             self._print_message(message)
 
     def _create_factor_to_variable_messages_cache_if_necessary(self):
-        if self._evidence_key not in self._factor_to_variable_messages:
+        if self._evidence_tuples not in self._factor_to_variable_messages:
             # Cache if not cached
-            self._factor_to_variable_messages[self._evidence_key] = Messages()
+            self._factor_to_variable_messages[self._evidence_tuples] = Messages()
 
     def _create_variable_to_factor_messages_cache_if_necessary(self):
-        if self._evidence_key not in self._variable_to_factor_messages:
+        if self._evidence_tuples not in self._variable_to_factor_messages:
             # Cache if not cached
-            self._variable_to_factor_messages[self._evidence_key] = Messages()
+            self._variable_to_factor_messages[self._evidence_tuples] = Messages()
 
     def _extend_next_variables(self, variable):
         # If the variable is query, the propagation should be stopped here
