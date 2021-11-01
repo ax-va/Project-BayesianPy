@@ -11,8 +11,9 @@ class Factor(NamedElement):
         self._link_factor_to_variables()
 
     def __call__(self, *variables_with_values):
-        var_val_dict = dict(variables_with_values)
+        var_val_dict = {}
         var_val_dict.update(self._evidence_var_val_dict)
+        var_val_dict.update(dict(variables_with_values))
         values = (var_val_dict[var] for var in self._variables)
         return self._function(*values)
 
