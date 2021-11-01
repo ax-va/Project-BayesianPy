@@ -21,6 +21,8 @@ class FactoredAlgorithm:
         self._query = ()
         # Evidence not specified
         self._evidence = ()
+        # Evidence tuples not specified
+        self._evidence_tuples = ()
         # Probability distribution P(query) or P(query|evidence) not specified
         self._distribution = None
 
@@ -86,6 +88,24 @@ class FactoredAlgorithm:
     def variables(self):
         return self._inner_model.variables
 
+    def check_empty_query(self):
+        if not self._query:
+            raise AttributeError('query not specified')
+
+    def check_one_variable_query(self):
+        if len(self._query) > 1:
+            raise ValueError('the query contains more than one variable')
+        if len(self._query) < 1:
+            raise ValueError('the query contains less than one variable')
+
+    def check_query_and_evidence_intersection(self):
+        if self._evidence:
+            query_set = set(self._query)
+            evidence_set = set(self._evidence)
+            if query_set.intersection(evidence_set) != set():
+                raise ValueError(f'query variables {set(var.name for var in query_set)} '
+                                 f'and evidential variables {set(var.name for var in evidence_set)} must be disjoint')
+
     def print_pd(self):
         """
         Prints the complete probability distribution of the query variables
@@ -113,12 +133,13 @@ class FactoredAlgorithm:
         The variable is encapsulated in the algorithm and the domain of the 
         corresponding model variable is not changed.
         """
-        # ...
+        # Return the original domains of evidential variables and delete the evidence in factors
         self._delete_evidence()
         if evidence[0]:
             self._set_evidence(*evidence)
         else:
             self._evidence = ()
+        self._set_evidence_tuples()
     
     def set_query(self, *variables):
         """
@@ -133,29 +154,18 @@ class FactoredAlgorithm:
         else:
             self._query = ()
 
-    def _check_query_and_evidence(self):
-        if self._evidence:
-            query_set = set(self._query)
-            evidence_set = set(self._evidence)
-            if query_set.intersection(evidence_set) != set():
-                raise ValueError(f'query variables {set(var.name for var in query_set)} '
-                                 f'and evidential variables {set(var.name for var in evidence_set)} must be disjoint')
+    def _clear_evidence(self):
+        self._evidence = ()
+        for inner_factor in self._inner_model.factors:
+            inner_factor.clear_evidence()
 
     def _delete_evidence(self):
         for var in self._evidence:
             var.set_domain(self._inner_to_outer_variables[var].domain)
+            for factor in var.factors:
+                factor.delete_evidence(var)
         del self._evidence
         self._evidence = ()
-
-    def _has_query_only_one_variable(self):
-        if len(self._query) > 1:
-            raise ValueError('the query contains more than one variable')
-        if len(self._query) < 1:
-            raise ValueError('the query contains less than one variable')
-
-    def _is_query_set(self):
-        if not self._query:
-            raise AttributeError('query not specified')
 
     def _print_start(self):
         if self._print_info:
@@ -175,21 +185,29 @@ class FactoredAlgorithm:
             try:
                 inner_var = self._outer_to_inner_variables[outer_var]
             except KeyError:
-                self._evidence = ()
+                self._clear_evidence()
+                for inner_factor in self._inner_model.factors:
+                    inner_factor.clear_evidence()
                 raise ValueError(f'no model variable corresponds to evidential variable {outer_var.name}')
             try:
                 inner_var.check_value(val)
             except ValueError as exception:
-                self._evidence = ()
+                self._clear_evidence()
                 raise exception
             # Set the new domain containing only one value
             inner_var.set_domain({val})
+            # Add the evidence into its factors
+            for inner_factor in inner_var.factors:
+                inner_factor.add_evidence(inner_var)
         self._evidence = tuple(
             sorted(
                 (self._outer_to_inner_variables[outer_var] for outer_var in evidence_variables),
                 key=lambda x: x.name
             )
         )
+
+    def _set_evidence_tuples(self):
+        self._evidence_tuples = tuple((var, var.domain[0]) for var in self._evidence)
 
     def _set_query(self, *query_variables):
         # Check whether the query has duplicates

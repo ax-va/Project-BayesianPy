@@ -1,22 +1,28 @@
+from pyb4ml.modeling.categorical.variable import Variable
 from pyb4ml.modeling.common.named_element import NamedElement
 
 
 class Factor(NamedElement):
     def __init__(self, variables, function=None, name=None):
         self._variables = tuple(variables)
-        self._evidence = ()
         self._function = function
         NamedElement.__init__(self, name)
+        self._evidence_var_val_dict = {}
         self._link_factor_to_variables()
 
     def __call__(self, *variables_with_values):
         var_val_dict = dict(variables_with_values)
+        var_val_dict.update(self._evidence_var_val_dict)
         values = (var_val_dict[var] for var in self._variables)
         return self._function(*values)
 
     def __str__(self):
         variables_names = (variable.name for variable in self._variables)
         return self._name + '(' + ', '.join(variables_names) + ')'
+
+    @property
+    def evidence(self):
+        return self._evidence_var_val_dict.keys()
 
     @property
     def function(self):
@@ -35,6 +41,31 @@ class Factor(NamedElement):
 
     def is_leaf(self):
         return len(self._variables) == 1
+
+    def add_evidence(self, variable):
+        if not isinstance(variable, Variable):
+            raise ValueError(f'object {variable} is not an instance of class Variable')
+        if not variable.is_evidential():
+            raise ValueError(f'variable {variable.name} is not evidential')
+        if variable not in self._variables:
+            raise ValueError(f'variable {variable.name} does not belong to '
+                             f'the factor variables {tuple(var.name for var in self._variables)}')
+        self._evidence_var_val_dict[variable] = variable.domain[0]
+
+    def clear_evidence(self):
+        del self._evidence_var_val_dict
+        self._evidence_var_val_dict = {}
+
+    def delete_evidence(self, variable):
+        if not isinstance(variable, Variable):
+            raise ValueError(f'object {variable} is not an instance of class Variable')
+        if variable not in self._variables:
+            raise ValueError(f'variable {variable.name} does not belong to '
+                             f'the factor variables {tuple(var.name for var in self._variables)}')
+        try:
+            del self._evidence_var_val_dict[variable]
+        except KeyError:
+            raise ValueError(f'variable {variable.name} is not evidential')
 
     def _link_factor_to_variables(self):
         for var in self._variables:

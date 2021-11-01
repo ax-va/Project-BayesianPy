@@ -84,11 +84,11 @@ class BP(FactoredAlgorithm):
 
     def run(self, print_info=False):
         # Check whether a query is specified
-        FactoredAlgorithm._is_query_set(self)
-        # Check whether the query and evidence variables are disjoint
-        FactoredAlgorithm._check_query_and_evidence(self)
+        FactoredAlgorithm.check_empty_query(self)
         # Check whether the query has only one variable
-        FactoredAlgorithm._has_query_only_one_variable(self)
+        FactoredAlgorithm.check_one_variable_query(self)
+        # Check whether the query and evidence variables are disjoint
+        FactoredAlgorithm.check_query_and_evidence_intersection(self)
         # Set the first variable to the query
         self._query_variable = self._query[0]
         # The message caching is based on evidence
@@ -123,10 +123,6 @@ class BP(FactoredAlgorithm):
         self._compute_distribution()
         # Print info if necessary
         FactoredAlgorithm._print_stop(self)
-
-    def set_evidence(self, *evidence):
-        FactoredAlgorithm.set_evidence(self, *evidence)
-        self._evidence_tuples = tuple((var, var.domain[0]) for var in self._evidence)
 
     def _compute_distribution(self):
         # Get the incoming messages to the query
@@ -182,7 +178,7 @@ class BP(FactoredAlgorithm):
                 if len(non_evidential_messages) > 0 else 0
             # Sum out the evidential messages separately
             from_evidential_variables_values = tuple(variable.domain[0] for variable in from_evidential_variables)
-            evidential_variables_with_values = tuple(zip(from_evidential_variables, from_evidential_variables_values))
+            # evidential_variables_with_values = tuple(zip(from_evidential_variables, from_evidential_variables_values))
             evidential_messages_sum = math.fsum(msg(val) for msg, val
                                                 in zip(evidential_messages, from_evidential_variables_values))
             # Cross product of domains
@@ -193,7 +189,6 @@ class BP(FactoredAlgorithm):
                               math.fsum(
                                   from_factor(
                                       *zip(from_non_evidential_variables, non_evidential_variables_values),
-                                      *evidential_variables_with_values,
                                       (to_variable, value)
                                   )
                                   * math.exp(
