@@ -21,7 +21,7 @@ eps = 1e-12
 algorithm = BE(model)
 algorithm.set_query(alice, bob)
 algorithm.set_evidence((charles, 'c0'), (debbie, 'd0'))
-algorithm.set_ordering([charles, debbie])
+algorithm.set_elimination([])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
