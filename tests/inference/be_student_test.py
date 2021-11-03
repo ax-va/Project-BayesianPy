@@ -31,7 +31,7 @@ algorithm.set_elimination([intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.4742196406430358 / (1 + eps) <= pd('d0') <= 0.4742196406430358 * (1 + eps)
 assert 0.5257803593569642 / (1 + eps) <= pd('d1') <= 0.5257803593569642 * (1 + eps)
 
@@ -41,7 +41,7 @@ algorithm.set_elimination([intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.3972483414607588 / (1 + eps) <= pd('d0') <= 0.3972483414607588 * (1 + eps)
 assert 0.6027516585392411 / (1 + eps) <= pd('d1') <= 0.6027516585392411 * (1 + eps)
 
@@ -51,7 +51,7 @@ algorithm.set_elimination([intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.7737141941302315 / (1 + eps) <= pd('d0') <= 0.7737141941302315 * (1 + eps)
 assert 0.22628580586976843 / (1 + eps) <= pd('d1') <= 0.22628580586976843 * (1 + eps)
 
@@ -61,7 +61,7 @@ algorithm.set_elimination([intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.6790559493929356 / (1 + eps) <= pd('d0') <= 0.6790559493929356 * (1 + eps)
 assert 0.32094405060706443 / (1 + eps) <= pd('d1') <= 0.32094405060706443 * (1 + eps)
 
@@ -71,7 +71,7 @@ algorithm.set_elimination([sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.4622878086419753 / (1 + eps) <= pd('d0') <= 0.4622878086419753 * (1 + eps)
 assert 0.5377121913580247 / (1 + eps) <= pd('d1') <= 0.5377121913580247 * (1 + eps)
 
@@ -81,7 +81,7 @@ algorithm.set_elimination([sat, intelligence, grade])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.7364313925340807 / (1 + eps) <= pd('d0') <= 0.7364313925340807 * (1 + eps)
 assert 0.26356860746591926 / (1 + eps) <= pd('d1') <= 0.26356860746591926 * (1 + eps)
 
@@ -115,7 +115,7 @@ algorithm.set_elimination([intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.07627202787313875 / (1 + eps) <= pd('g0') <= 0.07627202787313875 * (1 + eps)
 assert 0.32590872028474893 / (1 + eps) <= pd('g1') <= 0.32590872028474893 * (1 + eps)
 assert 0.5978192518421124 / (1 + eps) <= pd('g2') <= 0.5978192518421124 * (1 + eps)
@@ -126,7 +126,7 @@ algorithm.set_elimination([intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.4434481273371577 / (1 + eps) <= pd('g0') <= 0.4434481273371577 * (1 + eps)
 assert 0.2599996084343245 / (1 + eps) <= pd('g1') <= 0.2599996084343245 * (1 + eps)
 assert 0.29655226422851777 / (1 + eps) <= pd('g2') <= 0.29655226422851777 * (1 + eps)
@@ -137,7 +137,7 @@ algorithm.set_elimination([intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.5810710656407828 / (1 + eps) <= pd('g0') <= 0.5810710656407828 * (1 + eps)
 assert 0.4138173427364206 / (1 + eps) <= pd('g1') <= 0.4138173427364206 * (1 + eps)
 assert 0.005111591622796632 / (1 + eps) <= pd('g2') <= 0.005111591622796632 * (1 + eps)
@@ -148,7 +148,7 @@ algorithm.set_elimination([intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.9103575782746748 / (1 + eps) <= pd('g0') <= 0.9103575782746748 * (1 + eps)
 assert 0.08895915113677469 / (1 + eps) <= pd('g1') <= 0.08895915113677469 * (1 + eps)
 assert 0.0006832705885505288 / (1 + eps) <= pd('g2') <= 0.0006832705885505288 * (1 + eps)
@@ -159,7 +159,7 @@ algorithm.set_elimination([intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.011442786069651743 / (1 + eps) <= pd('g0') <= 0.011442786069651743 * (1 + eps)
 assert 0.13333333333333333 / (1 + eps) <= pd('g1') <= 0.13333333333333333 * (1 + eps)
 assert 0.8552238805970149 / (1 + eps) <= pd('g2') <= 0.8552238805970149 * (1 + eps)
@@ -170,7 +170,7 @@ algorithm.set_elimination([intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.10473118279569894 / (1 + eps) <= pd('g0') <= 0.10473118279569894 * (1 + eps)
 assert 0.2778494623655915 / (1 + eps) <= pd('g1') <= 0.2778494623655915 * (1 + eps)
 assert 0.6174193548387096 / (1 + eps) <= pd('g2') <= 0.6174193548387096 * (1 + eps)
@@ -181,7 +181,7 @@ algorithm.set_elimination([intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.33047895500725694 / (1 + eps) <= pd('g0') <= 0.33047895500725694 * (1 + eps)
 assert 0.641799709724238 / (1 + eps) <= pd('g1') <= 0.641799709724238 * (1 + eps)
 assert 0.027721335268505072 / (1 + eps) <= pd('g2') <= 0.027721335268505072 * (1 + eps)
@@ -192,7 +192,7 @@ algorithm.set_elimination([intelligence])
 algorithm.run()
 pd = algorithm.pd
 algorithm.print_pd()
-# The values for the assertions are obtained using the BPA
+# Assertion values were obtained using BPA
 assert 0.690236220472441 / (1 + eps) <= pd('g0') <= 0.690236220472441 * (1 + eps)
 assert 0.30519685039370076 / (1 + eps) <= pd('g1') <= 0.30519685039370076 * (1 + eps)
 assert 0.004566929133858268 / (1 + eps) <= pd('g2') <= 0.004566929133858268 * (1 + eps)
