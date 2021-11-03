@@ -12,7 +12,7 @@ from pyb4ml.models import Misconception
 
 
 # Test the Bucket Elimination algorithm on the Misconception model
-# Only the correctness of computing is tested!
+# Only the correctness of algorithms is tested!
 model = Misconception()
 alice = model.get_variable('Alice')
 bob = model.get_variable('Bob')
