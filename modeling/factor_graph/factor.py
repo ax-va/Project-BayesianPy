@@ -1,14 +1,24 @@
+import math
+
 from pyb4ml.modeling.categorical.variable import Variable
 from pyb4ml.modeling.common.named_element import NamedElement
 
 
+def log(f):
+    def log_f(*t):
+        return math.log(f(*t))
+    return log_f
+
+
 class Factor(NamedElement):
-    def __init__(self, variables, function=None, name=None):
+    def __init__(self, variables, function=None, name=None, evidence=None, variable_linking=True):
+        NamedElement.__init__(self, name)
         self._variables = tuple(variables)
         self._function = function
-        NamedElement.__init__(self, name)
         self._evidence_var_val_dict = {}
-        self._link_factor_to_variables()
+        if variable_linking:
+            self._link_factor_to_variables()
+        self._set_evidence(evidence)
 
     def __call__(self, *variables_with_values):
         var_val_dict = {}
@@ -37,12 +47,6 @@ class Factor(NamedElement):
     def variables_number(self):
         return len(self._variables)
 
-    def filter_values(self, *variables_with_values):
-        return tuple(var_val for var_val in variables_with_values if var_val[0] in self._variables)
-
-    def is_leaf(self):
-        return len(self._variables) == 1
-
     def add_evidence(self, variable):
         if not isinstance(variable, Variable):
             raise ValueError(f'object {variable} is not an instance of class Variable')
@@ -68,9 +72,22 @@ class Factor(NamedElement):
         except KeyError:
             raise ValueError(f'variable {variable.name} is not evidential')
 
+    def filter_values(self, *variables_with_values):
+        return tuple(var_val for var_val in variables_with_values if var_val[0] in self._variables)
+
+    def is_leaf(self):
+        return len(self._variables) == 1
+
+    def logarithm(self):
+        self._function = log(self._function)
+        self._name = 'log_' + self._name
+
     def _link_factor_to_variables(self):
         for var in self._variables:
             var.link_factor(self)
+
+    def _set_evidence(self, evidence):
+        self._evidence_var_val_dict = {var: var.domain[0] for var in evidence} if evidence else {}
 
 
 if __name__ == '__main__':
@@ -91,4 +108,5 @@ if __name__ == '__main__':
         name='f_2'
     )
     print(f2((x, True)))
+
 

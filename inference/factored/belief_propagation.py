@@ -63,7 +63,7 @@ class BP(FactoredAlgorithm):
         # Evidence tuple
         self._evidence_tuples = ()
         # Whether to print loop passing and propagating node-to-node messages
-        self._print_info = None
+        self._print_info = False
         # Temporary buffers
         self._from_factors = []
         self._next_factors = []
@@ -84,7 +84,7 @@ class BP(FactoredAlgorithm):
 
     def run(self, print_info=False):
         # Check whether a query is specified
-        FactoredAlgorithm.check_empty_query(self)
+        FactoredAlgorithm.check_non_empty_query(self)
         # Check whether the query has only one variable
         FactoredAlgorithm.check_one_variable_query(self)
         # Check whether the query and evidence variables are disjoint
@@ -178,7 +178,6 @@ class BP(FactoredAlgorithm):
                 if len(non_evidential_messages) > 0 else 0
             # Sum out the evidential messages separately
             from_evidential_variables_values = tuple(variable.domain[0] for variable in from_evidential_variables)
-            # evidential_variables_with_values = tuple(zip(from_evidential_variables, from_evidential_variables_values))
             evidential_messages_sum = math.fsum(msg(val) for msg, val
                                                 in zip(evidential_messages, from_evidential_variables_values))
             # Cross product of domains

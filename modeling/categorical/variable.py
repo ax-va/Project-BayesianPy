@@ -5,9 +5,9 @@ from pyb4ml.modeling.common.named_element import NamedElement
 
 class Variable(NamedElement):
     def __init__(self, domain=None, name=None):
+        NamedElement.__init__(self, name)
         self._domain = tuple(sorted(set(domain))) if domain is not None else None
         self._linked_factors = []
-        NamedElement.__init__(self, name)
 
     @staticmethod
     def evaluate_variables(variables):

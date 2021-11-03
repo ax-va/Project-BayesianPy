@@ -16,10 +16,8 @@ import math
 
 from pyb4ml.inference.factored.bucket import Bucket
 from pyb4ml.inference.factored.factored_algorithm import FactoredAlgorithm
-from pyb4ml.modeling import Factor
+from pyb4ml.modeling import FactorGraph
 from pyb4ml.modeling.categorical.variable import Variable
-from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
-from pyb4ml.modeling.factor_graph.log_factor import LogFactor
 
 
 class BE(FactoredAlgorithm):
@@ -62,25 +60,42 @@ class BE(FactoredAlgorithm):
     """
     def __init__(self, model: FactorGraph):
         FactoredAlgorithm.__init__(self, model)
-        self._computed_log_factors = None
-        self._bucket_cache = None
-        self._elimination_ordering = None
-        self._print_info = None
+        self._computed_log_factors = []
+        self._bucket_cache = {}
+        self._elimination_ordering = ()
+        self._print_info = False
         self._name = 'Bucket Elimination'
+        self._logarithm_factors()
 
     @property
-    def ordering(self):
+    def elimination_ordering(self):
         return self._elimination_ordering
+
+    def check_variable_partition(self):
+        set_q = set(self._query)
+        set_e = set(self._evidence)
+        set_o = set(self._elimination_ordering)
+        set_m = set(self.variables)
+        if not set_q.isdisjoint(set_o):
+            raise ValueError(f'query variables {tuple(var.name for var in self._query)} and '
+                             f'elimination variables {tuple(var.name for var in self._elimination_ordering)} '                             
+                             f'must be disjoint')
+        if not set_q.isdisjoint(set_e):
+            raise ValueError(f'query variables {tuple(var.name for var in self._query)} and '
+                             f'evidential variables {tuple(var.name for var in self._evidence)} '                             
+                             f'must be disjoint')
+        if not set_e.isdisjoint(set_o):
+            raise ValueError(f'evidential variables {tuple(var.name for var in self._evidence)} and '
+                             f'elimination variables {tuple(var.name for var in self._elimination_ordering)} '                             
+                             f'must be disjoint')
+        if set_q.union(set_e).union(set_o) != set_m:
+            raise ValueError('the query, evidence, and elimination variables do not cover all the model variables')
 
     def run(self, print_info=False):
         # Check whether a query is specified
-        FactoredAlgorithm._is_query_set(self)
-        # Check whether the query and evidence variables are disjoint
-        FactoredAlgorithm._check_query_and_evidence(self)
-        # Check whether an elimination order is specified
-        self._is_elimination_ordering_set()
-        # Check if the elimination order and query agree with each other
-        self._check_query_and_elimination_variables()
+        FactoredAlgorithm.check_non_empty_query(self)
+        # Query, evidence, and elimination ordering variables must be disjoint and build a whole model
+        self.check_variable_partition()
         # Print the bucket information
         self._print_info = print_info
         # Clear the distribution
@@ -109,32 +124,22 @@ class BE(FactoredAlgorithm):
         self._compute_distribution()
         # Print info if necessary
         FactoredAlgorithm._print_stop(self)
-        
-    def set_evidence(self, *evidence):
-        FactoredAlgorithm.set_evidence(*evidence)
-        for index, factor in enumerate(self.factors):
-            evidential_variables, non_evidential_variables = \
-                Variable.split_evidential_and_non_evidential_variables(factor.variables)
-            self.factors[index] = Factor(
-                variables=non_evidential_variables,
-                function=self.factors[index]
-            )
 
-    def set_ordering(self, ordering):
+    def set_elimination(self, ordering):
         # Check whether the elimination ordering has duplicates
         if len(ordering) != len(set(ordering)):
             raise ValueError(f'The elimination order must not contain duplicates')
-        self._elimination_ordering = []
-        # Setting the elimination ordering
-        for elm_var in ordering:
+        elm_ordering = []
+        # Set the elimination ordering
+        for outer_var in ordering:
             try:
-                elm_var = FactoredAlgorithm._get_algorithm_variable(self, elm_var)
-            except ValueError:
-                self._elimination_ordering = None
-                raise ValueError(f'no model variable corresponding to variable {elm_var.name!r} '
+                inner_var = self._outer_to_inner_variables[outer_var]
+            except KeyError:
+                self._elimination_ordering = ()
+                raise ValueError(f'no model variable corresponding to variable {outer_var.name} '
                                  f'in the elimination ordering')
-            self._elimination_ordering.append(elm_var)
-        self._elimination_ordering = tuple(self._elimination_ordering)
+            elm_ordering.append(inner_var)
+        self._elimination_ordering = tuple(elm_ordering)
 
     def _add_computed_log_factors_to_bucket_cache(self, variable):
         bucket = self._bucket_cache[variable]
@@ -156,7 +161,7 @@ class BE(FactoredAlgorithm):
         for query_variable in self._query:
             # Assemble all the log-factors from the query buckets
             log_factors.extend(self._bucket_cache[query_variable].input_log_factors)
-        query_variables_values = FactoredAlgorithm.evaluate_variables(self._query)
+        query_variables_values = Variable.evaluate_variables(self._query)
         # Compute the function for the distribution
         nn_values = {}
         for query_values in query_variables_values:
@@ -179,8 +184,8 @@ class BE(FactoredAlgorithm):
     def _compute_output_log_factor(self, variable):
         # Get the variable bucket
         bucket = self._bucket_cache[variable]
-        # Set free variables
-        bucket.set_free_variables()
+        # Set evidential and free variables
+        bucket.set_evidential_and_free_variables()
         # Compute the output log-factor of that bucket if necessary
         if bucket.has_log_factors():
             # If the bucket has no free variables, then the output log-factor is zero
@@ -194,33 +199,20 @@ class BE(FactoredAlgorithm):
         # Print the free variables if necessary
         self._print_bucket_free_variables(bucket)
 
-    def _check_query_and_elimination_variables(self):
-        set_q = set(self._query)
-        set_o = set(self._elimination_ordering)
-        set_m = set(self.variables)
-        if not set_q.isdisjoint(set_o):
-            self._query = None
-            self._elimination_ordering = None
-            raise ValueError('the elimination and query variables must be disjoint')
-        if set_q.union(set_o) != set_m:
-            self._query = None
-            self._elimination_ordering = None
-            raise ValueError('the elimination and query variables do not cover all the model variables')
-
     def _initialize_bucket_cache(self, variables):
         for variable in variables:
             self._bucket_cache[variable] = Bucket(variable)
             # Fill the variable bucket with factors
-            for factor in variable.factors:
-                if factor.not_added:
+            for log_factor in variable.factors:
+                if log_factor.not_added:
                     # Add the log-factor into the bucket
-                    self._bucket_cache[variable].add_log_factor(LogFactor(factor))
+                    self._bucket_cache[variable].add_log_factor(log_factor)
                     # The factor is now added
-                    factor.not_added = False
+                    log_factor.not_added = False
 
     def _initialize_factors(self):
-        for factor in self.factors:
-            factor.not_added = True
+        for log_factor in self.factors:
+            log_factor.not_added = True
 
     def _initialize_main_loop(self):
         self._initialize_factors()
@@ -229,10 +221,10 @@ class BE(FactoredAlgorithm):
         self._initialize_bucket_cache(self._query)
         self._computed_log_factors = []
 
-    def _is_elimination_ordering_set(self):
-        # Is an elimination ordering specified?
-        if self._elimination_ordering is None:
-            raise AttributeError('elimination ordering not specified')
+    def _logarithm_factors(self):
+        for factor in self.factors:
+            # Logarithm the factor
+            factor.logarithm()
 
     def _print_bucket(self, bucket):
         if self._print_info:

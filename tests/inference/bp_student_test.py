@@ -10,7 +10,8 @@ if package_dir not in sys.path:
 from pyb4ml.inference import BP
 from pyb4ml.models import Student
 
-# Test the Belief Propagation algorithm on the Student model
+# Test the Belief Propagation algorithm on the Student model.
+# Only the correctness of computing is tested!
 model = Student()
 algorithm = BP(model)  # Belief Propagation algorithm
 
@@ -254,9 +255,6 @@ pd = algorithm.pd
 algorithm.print_pd()
 assert 0.6 / (1 + eps) <= pd('d0') <= 0.6 * (1 + eps)
 assert 0.4 / (1 + eps) <= pd('d1') <= 0.4 * (1 + eps)
-
-# algorithm.set_evidence((difficulty, 'd0'))
-# algorithm.set_query(sat)
 
 # Test marginal distributions again
 

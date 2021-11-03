@@ -88,7 +88,7 @@ class FactoredAlgorithm:
     def variables(self):
         return self._inner_model.variables
 
-    def check_empty_query(self):
+    def check_non_empty_query(self):
         if not self._query:
             raise AttributeError('query not specified')
 
@@ -102,9 +102,9 @@ class FactoredAlgorithm:
         if self._evidence:
             query_set = set(self._query)
             evidence_set = set(self._evidence)
-            if query_set.intersection(evidence_set) != set():
-                raise ValueError(f'query variables {set(var.name for var in query_set)} '
-                                 f'and evidential variables {set(var.name for var in evidence_set)} must be disjoint')
+            if not query_set.isdisjoint(evidence_set):
+                raise ValueError(f'query variables {tuple(var.name for var in self._query)} and '
+                                 f'evidential variables {tuple(var.name for var in self._evidence)} must be disjoint')
 
     def print_pd(self):
         """
@@ -180,18 +180,18 @@ class FactoredAlgorithm:
     def _set_evidence(self, *evidence_tuples):
         evidence_variables = tuple(var_val[0] for var_val in evidence_tuples)
         if len(evidence_variables) != len(set(evidence_variables)):
-            raise ValueError(f'the evidence must not contain duplicates')
+            raise ValueError(f'evidence must not contain duplicates')
         for outer_var, val in evidence_tuples:
             try:
                 inner_var = self._outer_to_inner_variables[outer_var]
             except KeyError:
+                # Clear the evidence also the evidence in the factors
                 self._clear_evidence()
-                for inner_factor in self._inner_model.factors:
-                    inner_factor.clear_evidence()
                 raise ValueError(f'no model variable corresponds to evidential variable {outer_var.name}')
             try:
                 inner_var.check_value(val)
             except ValueError as exception:
+                # Clear the evidence also the evidence in the factors
                 self._clear_evidence()
                 raise exception
             # Set the new domain containing only one value

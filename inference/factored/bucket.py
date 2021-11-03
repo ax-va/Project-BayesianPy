@@ -1,14 +1,15 @@
 import math
 
-from pyb4ml.inference.factored.factored_algorithm import FactoredAlgorithm
-from pyb4ml.modeling.factor_graph.log_factor import LogFactor
+from pyb4ml.modeling import Factor
+from pyb4ml.modeling.categorical.variable import Variable
 
 
 class Bucket:
     def __init__(self, variable):
         self._variable = variable
         self._input_log_factors = []
-        self._free_variables = []
+        self._evidential_variables = ()
+        self._free_variables = ()
 
     @property
     def free_variables(self):
@@ -33,7 +34,7 @@ class Bucket:
 
     def compute_output_log_factor(self):
         # Evaluate free variables
-        free_variables_values = FactoredAlgorithm.evaluate_variables(self._free_variables)
+        free_variables_values = Variable.evaluate_variables(self._free_variables)
         # Compute the function for the output factor
         function_value_dict = {}
         for free_values in free_variables_values:
@@ -58,15 +59,18 @@ class Bucket:
                     ) for value in self._variable.domain
                 )
             )
-        return LogFactor(
+        # Return the log-factor unliked to its variables
+        log_factor = Factor(
             variables=self._free_variables,
             function=lambda *values: function_value_dict[values],
-            name='log_f_' + self._variable.name
+            name='log_f_' + self._variable.name,
+            evidence=self._evidential_variables,
+            variable_linking=False
         )
+        return log_factor
 
-    def set_free_variables(self):
-        self._free_variables = [var
-                                for log_factor in self._input_log_factors
-                                for var in log_factor.variables
-                                if var is not self._variable]
-        self._free_variables = tuple(sorted(set(self._free_variables), key=lambda x: x.name))
+    def set_evidential_and_free_variables(self):
+        bucket_variables = set(var for log_factor in self._input_log_factors for var in log_factor.variables)
+        self._evidential_variables, self._free_variables = \
+            Variable.split_evidential_and_non_evidential_variables(bucket_variables, (self._variable, ))
+        self._free_variables = tuple(sorted(self._free_variables, key=lambda x: x.name))
