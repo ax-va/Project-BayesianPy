@@ -11,6 +11,7 @@ from pyb4ml.inference import BE
 from pyb4ml.models import Student
 
 # Test the Bucket Elimination algorithm on the Student model
+# Only the correctness of computing is tested!
 model = Student()
 difficulty = model.get_variable('Difficulty')
 intelligence = model.get_variable('Intelligence')
