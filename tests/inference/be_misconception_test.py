@@ -10,6 +10,9 @@ if package_dir not in sys.path:
 from pyb4ml.inference import BE
 from pyb4ml.models import Misconception
 
+
+# Test the Bucket Elimination algorithm on the Misconception model
+# Only the correctness of computing is tested!
 model = Misconception()
 alice = model.get_variable('Alice')
 bob = model.get_variable('Bob')
@@ -22,7 +25,7 @@ algorithm = BE(model)
 algorithm.set_query(alice, bob)
 algorithm.set_evidence((charles, 'c0'), (debbie, 'd0'))
 algorithm.set_elimination([])
-algorithm.run()
+algorithm.run(print_info=True)
 pd = algorithm.pd
 algorithm.print_pd()
 # P(a,b|c0,d0)
