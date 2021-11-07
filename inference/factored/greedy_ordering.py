@@ -51,9 +51,9 @@ class GO(FactoredAlgorithm):
     """
     def __init__(self, model):
         FactoredAlgorithm.__init__(self, model)
-        self._order = None
-        self._ordering = None
-        self._not_ordered = None
+        self._order_number = None
+        self._ordering = ()
+        self._not_ordered_variables = []
         self._cost_function = None
         self._cost = None
         self._print_info = None
@@ -73,29 +73,23 @@ class GO(FactoredAlgorithm):
 
     @property
     def ordering(self):
-        return tuple(self._model.get_variable(variable.name) for variable in self._ordering)
+        return tuple(self._inner_to_outer_variables[var] for var in self._ordering)
 
     def print_ordering(self):
-        if self._query is not None:
-            print('Query: ' + ', '.join(variable.name for variable in self.query))
-        else:
-            print('No query')
-        if self._evidence is not None:
-            print('Evidence: ' + ', '.join(f'{ev_var.name} = {ev_val!r}' for ev_var, ev_val in self._evidence))
-        else:
-            print('No evidence')
+        self.print_query()
+        self.print_evidence()
         print('Elimination ordering: ' + ', '.join(variable.name for variable in self._ordering))
 
     def run(self, cost='weighted-min-fill', print_info=False):
         self._print_info = print_info
-        self._order = 0
+        self._order_number = 0
         self._cost = cost
         self._cost_function = self._cost_functions[self._cost]
         self._ordering = []
-        self._not_ordered = list(variable for variable in self.non_query_variables)
+        self._not_ordered_variables = list(variable for variable in self.elimination_variables)
         self._set_neighbors()
         self._print_start()
-        while len(self._not_ordered) > 0:
+        while len(self._not_ordered_variables) > 0:
             self._print_candidates()
             elm_var = self._eliminate_min_cost_variable()
             self._ordering.append(elm_var)
@@ -103,11 +97,11 @@ class GO(FactoredAlgorithm):
         self._print_stop()
 
     def _eliminate_min_cost_variable(self):
-        min_variable = self._not_ordered[0]
+        min_variable = self._not_ordered_variables[0]
         min_cost_val = self._cost_function(min_variable)
         self._print_total_cost(min_cost_val, min_variable)
         min_index = -1
-        for index, variable in enumerate(self._not_ordered[1:len(self._not_ordered)]):
+        for index, variable in enumerate(self._not_ordered_variables[1:len(self._not_ordered_variables)]):
             cost_val = self._cost_function(variable)
             self._print_total_cost(cost_val, variable)
             if cost_val < min_cost_val:
@@ -115,7 +109,7 @@ class GO(FactoredAlgorithm):
                 min_variable = variable
                 min_index = index
         self._print_before_elimination(min_variable)
-        del self._not_ordered[min_index + 1]
+        del self._not_ordered_variables[min_index + 1]
         for neighbor in min_variable.neighbors:
             neighbor.neighbors.remove(min_variable)
         self._print_after_elimination(min_variable)
@@ -158,8 +152,8 @@ class GO(FactoredAlgorithm):
 
     def _print_before_elimination(self, variable):
         if self._print_info:
-            print(str(self._order) + ': ' + variable.name)
-            self._order += 1
+            print(str(self._order_number) + ': ' + variable.name)
+            self._order_number += 1
             print('\nBefore the elimination of the variable:')
             for neighbor in variable.neighbors:
                 print('-- ' + variable.name + "'s neighbor: " + neighbor.name)
@@ -179,7 +173,11 @@ class GO(FactoredAlgorithm):
             print(f'total_cost({variable.name}) = {cost}\n')
 
     def _set_neighbors(self):
-        for variable in self.variables:
+        for variable in self.non_evidential:
             variable.neighbors = list(
-                set(var for factor in variable.factors for var in factor.variables if var is not variable)
+                set(var
+                    for factor in variable.factors
+                    for var in factor.variables
+                    if var is not variable and not var.is_evidential()
+                    )
             )

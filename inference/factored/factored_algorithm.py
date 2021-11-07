@@ -43,7 +43,7 @@ class FactoredAlgorithm:
                 return self.variables
 
     @property
-    def evidence(self):
+    def evidential(self):
         """
         Returns the evidence as the attribute of the algorithm
         """
@@ -52,6 +52,10 @@ class FactoredAlgorithm:
     @property
     def factors(self):
         return self._inner_model.factors
+
+    @property
+    def non_evidential(self):
+        return tuple(var for var in self.variables if not var.is_evidential())
 
     @property
     def pd(self):
@@ -106,6 +110,12 @@ class FactoredAlgorithm:
                 raise ValueError(f'query variables {tuple(var.name for var in self._query)} and '
                                  f'evidential variables {tuple(var.name for var in self._evidence)} must be disjoint')
 
+    def print_evidence(self):
+        if self._evidence is not None:
+            print('Evidence: ' + ', '.join(f'{var.name} = {var.domain[0]!r}' for var in self._evidence))
+        else:
+            print('No evidence')
+
     def print_pd(self):
         """
         Prints the complete probability distribution of the query variables
@@ -121,6 +131,12 @@ class FactoredAlgorithm:
                 print(query_str + evidence_str + equal_str + value_str)
         else:
             raise AttributeError('distribution not computed')
+
+    def print_query(self):
+        if self._query is not None:
+            print('Query: ' + ', '.join(variable.name for variable in self.query))
+        else:
+            print('No query')
 
     def set_evidence(self, *evidence):
         """
