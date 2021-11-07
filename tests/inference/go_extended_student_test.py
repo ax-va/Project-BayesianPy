@@ -2,7 +2,7 @@ import pathlib
 import sys
 
 # Get the package directory
-package_dir = str(pathlib.Path(__file__).resolve().parent.parent.parent)
+package_dir = str(pathlib.Path(__file__).resolve().parents[3])
 # Add the package directory into sys.path if necessary
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
