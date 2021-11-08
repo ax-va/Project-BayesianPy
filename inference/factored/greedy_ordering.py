@@ -53,7 +53,16 @@ class GO(FactoredAlgorithm):
 
     def __init__(self, model):
         FactoredAlgorithm.__init__(self, model)
-        self._initialize_instance()
+        self._order_number = None
+        self._elimination_ordering = []
+        self._not_ordered_variables = []
+        self._cost_function = None
+        self._cost = None
+        self._print_info = None
+        self._cost_functions = {
+            'min-fill': self._get_fill_cost,
+            'weighted-min-fill': self._get_weighted_fill_cost
+        }
 
     @staticmethod
     def _link_neighbors(variable):
@@ -133,18 +142,6 @@ class GO(FactoredAlgorithm):
                     cost_sum += cost
                     self._print_fill_cost(neighbor1, neighbor2, cost)
         return cost_sum
-
-    def _initialize_instance(self):
-        self._order_number = None
-        self._elimination_ordering = []
-        self._not_ordered_variables = []
-        self._cost_function = None
-        self._cost = None
-        self._print_info = None
-        self._cost_functions = {
-            'min-fill': self._get_fill_cost,
-            'weighted-min-fill': self._get_weighted_fill_cost
-        }
 
     def _print_after_elimination(self, variable):
         if self._print_info:

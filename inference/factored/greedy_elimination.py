@@ -3,11 +3,13 @@ from pyb4ml.modeling import FactorGraph
 
 
 class GBE(GO, BE):
-    _name = 'Greedy Bucket Elimination'
-
+    """
+    Greedy Bucket Elimination (GBE)
+    """
     def __init__(self, model: FactorGraph):
         GO.__init__(self, model)
-        BE._initialize_instance(self)
+        # Logarithm all the model factors
+        BE._logarithm_factors(self)
         self._ordering_cache = {}
 
     def clear_ordering_cache(self):

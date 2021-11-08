@@ -62,7 +62,12 @@ class BE(FactoredAlgorithm):
 
     def __init__(self, model: FactorGraph):
         FactoredAlgorithm.__init__(self, model)
-        self._initialize_instance()
+        self._computed_log_factors = []
+        self._bucket_cache = {}
+        self._elimination_ordering = []
+        self._print_info = False
+        # Logarithm all the model factors
+        self._logarithm_factors()
 
     @property
     def elimination_ordering(self):
@@ -210,14 +215,6 @@ class BE(FactoredAlgorithm):
     def _initialize_factors(self):
         for log_factor in self.factors:
             log_factor.not_added = True
-
-    def _initialize_instance(self):
-        self._computed_log_factors = []
-        self._bucket_cache = {}
-        self._elimination_ordering = ()
-        self._print_info = False
-        # Logarithm all the model factors
-        self._logarithm_factors()
 
     def _initialize_main_loop(self):
         self._initialize_factors()

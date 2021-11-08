@@ -281,7 +281,7 @@ for query in model.variables:
         assert 0.497664 / (1 + eps) <= pd('l0') <= 0.497664 * (1 + eps)
         assert 0.502336 / (1 + eps) <= pd('l1') <= 0.502336 * (1 + eps)
 
-algorithm.clear_cached_messages()
+algorithm.clear_message_cache()
 
 # Test conditional distributions again
 
