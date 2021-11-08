@@ -52,31 +52,18 @@ class BP(FactoredAlgorithm):
     [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
     """
+    _name = 'Belief Propagation'
 
     def __init__(self, model: FactorGraph):
         FactoredAlgorithm.__init__(self, model)
-        # To cache the node-to-node messages
-        self._factor_to_variable_messages = {}
-        self._variable_to_factor_messages = {}
-        # Query variable
-        self._query_variable = None
-        # Evidence tuple
-        self._evidence_tuples = ()
-        # Whether to print loop passing and propagating node-to-node messages
-        self._print_info = False
-        # Temporary buffers
-        self._from_factors = []
-        self._next_factors = []
-        self._from_variables = []
-        self._next_variables = []
-        self._name = 'Belief Propagation'
+        self._initialize_instance()
 
     @staticmethod
     def _update_passing(from_node, to_node):
         from_node.passed = True
         to_node.incoming_messages_number += 1
 
-    def clear_cached_messages(self):
+    def clear_message_cache(self):
         del self._factor_to_variable_messages
         del self._variable_to_factor_messages
         self._factor_to_variable_messages = {}
@@ -268,6 +255,22 @@ class BP(FactoredAlgorithm):
         for factor in self.factors:
             factor.passed = False
             factor.incoming_messages_number = 0
+
+    def _initialize_instance(self):
+        # To cache the node-to-node messages
+        self._factor_to_variable_messages = {}
+        self._variable_to_factor_messages = {}
+        # Query variable
+        self._query_variable = None
+        # Evidence tuple
+        self._evidence_tuples = ()
+        # Whether to print loop passing and propagating node-to-node messages
+        self._print_info = False
+        # Temporary buffers
+        self._from_factors = []
+        self._next_factors = []
+        self._from_variables = []
+        self._next_variables = []
 
     def _initialize_main_loop(self):
         self._loop_passing = 0

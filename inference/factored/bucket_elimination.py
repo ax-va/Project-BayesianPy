@@ -58,14 +58,11 @@ class BE(FactoredAlgorithm):
     [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
     """
+    _name = 'Bucket Elimination'
+
     def __init__(self, model: FactorGraph):
         FactoredAlgorithm.__init__(self, model)
-        self._computed_log_factors = []
-        self._bucket_cache = {}
-        self._elimination_ordering = ()
-        self._print_info = False
-        self._name = 'Bucket Elimination'
-        self._logarithm_factors()
+        self._initialize_instance()
 
     @property
     def elimination_ordering(self):
@@ -213,6 +210,14 @@ class BE(FactoredAlgorithm):
     def _initialize_factors(self):
         for log_factor in self.factors:
             log_factor.not_added = True
+
+    def _initialize_instance(self):
+        self._computed_log_factors = []
+        self._bucket_cache = {}
+        self._elimination_ordering = ()
+        self._print_info = False
+        # Logarithm all the model factors
+        self._logarithm_factors()
 
     def _initialize_main_loop(self):
         self._initialize_factors()

@@ -49,19 +49,11 @@ class GO(FactoredAlgorithm):
     [1] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and
     Techniques", MIT Press, 2009
     """
+    _name = 'Greedy Ordering'
+
     def __init__(self, model):
         FactoredAlgorithm.__init__(self, model)
-        self._order_number = None
-        self._ordering = ()
-        self._not_ordered_variables = []
-        self._cost_function = None
-        self._cost = None
-        self._print_info = None
-        self._name = 'Greedy Ordering'
-        self._cost_functions = {
-            'min-fill': self._get_fill_cost,
-            'weighted-min-fill': self._get_weighted_fill_cost
-        }
+        self._initialize_instance()
 
     @staticmethod
     def _link_neighbors(variable):
@@ -73,26 +65,26 @@ class GO(FactoredAlgorithm):
 
     @property
     def ordering(self):
-        return tuple(self._inner_to_outer_variables[var] for var in self._ordering)
+        return tuple(self._inner_to_outer_variables[var] for var in self._elimination_ordering)
 
     def print_ordering(self):
         self.print_query()
         self.print_evidence()
-        print('Elimination ordering: ' + ', '.join(variable.name for variable in self._ordering))
+        print('Elimination ordering: ' + ', '.join(variable.name for variable in self._elimination_ordering))
 
     def run(self, cost='weighted-min-fill', print_info=False):
         self._print_info = print_info
         self._order_number = 0
         self._cost = cost
         self._cost_function = self._cost_functions[self._cost]
-        self._ordering = []
+        self._elimination_ordering = []
         self._not_ordered_variables = list(variable for variable in self.elimination_variables)
         self._set_neighbors()
         self._print_start()
         while len(self._not_ordered_variables) > 0:
             self._print_candidates()
             elm_var = self._eliminate_min_cost_variable()
-            self._ordering.append(elm_var)
+            self._elimination_ordering.append(elm_var)
             GO._link_neighbors(elm_var)
         self._print_stop()
 
@@ -141,6 +133,18 @@ class GO(FactoredAlgorithm):
                     cost_sum += cost
                     self._print_fill_cost(neighbor1, neighbor2, cost)
         return cost_sum
+
+    def _initialize_instance(self):
+        self._order_number = None
+        self._elimination_ordering = []
+        self._not_ordered_variables = []
+        self._cost_function = None
+        self._cost = None
+        self._print_info = None
+        self._cost_functions = {
+            'min-fill': self._get_fill_cost,
+            'weighted-min-fill': self._get_weighted_fill_cost
+        }
 
     def _print_after_elimination(self, variable):
         if self._print_info:
