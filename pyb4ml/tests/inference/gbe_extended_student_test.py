@@ -7,7 +7,6 @@ package_dir = str(pathlib.Path(__file__).resolve().parents[3])
 if package_dir not in sys.path:
     sys.path.insert(0, package_dir)
 
-
 from pyb4ml.inference.factored.greedy_elimination import GBE
 from pyb4ml.models import ExtendedStudent
 
