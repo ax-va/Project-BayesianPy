@@ -10,4 +10,5 @@ if package_dir not in sys.path:
 import pyb4ml.tests.inference.be_misconception_test
 import pyb4ml.tests.inference.be_student_test
 import pyb4ml.tests.inference.bp_student_test
+import pyb4ml.tests.inference.gbe_extended_student_test
 import pyb4ml.tests.inference.go_extended_student_test

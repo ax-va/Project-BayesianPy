@@ -260,7 +260,7 @@ assert 0.12916992868250307 / (1 + eps) <= pd('j1') <= 0.12916992868250307 * (1 +
 
 algorithm.set_query(job)
 algorithm.set_evidence((grade, 'g2'), (letter, 'l1'))
-algorithm.run(cost='weighted-min-fill')
+algorithm.run(cost='weighted-min-fill', print_info=True)
 algorithm.print_ordering()
 algorithm.print_pd()
 # P(c, d, h, i, s, j, g2, l1) =
