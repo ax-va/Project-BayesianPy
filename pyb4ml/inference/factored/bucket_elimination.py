@@ -28,17 +28,18 @@ class BE(FactoredAlgorithm):
     eliminate a variable by summing the product of factors over that variable.  Due to 
     that, a new factor is created and moved into one remaining bucket.  That is repeated
     until the query buckets contain factors that depend only on the query variables.  
-    Instead of the factors, the implementation uses logarithms of them for computational
-    stability.  See, for example, [1] for more details.  This also needs an elimination
-    ordering of non-query variables.  Runtime is highly dependent on that variable
-    elimination ordering, namely on the domain cardinality of free variables in a bucket
-    that can be different for different orderings.  Dynamic programming here means that a
-    new factor is computed only once in any run.  But in the next BE run, new factors are
-    recomputed, since the possibly changed query also changes the elimination ordering.
-    As a result, the ordering of computing the factors can also be changed and the factors
-    computed in the previous run cannot be reused.  Moreover, although the different values 
-    of evidential variables do not change the elimination ordering, they also change the 
-    computed factors.  All of this makes bucket caching impractical to reuse.
+    An elimination ordering of non-query variables is also needed.  Runtime is highly 
+    dependent on that variable elimination ordering, namely on the domain cardinality of 
+    free variables in a bucket that can be different for different orderings.  Dynamic 
+    programming here means that a new factor is computed only once in any run.  But in 
+    the next BE run, the factors are recomputed, since the possibly changed query also 
+    changes the elimination ordering. As a result, the ordering of computing the factors 
+    can also be changed and the factors computed in the previous run cannot be reused.  
+    Moreover, although the different values of evidential variables do not change the 
+    elimination ordering, they also change the computed factors.  All of this makes 
+    the bucket caching impractical to reuse.  Instead of the factors, the implementation 
+    also uses logarithms of them for computational stability.  See, for example, [1] for 
+    more details.
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution
