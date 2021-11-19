@@ -9,7 +9,7 @@ Factored-inference-related algorithms for probabilistic graphical models:
 - Greedy Bucket Elimination (GBE) combining Bucket Elimination with a pre-calculated elimination ordering obtained by Greedy Ordering (pb4ml/inference/factored/greedy_elimination.py);
 - Greedy Ordering (GO) [KF09] for greedy search for a near-optimal variable elimination ordering (pb4ml/inference/factored/greedy_ordering.py).
 
-Academic probabilistic models in factor graph representation:
+Academic probabilistic models in the factor graph representation:
 - Bayesian network "Extended Student" [2] (pb4ml/models/academic/extended_student.py);
 - Bayesian network "Student" [2] (pb4ml/models/academic/student.py);
 - Markov network "Misconception" [2] (pb4ml/models/academic/misconception.py).
