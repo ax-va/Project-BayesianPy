@@ -10,9 +10,9 @@ Factored-inference-related algorithms for probabilistic graphical models:
 - Greedy Ordering (GO) [KF09] for greedy search for a near-optimal variable elimination ordering (pb4ml/inference/factored/greedy_ordering.py).
 
 Academic probabilistic models in the factor graph representation:
-- Bayesian network "Extended Student" [2] (pb4ml/models/academic/extended_student.py);
-- Bayesian network "Student" [2] (pb4ml/models/academic/student.py);
-- Markov network "Misconception" [2] (pb4ml/models/academic/misconception.py).
+- Bayesian network "Extended Student" [KF09] (pb4ml/models/academic/extended_student.py);
+- Bayesian network "Student" [KF09] (pb4ml/models/academic/student.py);
+- Markov network "Misconception" [KF09] (pb4ml/models/academic/misconception.py).
 
 See in the tests how to use the algorithms and models.
 
