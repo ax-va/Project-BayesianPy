@@ -19,14 +19,14 @@ from pyb4ml.models import Student
 
 class ExtendedStudent(Student):
     """
-    Implements the Extended Student model [1] that is a Bayesian network with tabular
+    Implements the Extended Student model [KF09] that is a Bayesian network with tabular
     probability distributions and is a loopy graph.  See also "extended_student.pdf"
     or "extended_student.odp" in this directory.
 
     References:
 
-    [1] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and
-    Techniques", MIT Press, 2009
+    [KF09] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles
+    and Techniques", MIT Press, 2009
     """
     def __init__(self):
         Student.__init__(self)
