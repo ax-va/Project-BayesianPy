@@ -18,14 +18,14 @@ from pyb4ml.modeling.categorical.variable import Variable
 
 class Student(FactorGraph):
     """
-    Implements the Student model [1] that is a Bayesian network with tabular probability 
+    Implements the Student model [KF09] that is a Bayesian network with tabular probability 
     distributions and without loops in the graph.  See also "student.pdf" or "student.odp" in
     this directory.
     
     References:
 
-    [1] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and 
-    Techniques", MIT Press, 2009
+    [KF09] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles
+    and Techniques", MIT Press, 2009
     """
     def __init__(self):
         # Create random variables
