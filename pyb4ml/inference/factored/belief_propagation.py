@@ -40,7 +40,7 @@ class BP(FactoredAlgorithm):
 
     Restrictions:  Only works with random variables with categorical value domains, only 
     works on trees (leads to dead lock on loopy graphs).  See the Bucket Elimination (BE)
-    algorithm for the case of loopy graphs or joint distribution of query variables.
+    algorithm for the case of loopy graphs or the joint distribution of query variables.
     The factors must be strictly positive because of the use of logarithms.
     
     Recommended:  When modeling, reduce the number of random variables in each factor to 
