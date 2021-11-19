@@ -31,7 +31,7 @@ class BP(FactoredAlgorithm):
     reuse of the algorithm by caching already computed messages given an evidence or no 
     evidence.  Thus, they are computed only once, which is dynamic programming, and are used
     in the next BP runs.  Instead of the messages, the implementation uses the logarithms 
-    of messages for computational stability.  See, for example, [1] for more details.
+    of messages for computational stability.  See, for example, [B12] for more details.
     
     Computes a marginal probability distribution P(Q) or a conditional probability 
     distribution P(Q | E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random
@@ -49,7 +49,7 @@ class BP(FactoredAlgorithm):
 
     References:
 
-    [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
+    [B12] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
     """
     _name = 'Belief Propagation'
