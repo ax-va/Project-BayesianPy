@@ -7,8 +7,8 @@ from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 class FactoredAlgorithm:
     """
-    This is an abstract class of some factored algorithm that the classes of 
-    practically used factored algorithms inherit.  The class contains and 
+    This is an abstract class of some factored algorithm, which is inherited by
+    the classes of factored algorithms used in practice.  The class contains and 
     defines common attributes and methods, respectively. 
     """
     def __init__(self, model: FactorGraph):
