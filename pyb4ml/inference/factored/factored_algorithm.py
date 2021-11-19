@@ -204,7 +204,7 @@ class FactoredAlgorithm:
             try:
                 inner_var = self._outer_to_inner_variables[outer_var]
             except KeyError:
-                # Clear the evidence also the evidence in the factors
+                # Also clear the evidence in the factors
                 self._clear_evidence()
                 raise ValueError(f'no model variable corresponds to evidential variable {outer_var.name}')
             try:
