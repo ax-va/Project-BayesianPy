@@ -32,7 +32,7 @@ class GO(FactoredAlgorithm):
     If the weights of additional edges, i.e. the products of the cardinality 
     of edge variables, are taken into account, such a cost criterion is called 
     "weighted-min-fill".  Those two heuristic approaches often work surprisingly well
-    in practice.  See, for example, [1] for more details.
+    in practice.  See, for example, [KF09] for more details.
 
     Here, the query and evidence are optional.  The GO algorithm returns an elimination
     ordering as a tuple of variables, in which the first variable will be eliminated
@@ -46,8 +46,8 @@ class GO(FactoredAlgorithm):
 
     References:
 
-    [1] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and
-    Techniques", MIT Press, 2009
+    [KF09] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles
+    and Techniques", MIT Press, 2009
     """
     _name = 'Greedy Ordering'
 
