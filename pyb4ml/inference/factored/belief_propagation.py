@@ -30,8 +30,8 @@ class BP(FactoredAlgorithm):
     of the factors and variables in the factor graph tree.  This implementation encourages
     reuse of the algorithm by caching already computed messages given an evidence or no 
     evidence.  Thus, they are computed only once, which is dynamic programming, and are used
-    in the next BP runs.  Instead of the messages, the implementation uses the message 
-    logarithms for computational stability.  See, for example, [1] for more details.
+    in the next BP runs.  Instead of the messages, the implementation uses the logarithms 
+    of messages for computational stability.  See, for example, [1] for more details.
     
     Computes a marginal probability distribution P(Q) or a conditional probability 
     distribution P(Q | E_1 = e_1, ..., E_k = e_k), where Q is a query, i.e. a random
