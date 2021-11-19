@@ -18,13 +18,13 @@ from pyb4ml.modeling.categorical.variable import Variable
 
 class Misconception(FactorGraph):
     """
-    Implements the Misconception model [1] that is a Markov network with tabular factor
+    Implements the Misconception model [KF09] that is a Markov network with tabular factor
     values.  See also "misconception.pdf" or "misconception.odp" in this directory.
 
     References:
 
-    [1] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and
-    Techniques", MIT Press, 2009
+    [KF09] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles
+    and Techniques", MIT Press, 2009
     """
     def __init__(self):
         # Create random variables
