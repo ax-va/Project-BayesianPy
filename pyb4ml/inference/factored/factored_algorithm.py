@@ -47,7 +47,7 @@ class FactoredAlgorithm:
     @property
     def evidential(self):
         """
-        Returns the evidence as the attribute of the algorithm
+        Returns evidencial variables
         """
         return self._evidence
 
