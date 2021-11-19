@@ -31,7 +31,7 @@ class FactoredAlgorithm:
     @property
     def elimination_variables(self):
         """
-        Returns non-query and non-evidential variables
+        Returns non-query and non-evidential algorithm variables
         """
         if self._query:
             if self._evidence:
@@ -47,7 +47,7 @@ class FactoredAlgorithm:
     @property
     def evidential(self):
         """
-        Returns evidential variables
+        Returns evidential algorithm variables
         """
         return self._evidence
 
