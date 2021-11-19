@@ -38,8 +38,8 @@ class BE(FactoredAlgorithm):
     Moreover, although the different values of evidential variables do not change the 
     elimination ordering, they also change the computed factors.  All of this makes 
     the bucket caching impractical to reuse.  Instead of the factors, the implementation 
-    also uses logarithms of them for computational stability.  See, for example, [1] for 
-    more details.
+    also uses logarithms of them for computational stability.  See, for example, [B12]
+    for more details.
 
     Computes a marginal (joint if necessary) probability distribution P(Q_1, ..., Q_s)
     or a conditional (joint if necessary) probability distribution
@@ -56,7 +56,7 @@ class BE(FactoredAlgorithm):
     
     References:
 
-    [1] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
+    [B12] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press,
     2012
     """
     _name = 'Bucket Elimination'
