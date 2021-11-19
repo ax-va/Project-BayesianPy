@@ -69,7 +69,8 @@ class FactoredAlgorithm:
         The order of values must correspond to the order of variables in the query.  For example,
         if algorithm.set_query(difficulty, intelligence) sets random variables Difficulty and 
         Intelligence as the query, then algorithm.pd('d0', 'i1') returns a probability 
-        corresponding to Difficulty = 'd0' and Intelligence = 'i1'.
+        corresponding to Difficulty = 'd0' and Intelligence = 'i1' from a pre-calculated 
+        probability distribution. 
         """
         if self._distribution is not None:
             def distribution(*values):
