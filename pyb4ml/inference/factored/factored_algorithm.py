@@ -210,7 +210,7 @@ class FactoredAlgorithm:
             try:
                 inner_var.check_value(val)
             except ValueError as exception:
-                # Clear the evidence also the evidence in the factors
+                # Also clear the evidence in the factors
                 self._clear_evidence()
                 raise exception
             # Set the new domain containing only one value
