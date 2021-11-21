@@ -27,13 +27,13 @@ class BE(FactoredAlgorithm):
     belongs to the Variable Elimination algorithms.  There, a bucket contains factors 
     used to eliminate a variable by summing the product of factors over that variable.  
     Due to that, a new factor is created and moved into one remaining bucket.  That is 
-    repeated until the query buckets contain factors that depend only on the query variables.  
-    An elimination ordering of non-query variables is also needed.  Runtime is highly 
-    dependent on that variable elimination ordering, namely on the domain cardinality of 
-    free variables in a bucket that can be different for different orderings.  Dynamic 
-    programming here means that a new factor is computed only once in any run.  But in 
-    the next BE run, the factors are recomputed, since the possibly changed query also 
-    changes the elimination ordering. As a result, the ordering of computing the factors 
+    repeated until the query buckets contain the factors that depend only on the query 
+    variables.  An elimination ordering of non-query variables is also needed.  Runtime 
+    is highly dependent on that variable elimination ordering, namely on the domain 
+    cardinality of free variables in a bucket that can be different for different orderings.
+    Dynamic programming here means that a new factor is computed only once in any run.  
+    But in the next BE run, the factors are recomputed, since the possibly changed query 
+    also changes the elimination ordering. As a result, the ordering of computing the factors 
     can also be changed and the factors computed in the previous run cannot be reused.  
     Moreover, although the different values of evidential variables do not change the 
     elimination ordering, they also change the computed factors.  All of this makes 
