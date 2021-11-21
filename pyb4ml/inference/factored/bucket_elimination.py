@@ -51,8 +51,8 @@ class BE(FactoredAlgorithm):
     The factors must be strictly positive because of the use of logarithms.  The query and
     elimination variables must be disjoint.
 
-    Recommended:  Use the algorithm for loopy factor graphs or for joint distribution of 
-    query variables, otherwise use the Belief Propagation (BP) algorithm.
+    Recommended:  Use the algorithm for loopy factor graphs or for computing a joint 
+    distribution of query variables, otherwise use the Belief Propagation (BP) algorithm.
     
     References:
 
