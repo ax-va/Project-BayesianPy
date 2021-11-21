@@ -27,8 +27,8 @@ class GO(FactoredAlgorithm):
     that each bucket should have a cardinality of its free variables as small as 
     possible so that a whole number of computational operations is also as small as
     possible.  One way to build an elimination ordering close to the best one is
-    to greedily remove variables such that there are additional edges to be added 
-    as few as possible.  That corresponds to the cost criterion of "min-fill".
+    to greedily remove the variables such that there are the additional edges to be 
+    added as few as possible.  That corresponds to the cost criterion of "min-fill".
     If the weights of additional edges, i.e. the products of the cardinality 
     of edge variables, are taken into account, such a cost criterion is called 
     "weighted-min-fill".  Those two heuristic approaches often work surprisingly well
