@@ -26,7 +26,7 @@ class BE(FactoredAlgorithm):
     for random variables with categorical probability distributions.  That algorithm 
     belongs to the Variable Elimination algorithms.  There, a bucket contains factors 
     used to eliminate a variable by summing the product of factors over that variable.  
-    Due to that, a new factor is created and moved into one remaining bucket.  That is 
+    Due to that, a new factor is created and moved into a remaining bucket.  That is 
     repeated until the query buckets contain the factors that depend only on the query 
     variables.  An elimination ordering of non-query variables is also needed.  Runtime 
     is highly dependent on that variable elimination ordering, namely on the domain 
