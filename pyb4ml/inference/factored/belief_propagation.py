@@ -25,9 +25,9 @@ class BP(FactoredAlgorithm):
     This implementation of the Belief Propagation (BP) algorithm works on factor graph
     trees for random variables with categorical probability distributions.  That algorithm 
     belongs to the Message Passing and Variable Elimination algorithms.  There, 
-    factor-to-variable and variable-to-factor messages are propagated from the leaves across
-    the tree to the query variable.  That can be considered as the successive elimination
-    of the factors and variables in the factor graph tree.  This implementation encourages
+    factor-to-variable and variable-to-factor messages are propagated from leaves across
+    a tree to a query variable.  That can be considered as a successive elimination
+    of factors and variables in the factor graph tree.  This implementation encourages
     reuse of the algorithm by caching already computed messages given an evidence or no 
     evidence.  Thus, they are computed only once, which is dynamic programming, and are used
     in the next BP runs.  Instead of the messages, the implementation uses the logarithms 
