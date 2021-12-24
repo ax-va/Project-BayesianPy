@@ -24,7 +24,7 @@ class Misconception(FactorGraph):
     References:
 
     [KF09] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles
-    and Techniques", MIT Press, 2009
+    and Techniques", The MIT Press, 2009
     """
     def __init__(self):
         # Create random variables
