@@ -47,7 +47,7 @@ class GO(FactoredAlgorithm):
     References:
 
     [KF09] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles
-    and Techniques", MIT Press, 2009
+    and Techniques", The MIT Press, 2009
     """
     _name = 'Greedy Ordering'
 
