@@ -20,4 +20,4 @@ See in tests how to use the algorithms with models.
 
 References:
 [B12] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press, 2012;
-[KF09] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and Techniques", MIT Press, 2009
+[KF09] Daphne Koller and Nir Friedman, "Probabilistic Graphical Models: Principles and Techniques", The MIT Press, 2009
