@@ -16,7 +16,7 @@ Academic probabilistic models in the factor graph representation:
 
 See in tests how to use the algorithms with models.
 
-© 2021 Alexander Vasiliev
+© 2021-2022 Alexander Vasiliev
 
 References:
 [B12] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press, 2012;
