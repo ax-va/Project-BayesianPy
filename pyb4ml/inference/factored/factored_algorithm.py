@@ -62,9 +62,12 @@ class FactoredAlgorithm:
     @property
     def pd(self):
         """
-        Returns the probability distribution P(Q_1, ..., Q_s) or if an evidence is set then
-        P(Q_1, ..., Q_s | E_1 = e_1, ..., E_k = e_k) as a function of q_1, ..., q_s, where
-        q_1, ..., q_s are in the value domains of random variable Q_1, ..., Q_s, respectively.
+        Returns the probability distribution 
+        P(Q_1, ..., Q_s) 
+        or if an evidence is set then
+        P(Q_1, ..., Q_s | E_1 = e_1, ..., E_k = e_k) 
+        as a function of q_1, ..., q_s, where q_1, ..., q_s are in the value domains 
+        of random variable Q_1, ..., Q_s, respectively.
 
         The order of values must correspond to the order of variables in the query.  For example,
         if algorithm.set_query(difficulty, intelligence) sets random variables Difficulty and 
@@ -149,8 +152,8 @@ class FactoredAlgorithm:
         respectively.
 
         In fact, the domain of a variable is reduced to one evidential value.
-        The variable is encapsulated in the algorithm and the domain of the 
-        corresponding model variable is not changed.
+        The variable is encapsulated in the algorithm (in the inner model) and the domain
+        of the corresponding model variable (in the outer model) is not changed.
         """
         # Return the original domains of evidential variables and delete the evidence in factors
         self._delete_evidence()
