@@ -23,7 +23,7 @@ class FactoredAlgorithm:
         self._query = ()
         # Evidential variables not specified
         self._evidence = ()
-        # Evidence tuples var, val not specified
+        # Evidence tuples of (var, val) not specified
         self._evidence_tuples = ()
         # Probability distribution P(query) or P(query|evidence) not specified
         self._distribution = None
