@@ -71,8 +71,25 @@ class BE(FactoredAlgorithm):
         self._logarithm_factors()
 
     @property
-    def elimination_order(self):
+    def order(self):
         return self._elimination_order
+
+    @order.setter
+    def order(self, order):
+        # Check whether the elimination order has duplicates
+        if len(order) != len(set(order)):
+            raise ValueError(f'The elimination order must not contain duplicates')
+        elm_order = []
+        # Set the elimination order
+        for outer_var in order:
+            try:
+                inner_var = self._outer_to_inner_variables[outer_var]
+            except KeyError:
+                self._elimination_order = ()
+                raise ValueError(f'no model variable corresponding to variable {outer_var.name} '
+                                 f'in the elimination order')
+            elm_order.append(inner_var)
+        self._elimination_order = tuple(elm_order)
 
     def check_variable_partition(self):
         set_q = set(self._query)
@@ -127,22 +144,6 @@ class BE(FactoredAlgorithm):
         self._compute_distribution()
         # Print info if necessary
         FactoredAlgorithm._print_stop(self)
-
-    def set_elimination(self, order):
-        # Check whether the elimination order has duplicates
-        if len(order) != len(set(order)):
-            raise ValueError(f'The elimination order must not contain duplicates')
-        elm_order = []
-        # Set the elimination order
-        for outer_var in order:
-            try:
-                inner_var = self._outer_to_inner_variables[outer_var]
-            except KeyError:
-                self._elimination_order = ()
-                raise ValueError(f'no model variable corresponding to variable {outer_var.name} '
-                                 f'in the elimination order')
-            elm_order.append(inner_var)
-        self._elimination_order = tuple(elm_order)
 
     def _add_computed_log_factors_to_bucket_cache(self, variable):
         bucket = self._bucket_cache[variable]

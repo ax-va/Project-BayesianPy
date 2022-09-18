@@ -22,9 +22,9 @@ class FactoredAlgorithm:
         # Query not specified
         self._query = ()
         # Evidential variables not specified
-        self._evidence = ()
+        self._evidential = None
         # Evidence tuples of (var, val) not specified
-        self._evidence_tuples = ()
+        self._evidence = None
         # Probability distribution P(query) or P(query|evidence) not specified
         self._distribution = None
 
@@ -34,22 +34,45 @@ class FactoredAlgorithm:
         Returns the non-query and non-evidential algorithm variables
         """
         if self._query:
-            if self._evidence:
-                return tuple(var for var in self.variables if var not in self._query and var not in self._evidence)
+            if self._evidential_variables:
+                return tuple(var for var in self.variables if var not in self._query and var not in self._evidential_variables)
             else:
                 return tuple(var for var in self.variables if var not in self._query)
         else:
-            if self._evidence:
-                return tuple(var for var in self.variables if var not in self._evidence)
+            if self._evidential_variables:
+                return tuple(var for var in self.variables if var not in self._evidential_variables)
             else:
                 return self.variables
 
     @property
     def evidential(self):
-        """
-        Returns the evidential algorithm variables
-        """
+        """ Returns the evidential variables encapsulated in the algorithm """
+        return self._evidential
+
+    @property
+    def evidence(self):
+        """ Returns the list of tuples (variable, value) """
         return self._evidence
+
+    @evidence.setter
+    def evidence(self, evidence):
+        """
+        Sets the evidence.
+
+        Example:
+        algorithm.evidence = [(difficulty, 'd0'), (intelligence, 'i1')]
+
+        In fact, the domain of a variable is reduced to one evidential value.
+        The variable is encapsulated in the algorithm (in the inner model) and
+        the variable of the outer model is not changed.
+        """
+        # Return the original domains of evidential variables and delete the evidence in factors
+        self._delete_evidence()
+        if not evidence:
+            self._set_evidence(evidence)
+        else:
+            self._evidential_variables = None
+        self._set_evidence_tuples()
 
     @property
     def factors(self):
@@ -109,16 +132,16 @@ class FactoredAlgorithm:
             raise ValueError('the query contains less than one variable')
 
     def check_query_and_evidence_intersection(self):
-        if self._evidence:
+        if self._evidential_variables:
             query_set = set(self._query)
-            evidence_set = set(self._evidence)
+            evidence_set = set(self._evidential_variables)
             if not query_set.isdisjoint(evidence_set):
                 raise ValueError(f'query variables {tuple(var.name for var in self._query)} and '
-                                 f'evidential variables {tuple(var.name for var in self._evidence)} must be disjoint')
+                                 f'evidential variables {tuple(var.name for var in self._evidential_variables)} must be disjoint')
 
-    def print_evidence(self):
-        if self._evidence is not None:
-            print('Evidence: ' + ', '.join(f'{var.name} = {var.domain[0]!r}' for var in self._evidence))
+    def print_evidential_variables(self):
+        if self._evidential_variables is not None:
+            print('Evidential variables: ' + ', '.join(f'{var.name} = {var.domain[0]!r}' for var in self._evidential_variables))
         else:
             print('No evidence')
 
@@ -127,8 +150,8 @@ class FactoredAlgorithm:
         Prints the complete probability distribution of the query variables
         """
         if self._distribution is not None:
-            evidence_str = ' | ' + ', '.join(f'{var.name} = {var.domain[0]!r}' for var in self._evidence) \
-                if self._evidence \
+            evidence_str = ' | ' + ', '.join(f'{var.name} = {var.domain[0]!r}' for var in self._evidential_variables) \
+                if self._evidential_variables \
                 else ''
             for values in Variable.evaluate_variables(self._query):
                 query_str = 'P(' + ', '.join(f'{var.name} = {val!r}' for var, val in zip(self._query, values))
@@ -143,25 +166,6 @@ class FactoredAlgorithm:
             print('Query: ' + ', '.join(variable.name for variable in self.query))
         else:
             print('No query')
-
-    def set_evidence(self, *evidence):
-        """
-        Sets the evidence. For example,
-        algorithm.set_evidence((difficulty, 'd0'), (intelligence, 'i1')) assigns the
-        evidential values 'd0' and 'i1' to random variables Difficulty and Intelligence, 
-        respectively.
-
-        In fact, the domain of a variable is reduced to one evidential value.
-        The variable is encapsulated in the algorithm (in the inner model) and the domain
-        of the corresponding model variable (in the outer model) is not changed.
-        """
-        # Return the original domains of evidential variables and delete the evidence in factors
-        self._delete_evidence()
-        if evidence[0]:
-            self._set_evidence(*evidence)
-        else:
-            self._evidence = ()
-        self._set_evidence_tuples()
     
     def set_query(self, *variables):
         """
@@ -177,17 +181,17 @@ class FactoredAlgorithm:
             self._query = ()
 
     def _clear_evidence(self):
-        self._evidence = ()
+        self._evidential = None
         for inner_factor in self._inner_model.factors:
             inner_factor.clear_evidence()
 
-    def _delete_evidence(self):
-        for var in self._evidence:
-            var.set_domain(self._inner_to_outer_variables[var].domain)
-            for factor in var.factors:
-                factor.delete_evidence(var)
-        del self._evidence
-        self._evidence = ()
+    # def _delete_evidence(self):
+    #     for var in self._evidential_variables:
+    #         var.set_domain(self._inner_to_outer_variables[var].domain)
+    #         for factor in var.factors:
+    #             factor.delete_evidence(var)
+    #     del self._evidential_variables
+    #     self._evidential_variables = None
 
     def _print_start(self):
         if self._print_info:
@@ -199,29 +203,26 @@ class FactoredAlgorithm:
             print(f'\n{self._name} stopped')
             print('*' * 40)
 
-    def _set_evidence(self, *evidence_tuples):
+    def _set_evidence(self, evidence_tuples):
         evidence_variables = tuple(var_val[0] for var_val in evidence_tuples)
         if len(evidence_variables) != len(set(evidence_variables)):
-            raise ValueError(f'evidence must not contain duplicates')
+            raise ValueError(f'Evidence must not contain duplicates')
         for outer_var, val in evidence_tuples:
             try:
                 inner_var = self._outer_to_inner_variables[outer_var]
             except KeyError:
                 # Also clear the evidence in the factors
                 self._clear_evidence()
-                raise ValueError(f'no model variable corresponds to evidential variable {outer_var.name}')
+                raise ValueError(f"No model variable corresponds to evidential variable '{outer_var.name}'")
             try:
                 inner_var.check_value(val)
             except ValueError as exception:
                 # Also clear the evidence in the factors
                 self._clear_evidence()
                 raise exception
-            # Set the new domain containing only one value
+            # Set the new domain containing only one evidential value
             inner_var.set_domain({val})
-            # Add the evidence into its factors
-            for inner_factor in inner_var.factors:
-                inner_factor.add_evidence(inner_var)
-        self._evidence = tuple(
+        self._evidential_variables = tuple(
             sorted(
                 (self._outer_to_inner_variables[outer_var] for outer_var in evidence_variables),
                 key=lambda x: x.name
@@ -229,7 +230,7 @@ class FactoredAlgorithm:
         )
 
     def _set_evidence_tuples(self):
-        self._evidence_tuples = tuple((var, var.domain[0]) for var in self._evidence)
+        self._evidence_tuples = tuple((var, var.domain[0]) for var in self._evidential_variables)
 
     def _set_query(self, *query_variables):
         # Check whether the query has duplicates

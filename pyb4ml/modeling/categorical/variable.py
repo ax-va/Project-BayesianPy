@@ -1,6 +1,6 @@
 import itertools
 
-from pyb4ml.modeling.common.named_element import NamedElement
+from pyb4ml.modeling.elements.model_element import NamedElement
 
 
 class Variable(NamedElement):
@@ -62,3 +62,7 @@ class Variable(NamedElement):
 
     def set_domain(self, domain):
         self._domain = tuple(sorted(set(domain)))
+        if len(self._domain) == 1:
+            # Add the evidential variable into its factors
+            for factor in self.factors:
+                factor.add_evidential(self._domain[0])

@@ -1,39 +1,41 @@
-import math
-
-from pyb4ml.modeling.categorical.variable import Variable
-from pyb4ml.modeling.common.named_element import NamedElement
-
-
-def log(f):
-    def log_f(*t):
-        return math.log(f(*t))
-    return log_f
+import pyb4ml.modeling.utils.checks as checks
+import pyb4ml.modeling.utils.logarithm as logarithm
+from pyb4ml.modeling.elements.model_element import ModelElement
 
 
-class Factor(NamedElement):
-    def __init__(self, variables, function=None, name=None, evidence=None, variable_linking=True):
-        NamedElement.__init__(self, name)
+class Factor(ModelElement):
+    def __init__(self, variables, name, function=None, evidential=None):
+        ModelElement.__init__(self, name)
         self._variables = tuple(variables)
+        self._update_variable_factors()
         self._function = function
-        self._evidence_var_val_dict = {}
-        if variable_linking:
-            self._link_factor_to_variables()
-        self._set_evidence(evidence)
+        self._evidential = tuple(evidential) if evidential else ()
+        self._evidence_dict = {var: var.domain[0] for var in self._evidential}
+        try:
+            checks.check_are_variables_evidential(self._evidential)
+            checks.check_disjoint(self._variables, self._evidential)
+        except Exception as e:
+            self.clear_evidential()
+            raise e
 
-    def __call__(self, *variables_with_values):
+    def __call__(self, *var_val_args):
         var_val_dict = {}
-        var_val_dict.update(self._evidence_var_val_dict)
-        var_val_dict.update(dict(variables_with_values))
+        var_val_dict.update(self._evidence_dict)
+        var_val_dict.update(dict(var_val_args))
         values = (var_val_dict[var] for var in self._variables)
         return self._function(*values)
 
     def __str__(self):
-        variables_names = (variable.name for variable in self._variables)
-        return self._name + '(' + ', '.join(variables_names) + ')'
+        var_names = (var.name for var in self._variables)
+        return self._name + '(' + ', '.join(var_names) + ')'
+
+    @property
+    def evidential(self):
+        return self._evidential
 
     @property
     def evidence(self):
-        return self._evidence_var_val_dict.keys()
+        return tuple(self._evidence_dict)
 
     @property
     def function(self):
@@ -44,50 +46,62 @@ class Factor(NamedElement):
         return self._variables
 
     @property
-    def variables_number(self):
+    def var_number(self):
         return len(self._variables)
 
-    def add_evidence(self, variable):
-        if not isinstance(variable, Variable):
-            raise ValueError(f'object {variable} is not an instance of class Variable')
-        if not variable.is_evidential():
-            raise ValueError(f'variable {variable.name} is not evidential')
+    def check_in_variables(self, variable):
         if variable not in self._variables:
-            raise ValueError(f'variable {variable.name} does not belong to '
-                             f'the factor variables {tuple(var.name for var in self._variables)}')
-        self._evidence_var_val_dict[variable] = variable.domain[0]
+            raise ValueError(f"Variable '{variable.name}' is not in "
+                             f"the free factor variables {tuple(var.name for var in self._variables)}")
 
-    def clear_evidence(self):
-        del self._evidence_var_val_dict
-        self._evidence_var_val_dict = {}
+    def check_in_evidential(self, variable):
+        if variable not in self._evidential:
+            raise ValueError(f"Variable '{variable.name}' is not in "
+                             f"the evidential factor variables {tuple(var.name for var in self._variables)}")
 
-    def delete_evidence(self, variable):
-        if not isinstance(variable, Variable):
-            raise ValueError(f'object {variable} is not an instance of class Variable')
-        if variable not in self._variables:
-            raise ValueError(f'variable {variable.name} does not belong to '
-                             f'the factor variables {tuple(var.name for var in self._variables)}')
-        try:
-            del self._evidence_var_val_dict[variable]
-        except KeyError:
-            raise ValueError(f'variable {variable.name} is not evidential')
+    def add_to_evidential(self, variable):
+        checks.check_variable_instance(variable)
+        checks.check_is_variable_evidential(variable)
+        self.check_in_variables(variable)
+        self._variables = list(self._variables)
+        self._variables.remove(variable)
+        self._variables = tuple(self._variables)
+        self._evidential = list(self._evidential)
+        self._evidential.append(variable)
+        self._evidential = tuple(self._evidential)
+        self._evidence_dict[variable] = variable.domain[0]
 
-    def filter_values(self, *variables_with_values):
-        return tuple(var_val for var_val in variables_with_values if var_val[0] in self._variables)
+    def clear_evidential(self):
+        del self._evidential
+        del self._evidence_dict
+        self._evidential = ()
+        self._evidence_dict = {}
+
+    def delete_from_evidential(self, variable):
+        checks.check_variable_instance(variable)
+        checks.check_is_variable_non_evidential(variable)
+        self.check_in_evidential(variable)
+        self._variables = list(self._variables)
+        self._variables.append(variable)
+        self._variables = tuple(self._variables)
+        self._evidential = list(self._evidential)
+        self._evidential.remove(variable)
+        self._evidential = tuple(self._evidential)
+        del self._evidence_dict[variable]
+
+    def filter_call_arguments(self, *var_val_args):
+        return tuple(var_val for var_val in var_val_args if var_val[0] in self._variables)
 
     def is_leaf(self):
         return len(self._variables) == 1
 
     def logarithm(self):
-        self._function = log(self._function)
+        self._function = logarithm.logarithm(self._function)
         self._name = 'log_' + self._name
 
-    def _link_factor_to_variables(self):
+    def _update_variable_factors(self):
         for var in self._variables:
-            var.link_factor(self)
-
-    def _set_evidence(self, evidence):
-        self._evidence_var_val_dict = {var: var.domain[0] for var in evidence} if evidence else {}
+            var.add_factor(self)
 
 
 if __name__ == '__main__':

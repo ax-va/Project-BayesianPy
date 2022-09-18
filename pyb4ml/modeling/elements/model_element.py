@@ -1,6 +1,6 @@
-class NamedElement:
+class ModelElement:
     def __init__(self, name):
-        self._name = name if name is not None else str(id(self))
+        self._name = name
 
     def __str__(self):
         return self._name
