@@ -3,7 +3,7 @@ PyB4ML is a collection of algorithms and models written in Python 3.8 for probab
 
 The collection contains the following algorithms and models.
 
-** Factored-inference-related algorithms for probabilistic graphical models with categorical distributions:
+Factored-inference-related algorithms for probabilistic graphical models with categorical distributions:
 
 - Belief Propagation (BP) [B12] for efficient inference in trees (pb4ml/inference/factored/belief_propagation.py);
 
@@ -13,9 +13,12 @@ The collection contains the following algorithms and models.
 
 - Greedy Ordering (GO) [KF09] for greedy search for a near-optimal variable elimination ordering (pb4ml/inference/factored/greedy_ordering.py).
 
--- Academic probabilistic models in the factor graph representation:
+Academic probabilistic models in the factor graph representation:
+
 - Bayesian network "Extended Student" [KF09] (pb4ml/models/academic/extended_student.py);
+
 - Bayesian network "Student" [KF09] (pb4ml/models/academic/student.py);
+
 - Markov network "Misconception" [KF09] (pb4ml/models/academic/misconception.py).
 
 See in the tests folder how to use the algorithms. In the models folder, you can see how to create factor graph models.
