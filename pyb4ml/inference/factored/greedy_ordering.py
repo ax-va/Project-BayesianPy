@@ -18,15 +18,15 @@ from pyb4ml.inference.factored.factored_algorithm import FactoredAlgorithm
 class GO(FactoredAlgorithm):
     """
     This implementation of the Greedy Ordering (GO) algorithm finds a near-optimal
-    variable elimination ordering that can be used later, for example, in the BE
+    variable elimination order that can be used later, for example, in the BE
     algorithm.  The GO algorithm uses greedy search, here, with the cost criterion
     of "min-fill" or "weighted-min-fill".  Eliminating variables leads to the
     appearance of new factors.  That can be graphically represented as edges already
     existing or needed to be added between all neighbors of an eliminated node in
-    a (moralized in the case of directed edges) graph.  The best ordering implies
+    a (moralized in the case of directed edges) graph.  The best order implies
     that each bucket should have a cardinality of its free variables as small as 
     possible so that a whole number of computational operations is also as small as
-    possible.  One way to build an elimination ordering close to the best one is
+    possible.  One way to build an elimination order close to the best one is
     to greedily remove the variables such that there are the additional edges to be 
     added as few as possible.  That corresponds to the cost criterion of "min-fill".
     If the weights of additional edges, i.e. the products of the cardinality 
@@ -35,13 +35,13 @@ class GO(FactoredAlgorithm):
     in practice.  See, for example, [KF09] for more details.
 
     Here, the query and evidence are optional.  The GO algorithm returns an elimination
-    ordering as a tuple of variables, in which the first variable will be eliminated
+    order as a tuple of variables, in which the first variable will be eliminated
     first, the second variable second, and so on.
 
     Restrictions:  Only works with random variables with categorical value domains.
 
     Recommended:  In the case of trees, the BP algorithm automatically finds the best
-    elimination ordering.  Therefore, in that case, it is recommended to use the BP
+    elimination order.  Therefore, in that case, it is recommended to use the BP
     algorithm instead of the bundle of the GO and BE algorithms.
 
     References:
@@ -54,7 +54,7 @@ class GO(FactoredAlgorithm):
     def __init__(self, model):
         FactoredAlgorithm.__init__(self, model)
         self._order_number = None
-        self._elimination_ordering = []
+        self._elimination_order = []
         self._not_ordered_variables = []
         self._cost_function = None
         self._cost = None
@@ -73,27 +73,27 @@ class GO(FactoredAlgorithm):
             var_neighbor.neighbors = list(set(var_neighbor.neighbors))
 
     @property
-    def ordering(self):
-        return tuple(self._inner_to_outer_variables[var] for var in self._elimination_ordering)
+    def order(self):
+        return tuple(self._inner_to_outer_variables[var] for var in self._elimination_order)
 
-    def print_ordering(self):
+    def print_order(self):
         self.print_query()
         self.print_evidence()
-        print('Elimination ordering: ' + ', '.join(variable.name for variable in self._elimination_ordering))
+        print('Elimination order: ' + ', '.join(variable.name for variable in self._elimination_order))
 
     def run(self, cost='weighted-min-fill', print_info=False):
         self._print_info = print_info
         self._order_number = 0
         self._cost = cost
         self._cost_function = self._cost_functions[self._cost]
-        self._elimination_ordering = []
+        self._elimination_order = []
         self._not_ordered_variables = list(variable for variable in self.elimination_variables)
         self._set_neighbors()
         self._print_start()
         while len(self._not_ordered_variables) > 0:
             self._print_candidates()
             elm_var = self._eliminate_min_cost_variable()
-            self._elimination_ordering.append(elm_var)
+            self._elimination_order.append(elm_var)
             GO._link_neighbors(elm_var)
         self._print_stop()
 

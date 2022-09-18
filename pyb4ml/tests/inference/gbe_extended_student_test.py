@@ -26,7 +26,7 @@ algorithm = GBE(model)
 algorithm.set_query(job)
 algorithm.set_evidence((grade, 'g0'), (letter, 'l0'))
 algorithm.run(cost='weighted-min-fill')
-algorithm.print_ordering()
+algorithm.print_order()
 algorithm.print_pd()
 # P(c, d, h, i, s, j, g0, l0) =
 # P(c) * P(i) * P(d | c) * P(g0 |d ,i) * P(l0 | g0) * P(j | l0, s) * P(s | i) * P(h | g0, j) =
@@ -65,7 +65,7 @@ algorithm.print_pd()
 # =>
 # P(j0 | g0, l0) = 0.20019525 / (0.20019525 + 0.14115475) = 0.5864808847224257
 # P(j1 | g0, l0) = 0.14115475 / (0.20019525 + 0.14115475) = 0.41351911527757435
-assert algorithm.ordering == (coherence, difficulty, happy, intelligence, sat)
+assert algorithm.order == (coherence, difficulty, happy, intelligence, sat)
 pd = algorithm.pd
 assert 0.5864808847224257 / (1 + eps) <= pd('j0') <= 0.5864808847224257 * (1 + eps)
 assert 0.41351911527757435 / (1 + eps) <= pd('j1') <= 0.41351911527757435 * (1 + eps)
@@ -73,7 +73,7 @@ assert 0.41351911527757435 / (1 + eps) <= pd('j1') <= 0.41351911527757435 * (1 +
 algorithm.set_query(job)
 algorithm.set_evidence((grade, 'g0'), (letter, 'l1'))
 algorithm.run(cost='weighted-min-fill')
-algorithm.print_ordering()
+algorithm.print_order()
 algorithm.print_pd()
 # P(c, d, h, i, s, j, g0, l1) =
 # P(c) * P(i) * P(d | c) * P(g0 |d ,i) * P(l1 | g0) * P(j | l1, s) * P(s | i) * P(h | g0, j) =
@@ -112,7 +112,7 @@ algorithm.print_pd()
 # =>
 # P(j0 | g0, l1) = 0.119919375 / (0.119919375 + 0.187295625) = 0.39034348908744687
 # P(j1 | g0, l1) = 0.187295625 / (0.119919375 + 0.187295625) = 0.609656510912553
-assert algorithm.ordering == (coherence, difficulty, happy, intelligence, sat)
+assert algorithm.order == (coherence, difficulty, happy, intelligence, sat)
 pd = algorithm.pd
 assert 0.39034348908744687 / (1 + eps) <= pd('j0') <= 0.39034348908744687 * (1 + eps)
 assert 0.609656510912553 / (1 + eps) <= pd('j1') <= 0.609656510912553 * (1 + eps)
@@ -120,7 +120,7 @@ assert 0.609656510912553 / (1 + eps) <= pd('j1') <= 0.609656510912553 * (1 + eps
 algorithm.set_query(job)
 algorithm.set_evidence((grade, 'g1'), (letter, 'l0'))
 algorithm.run(cost='weighted-min-fill')
-algorithm.print_ordering()
+algorithm.print_order()
 algorithm.print_pd()
 # P(c, d, h, i, s, j, g1, l0) =
 # P(c) * P(i) * P(d | c) * P(g1 |d ,i) * P(l0 | g1) * P(j | l0, s) * P(s | i) * P(h | g1, j) =
@@ -159,7 +159,7 @@ algorithm.print_pd()
 # =>
 # P(j0 | g1, l0) = 0.09300102 / (0.09300102 + 0.02126698) = 0.8138850771869639
 # P(j1 | g1, l0) = 0.02126698 / (0.09300102 + 0.02126698) = 0.18611492281303602
-assert algorithm.ordering == (coherence, difficulty, happy, intelligence, sat)
+assert algorithm.order == (coherence, difficulty, happy, intelligence, sat)
 pd = algorithm.pd
 assert 0.813885077186964 / (1 + eps) <= pd('j0') <= 0.813885077186964 * (1 + eps)
 assert 0.18611492281303602 / (1 + eps) <= pd('j1') <= 0.18611492281303602 * (1 + eps)
@@ -167,7 +167,7 @@ assert 0.18611492281303602 / (1 + eps) <= pd('j1') <= 0.18611492281303602 * (1 +
 algorithm.set_query(job)
 algorithm.set_evidence((grade, 'g1'), (letter, 'l1'))
 algorithm.run(cost='weighted-min-fill')
-algorithm.print_ordering()
+algorithm.print_order()
 algorithm.print_pd()
 # P(c, d, h, i, s, j, g1, l1) =
 # P(c) * P(i) * P(d | c) * P(g1 |d ,i) * P(l0 | g1) * P(j | l1, s) * P(s | i) * P(h | g1, j) =
@@ -206,7 +206,7 @@ algorithm.print_pd()
 # =>
 # P(j0 | g1, l1) = 0.09474675 / (0.09474675 + 0.07665525) = 0.5527750551335457
 # P(j1 | g1, l1) = 0.07665525 / (0.09474675 + 0.07665525) = 0.44722494486645425
-assert algorithm.ordering == (coherence, difficulty, happy, intelligence, sat)
+assert algorithm.order == (coherence, difficulty, happy, intelligence, sat)
 pd = algorithm.pd
 assert 0.5527750551335457 / (1 + eps) <= pd('j0') <= 0.5527750551335457 * (1 + eps)
 assert 0.44722494486645425 / (1 + eps) <= pd('j1') <= 0.44722494486645425 * (1 + eps)
@@ -214,7 +214,7 @@ assert 0.44722494486645425 / (1 + eps) <= pd('j1') <= 0.44722494486645425 * (1 +
 algorithm.set_query(job)
 algorithm.set_evidence((grade, 'g2'), (letter, 'l0'))
 algorithm.run(cost='weighted-min-fill')
-algorithm.print_ordering()
+algorithm.print_order()
 algorithm.print_pd()
 # P(c, d, h, i, s, j, g2, l0) =
 # P(c) * P(i) * P(d | c) * P(g2 |d ,i) * P(l0 | g2) * P(j | l0, s) * P(s | i) * P(h | g2, j) =
@@ -253,7 +253,7 @@ algorithm.print_pd()
 # =>
 # P(j0 | g2, l0) = 0.321554178 / (0.321554178 + 0.047696022) = 0.8708300713174969
 # P(j1 | g2, l0) = 0.047696022 / (0.321554178 + 0.047696022) = 0.12916992868250307
-assert algorithm.ordering == (coherence, difficulty, happy, intelligence, sat)
+assert algorithm.order == (coherence, difficulty, happy, intelligence, sat)
 pd = algorithm.pd
 assert 0.8708300713174969 / (1 + eps) <= pd('j0') <= 0.8708300713174969 * (1 + eps)
 assert 0.12916992868250307 / (1 + eps) <= pd('j1') <= 0.12916992868250307 * (1 + eps)
@@ -261,7 +261,7 @@ assert 0.12916992868250307 / (1 + eps) <= pd('j1') <= 0.12916992868250307 * (1 +
 algorithm.set_query(job)
 algorithm.set_evidence((grade, 'g2'), (letter, 'l1'))
 algorithm.run(cost='weighted-min-fill', print_info=True)
-algorithm.print_ordering()
+algorithm.print_order()
 algorithm.print_pd()
 # P(c, d, h, i, s, j, g2, l1) =
 # P(c) * P(i) * P(d | c) * P(g2 |d ,i) * P(l1 | g2) * P(j | l1, s) * P(s | i) * P(h | g2, j) =
@@ -300,7 +300,7 @@ algorithm.print_pd()
 # =>
 # P(j0 | g2, l1) = 0.00221345 / (0.00221345 + 0.00151635) = 0.5934500509410692
 # P(j1 | g2, l1) = 0.00151635 / (0.00221345 + 0.00151635) = 0.40654994905893077
-assert algorithm.ordering == (coherence, difficulty, happy, intelligence, sat)
+assert algorithm.order == (coherence, difficulty, happy, intelligence, sat)
 pd = algorithm.pd
 assert 0.5934500509410692 / (1 + eps) <= pd('j0') <= 0.5934500509410692 * (1 + eps)
 assert 0.40654994905893077 / (1 + eps) <= pd('j1') <= 0.40654994905893077 * (1 + eps)

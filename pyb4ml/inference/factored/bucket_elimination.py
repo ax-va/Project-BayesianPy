@@ -28,15 +28,15 @@ class BE(FactoredAlgorithm):
     used to eliminate a variable by summing the product of factors over that variable.  
     Due to that, a new factor is created and moved into a remaining bucket.  That is 
     repeated until the query buckets contain the factors that depend only on the query 
-    variables.  An elimination ordering of non-query variables is also needed.  Runtime 
-    is highly dependent on that variable elimination ordering, namely on the domain 
-    cardinality of free variables in a bucket that can be different for different orderings.
+    variables.  An elimination order of non-query variables is also needed.  Runtime
+    is highly dependent on that variable elimination order, namely on the domain
+    cardinality of free variables in a bucket that can be different for different orders.
     Dynamic programming here means that a new factor is computed only once in any run.  
     But in the next BE runs, the factors are recomputed, since the possibly changed query 
-    also changes the elimination ordering. As a result, the ordering of computing the factors 
+    also changes the elimination order. As a result, the ordering of computing the factors
     can also be changed and the factors computed in the previous run cannot be reused.  
     Moreover, although the different values of evidential variables do not change the 
-    elimination ordering, they also change the computed factors.  All of this makes 
+    elimination order, they also change the computed factors.  All of this makes
     the bucket caching impractical to reuse.  Instead of the factors, the implementation 
     also uses logarithms of them for computational stability.  See, for example, [B12]
     for more details.
@@ -65,23 +65,23 @@ class BE(FactoredAlgorithm):
         FactoredAlgorithm.__init__(self, model)
         self._computed_log_factors = []
         self._bucket_cache = {}
-        self._elimination_ordering = []
+        self._elimination_order = []
         self._print_info = False
         # Logarithm all the model factors
         self._logarithm_factors()
 
     @property
-    def elimination_ordering(self):
-        return self._elimination_ordering
+    def elimination_order(self):
+        return self._elimination_order
 
     def check_variable_partition(self):
         set_q = set(self._query)
         set_e = set(self._evidence)
-        set_o = set(self._elimination_ordering)
+        set_o = set(self._elimination_order)
         set_m = set(self.variables)
         if not set_q.isdisjoint(set_o):
             raise ValueError(f'query variables {tuple(var.name for var in self._query)} and '
-                             f'elimination variables {tuple(var.name for var in self._elimination_ordering)} '                             
+                             f'elimination variables {tuple(var.name for var in self._elimination_order)} '                             
                              f'must be disjoint')
         if not set_q.isdisjoint(set_e):
             raise ValueError(f'query variables {tuple(var.name for var in self._query)} and '
@@ -89,7 +89,7 @@ class BE(FactoredAlgorithm):
                              f'must be disjoint')
         if not set_e.isdisjoint(set_o):
             raise ValueError(f'evidential variables {tuple(var.name for var in self._evidence)} and '
-                             f'elimination variables {tuple(var.name for var in self._elimination_ordering)} '                             
+                             f'elimination variables {tuple(var.name for var in self._elimination_order)} '                             
                              f'must be disjoint')
         if set_q.union(set_e).union(set_o) != set_m:
             raise ValueError('the query, evidence, and elimination variables do not cover all the model variables')
@@ -97,7 +97,7 @@ class BE(FactoredAlgorithm):
     def run(self, print_info=False):
         # Check whether a query is specified
         FactoredAlgorithm.check_non_empty_query(self)
-        # Query, evidence, and elimination ordering variables must be disjoint and build a whole model
+        # Query, evidence, and elimination order variables must be disjoint and build a whole model
         self.check_variable_partition()
         # Print the bucket information
         self._print_info = print_info
@@ -108,7 +108,7 @@ class BE(FactoredAlgorithm):
         # Initialize the bucket cache
         self._initialize_main_loop()
         # Run the main loops
-        for variable in self._elimination_ordering:
+        for variable in self._elimination_order:
             # If there are the log-factors in the output cache
             # containing that variable, they should be added into
             # the bucket of that variable
@@ -128,21 +128,21 @@ class BE(FactoredAlgorithm):
         # Print info if necessary
         FactoredAlgorithm._print_stop(self)
 
-    def set_elimination(self, ordering):
-        # Check whether the elimination ordering has duplicates
-        if len(ordering) != len(set(ordering)):
+    def set_elimination(self, order):
+        # Check whether the elimination order has duplicates
+        if len(order) != len(set(order)):
             raise ValueError(f'The elimination order must not contain duplicates')
-        elm_ordering = []
-        # Set the elimination ordering
-        for outer_var in ordering:
+        elm_order = []
+        # Set the elimination order
+        for outer_var in order:
             try:
                 inner_var = self._outer_to_inner_variables[outer_var]
             except KeyError:
-                self._elimination_ordering = ()
+                self._elimination_order = ()
                 raise ValueError(f'no model variable corresponding to variable {outer_var.name} '
-                                 f'in the elimination ordering')
-            elm_ordering.append(inner_var)
-        self._elimination_ordering = tuple(elm_ordering)
+                                 f'in the elimination order')
+            elm_order.append(inner_var)
+        self._elimination_order = tuple(elm_order)
 
     def _add_computed_log_factors_to_bucket_cache(self, variable):
         bucket = self._bucket_cache[variable]
@@ -220,7 +220,7 @@ class BE(FactoredAlgorithm):
     def _initialize_main_loop(self):
         self._initialize_factors()
         self._bucket_cache = {}
-        self._initialize_bucket_cache(self._elimination_ordering)
+        self._initialize_bucket_cache(self._elimination_order)
         self._initialize_bucket_cache(self._query)
         self._computed_log_factors = []
 
