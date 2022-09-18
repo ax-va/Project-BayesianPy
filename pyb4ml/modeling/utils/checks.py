@@ -20,7 +20,7 @@ def check_are_variables_evidential(variables):
 
 
 def check_is_variable_non_evidential(variable):
-    if not variable.is_evidential():
+    if variable.is_evidential():
         raise ValueError(f"Variable '{variable.name}' is not non-evidential. "
                          f"A non-evidential variable must have more than one value in its domain.")
 
