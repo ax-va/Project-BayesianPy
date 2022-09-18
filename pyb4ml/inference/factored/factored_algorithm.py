@@ -7,10 +7,10 @@ from pyb4ml.modeling.factor_graph.factor_graph import FactorGraph
 
 class FactoredAlgorithm:
     """
-    This is an abstract class of some factored algorithm, which is inherited by
-    the classes of real factored algorithms, e.g. the Belief Propagation or Bucket
-    Elimination algorithms.  The class contains and defines common attributes and 
-    methods, respectively. 
+    This is an abstract class of a factored algorithm, which will be inherited by
+    the classes of real algorithms, e.g. the Belief Propagation or Bucket
+    Elimination algorithms.  The class contains common attributes and methods.
+ 
     """
     def __init__(self, model: FactorGraph):
         # Inner model not specified
