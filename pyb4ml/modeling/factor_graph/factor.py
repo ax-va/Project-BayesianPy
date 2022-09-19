@@ -93,7 +93,7 @@ class Factor(ModelElement):
         return tuple(var_val for var_val in var_val_args if var_val[0] in self._variables)
 
     def is_leaf(self):
-        return len(self._variables) == 1
+        return len(self._variables) + len(self._evidential) == 1
 
     def logarithm(self):
         self._function = logarithm.logarithm(self._function)
