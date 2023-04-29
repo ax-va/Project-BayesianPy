@@ -1,5 +1,5 @@
 # BayesianPy
-BayesianPy is a collection of algorithms and models written in Python 3.8 for probabilistic programming. The main focus of the package is on Bayesian reasoning by using Bayesian and/or Markov networks. 
+BayesianPy is a collection of algorithms and models written in Python 3.8 for probabilistic programming. The main focus of the package is on Bayesian reasoning by using Bayesian networks, Markov networks, and their combination.
 
 The collection contains the following algorithms and models.
 
