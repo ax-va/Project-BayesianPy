@@ -1,5 +1,5 @@
-# PyBayesian
-PyBayesian is a collection of algorithms and models written in Python 3.8 for probabilistic programming. The main focus of the package is on Bayesian reasoning by using Bayesian and/or Markov networks. 
+# BayesianPy
+BayesianPy is a collection of algorithms and models written in Python 3.8 for probabilistic programming. The main focus of the package is on Bayesian reasoning by using Bayesian and/or Markov networks. 
 
 The collection contains the following algorithms and models.
 
@@ -23,7 +23,7 @@ Academic probabilistic models in the factor graph representation:
 
 See in the tests folder how to use the algorithms. In the models folder, you can see how to create factor graph models.
 
-© 2021-2022 Alexander Vasiliev
+© 2021-2023 Alexander Vasiliev
 
 References:
 [B12] David Barber, "Bayesian Reasoning and Machine Learning", Cambridge University Press, 2012;
